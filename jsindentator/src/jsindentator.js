@@ -4,53 +4,7 @@
 (function() {
 	var ns=window.jsindentator = {};
 	_.extend(ns, {
-		visitors : {
-			
-			//example: var a = 1, f = function(){}
-			"VariableDeclaration" : function(node) {
-				ns.print('var '); 
-				for ( var i = 0; i < node.declarations.length; i++) {
-					var decl= node.declarations[i]; 
-					ns.print(decl.id.name+" = ");
-					ns.visit(decl.init); 
-					if(i< node.declarations.length-1)
-						ns.print(ns.newline+','+ns.tab); 		 
-				}
-				ns.print(';'+ns.newline); 
-			}
-	
-			//example: 2, "seba", false
-//		,	"Literal" : function(node, print) {	
-//			}
-		,	"Identifier": function(node, print) {
-				print(node.name); 
-			}
-		,	"ObjectExpression": function(node, print) {
-			console.log(node); 
-				print('{'); 
-				ns.blockCount++;
-				ns.printIndent();
-				for ( var i = 0; i < node.properties.length; i++) {
-					var p = node.properties[i];
-					
-					ns.visit(p.key); //Identifier
-					print(': '); 
-					ns.visit(p.value); //*Expression
-					if(i < node.properties.length-1) {
-//						if(i!=0)
-						ns.print(ns.newline); 
-						ns._printIndent(ns.blockCount);
-//						print(ns.newline); 
-//						print(',\t'); 
-//						ns.printIndent();
-					}
-				}
-				ns.blockCount--;
-				ns.printIndent();
-				print('}'); 
-			}			
-		}
-	,	doDefaultChildrenVisiting: function(node) {
+		doDefaultChildrenVisiting: function(node) {
 			if(node.body) {
 				_(syntax.body).each(function(child){
 					ns.visit(child); 
@@ -96,18 +50,21 @@
 			ns.buffer = [];
 			_(syntax.body).each(function(node){
 				ns.visit(node); 
-			}); 		
-
-//			console.log(syntax.body); 
+			}); 
 			return ns.buffer.join('');  
 		}
-	 ,	visit: function(node) {
+	/* this is the public visit() method which all the visitors will call for sub concept instances, like for example the FunctionExpression will call for render its parameter expression and its body statements. the visit method will delegate to registered visitor for the given type of by default, if no visitor is registered for that concept it will just dump the original code. */ 
+	 ,	visit: function(node, config) {
+		 	if(!node)
+		 		return;
 			var visitor = ns.visitors[node.type]; 
 			if(visitor) {
-				visitor(node, ns.print); 
+				visitor(node, config); 
 			}
 			else {
-				ns.buffer.push(ns.originalCode(node));
+				var origCode = ns.originalCode(node);
+				console.log(node, origCode); 
+				ns.buffer.push(origCode);
 			}
 		}
 	});
