@@ -5,26 +5,50 @@
 	var ns=window.jsindentator = {};
 	_.extend(ns, {
 		visitors : {
+			
 			//example: var a = 1, f = function(){}
 			"VariableDeclaration" : function(node) {
-				var buf = ns.buffer;
-				buf.push('var '); 
+				ns.print('var '); 
 				for ( var i = 0; i < node.declarations.length; i++) {
 					var decl= node.declarations[i]; 
-					buf.push(i===0?'':', '); //separator
-// 					var visit(decl.init); //val = decl.init.raw || visit
-					buf.push(decl.id.name+" = ");
-					visit(decl.init); 
+					ns.print(decl.id.name+" = ");
+					ns.visit(decl.init); 
+					if(i< node.declarations.length-1)
+						ns.print(ns.newline+','+ns.tab); 		 
 				}
-//				_(node.declarations).each(function(decl){
-//					buf.push(buf.length===0?'':', '); //separator
-//// 					var visit(decl.init); //val = decl.init.raw || visit
-//					buf.push(decl.id.name+" = ");
-//					visit(decl.init)
-//				}); 
-				buf.push('; '); 
-				console.log(node); 
+				ns.print(';'+ns.newline); 
 			}
+	
+			//example: 2, "seba", false
+//		,	"Literal" : function(node, print) {	
+//			}
+		,	"Identifier": function(node, print) {
+				print(node.name); 
+			}
+		,	"ObjectExpression": function(node, print) {
+			console.log(node); 
+				print('{'); 
+				ns.blockCount++;
+				ns.printIndent();
+				for ( var i = 0; i < node.properties.length; i++) {
+					var p = node.properties[i];
+					
+					ns.visit(p.key); //Identifier
+					print(': '); 
+					ns.visit(p.value); //*Expression
+					if(i < node.properties.length-1) {
+//						if(i!=0)
+						ns.print(ns.newline); 
+						ns._printIndent(ns.blockCount);
+//						print(ns.newline); 
+//						print(',\t'); 
+//						ns.printIndent();
+					}
+				}
+				ns.blockCount--;
+				ns.printIndent();
+				print('}'); 
+			}			
 		}
 	,	doDefaultChildrenVisiting: function(node) {
 			if(node.body) {
@@ -33,21 +57,33 @@
 				}); 
 			}
 		}
+	,	logMessages: []
+	,	log: function(msg) {
+			logMessages.push(msg); 
+		}
 	,	blockCount: 0 //for block indentation
 	,	print: function(str) {
 			ns.buffer.push(str); 
 		}
-	,	printLine: function(lineStr) { //please use this for printing an entire indented line. 
-			for(var i = 0; i<blockCount; i++)
-				buf.push(ns.indentStr); 
-			buf.push(lineStr); 
+	,	_printIndent: function(num) {
+			for(var i = 0; i<num; i++) {
+				ns.print(ns.tab); 
+			}
 		}
-	,	indentStr: '\t'
+	,	printIndent: function(nonl) {
+			if(!nonl)
+				ns.buffer.push(ns.newline); 
+			ns._printIndent(ns.blockCount); 
+		}
+	,	tab: '\t'
+	,	newline: '\n'
 	,	originalCode: function(node) {
 			return ns.code.substring(node.loc.start.column, node.loc.end.column); 
 		}
 	,	buffer: []
-	,	main: function (code) {
+	,	main: function (code, config) {
+			if(config)
+				_.extend(ns, config); 
 			ns.code = code;
 			var syntax = null, parseex=null;
 			try {
@@ -59,21 +95,21 @@
 			}
 			ns.buffer = [];
 			_(syntax.body).each(function(node){
-				visit(node); 
+				ns.visit(node); 
 			}); 		
+
+//			console.log(syntax.body); 
 			return ns.buffer.join('');  
 		}
+	 ,	visit: function(node) {
+			var visitor = ns.visitors[node.type]; 
+			if(visitor) {
+				visitor(node, ns.print); 
+			}
+			else {
+				ns.buffer.push(ns.originalCode(node));
+			}
+		}
 	});
-	
-	function visit(node){
-		var visitor = ns.visitors[node.type]; 
-		if(visitor) {
-			visitor(node); 
-		}
-		else {
-			ns.buffer.push(ns.originalCode(node));
-		}
-	}
-	alert(main("var s = 2, f = function(a){}; "));
-	
+		
 })();

@@ -9,19 +9,32 @@
 <script src="../lib/underscore.js" type="text/javascript"></script>
 <script src="../lib/jquery-2.0.3.min.js" type="text/javascript"></script>
 <script src="../src/jsindentator.js" type="text/javascript"></script>
+
+
+<style type="text/css">
+textarea{width: 40%; height: 300px;}
+</style>
+
 </head>
 
 <body>
-
-<textarea id="input">var s="hello",f1 =function(e){}</textarea>
+<textarea id="input">var s=2,f=function(a){}; var obj1={a: [2,3,4],b:true,c:1.23,d: {e:1.23,f:"hello"}};var s1="seba"; </textarea>
 <textarea id="output"></textarea>
 <button id="doitButton">do it!</button>
 
-	<script>
-	jQuery('#doitButton').click(function(e){
-		var indentedCode = jsindentator.main(jQuery('#input').html());
-		jQuery('#output').html(indentedCode); 
-	}); 
-	</script>
+<br/>
+<textarea id="debug"></textarea>
+<script>
+var doit = function(e){
+	var config = {tab: '\t'}; 
+	var indentedCode = jsindentator.main(jQuery('#input').html(), config);
+	jQuery('#output').html(indentedCode);
+		
+}; 
+jQuery('#doitButton').click(doit); 
+doit(); 
+
+
+</script>
 </body>
 </html>
