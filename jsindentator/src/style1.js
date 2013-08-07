@@ -2,12 +2,11 @@
 // in this code node name means javascript language ast nodes like expression, declaration, statement, etc, not DOM or xml nodes!
 // TODO: only single line code supported !
 (function() {
-var ns = jsindentator, visit=ns.visit, print=ns.print; 
+var ns = jsindentator, visit=ns.visit, print=ns.print, indent=ns.printIndent; 
 jsindentator.visitorsStyle1 = {
 	
 	"VariableDeclaration" : function(node, config) {
-		if(!config || !config.noFirstNewLine)
-			ns.printIndent(); 
+		indent(); 
 		print('var '); 
 		for ( var i = 0; i < node.declarations.length; i++) {
 			visit(node.declarations[i]); 
@@ -15,22 +14,34 @@ jsindentator.visitorsStyle1 = {
 				print(ns.newline+','+ns.tab); 		 
 		}
 		print('; '); 
+//		if(!config || !config.noFirstNewLine)
+//			indent(); 
 	}
 
 ,	"VariableDeclarator" : function(node) {
 		ns.print(node.id.name+" = ");
+
+//		ns.blockCount++;	
 		visit(node.init); 
+
+//		ns.blockCount--;	
 	}
 	
 	
 
 ,	"Literal" : function(node) {
-		print(node.raw); 
+		if(node.raw.indexOf('"')===0||node.raw.indexOf('\'')===0) {
+			print(ns.quote+node.value+ns.quote); 
+		}
+		else {
+			print(node.raw);
+		}
 	}
 ,	"Identifier": function(node) {
 		print(node.name || ''); 
 	}
 ,	"FunctionExpression": function(node) {
+//	console.log(node); 
 		print('function ');
 		visit(node.id);
 		print('('); 
@@ -41,28 +52,29 @@ jsindentator.visitorsStyle1 = {
 		}
 		print(')');
 		if(node.body.body.length>0) {
-			ns.printIndent();
+			indent();
 			print('{')
-			ns.blockCount++;			
+			ns.blockCount++;	
+//			indent();		
 			visit(node.body); 
 			ns.blockCount--;
-			ns.printIndent();
+			indent();
 			print('}')
 		}
 		else {
 			print('{}');  
 		}
 			
-		print('}'); 
 	}
 ,	"BlockStatement": function(node) {	
 //		if(node.body.length>0)
-//			ns.printIndent();
+//			indent();
 		for ( var i = 0; i < node.body.length; i++) {
-			ns.printIndent();
+//			indent();
 			visit(node.body[i]);
 		}
 //		print(node.body.length>0?';':''); 
+//		indent();
 	}
 ,	"UpdateExpression": function(node) {				  
 		if(node.prefix) {
@@ -75,6 +87,7 @@ jsindentator.visitorsStyle1 = {
 		}
 	}
 ,	"ForStatement": function(node) {
+		indent(); 
 		print('for('); 
 		visit(node.init, {noFirstNewLine: true});
 //				print('; '); 
@@ -82,12 +95,13 @@ jsindentator.visitorsStyle1 = {
 		print('; ');
 		visit(node.update);
 		print(') {'); 
-//				ns.printIndent(); 
+//				indent(); 
 		ns.blockCount++;
 		visit(node.body);
 		ns.blockCount--;
-		ns.printIndent(); 
+		indent(); 
 		print('}'); 
+//		indent(); 
 	}
 ,	"ArrayExpression": function(node) {	
 		print('['); 
@@ -100,11 +114,16 @@ jsindentator.visitorsStyle1 = {
 	}
 
 ,	"ExpressionStatement": function(node) {
+		indent(); 
 		visit(node.expression);
 		print(';'); 
+//		indent(); 
 	}
 ,	"CallExpression": function(node) {
-		visit(node.callee);
+		if(node.callee.type==="FunctionExpression"){print('(');ns.blockCount++;}//hack - parenthesis around functions
+		visit(node.callee)
+		if(node.callee.type==="FunctionExpression"){print(')');ns.blockCount--;}//hack - parenthesis around functions
+	
 		print('('); 
 		for ( var i = 0; i < node.arguments.length; i++) {
 			visit(node.arguments[i]);
@@ -123,7 +142,7 @@ jsindentator.visitorsStyle1 = {
 //			console.log(node); 
 		print('{'); 
 		ns.blockCount++;
-		ns.printIndent();
+		indent();
 		for ( var i = 0; i < node.properties.length; i++) {
 			var p = node.properties[i];
 			
@@ -137,14 +156,15 @@ jsindentator.visitorsStyle1 = {
 			}
 		}
 		ns.blockCount--;
-		ns.printIndent();
+		indent();
 		print('}'); 
 	}
 ,	"ReturnStatement": function(node) {
-//				ns.printIndent();	
+		indent();	
 		print('return '); 
 		visit(node.argument); 
 		print(';'); 
+//		indent(); 
 	}
 ,	"ConditionalExpression": function(node) {
 		visit(node.test); 
@@ -155,11 +175,11 @@ jsindentator.visitorsStyle1 = {
 	}
 
 ,	"SwitchStatement": function(node) {
-		ns.printIndent();
+		indent();
 		print('switch (');
 		visit(node.discriminant); 
 		print(')');
-		ns.printIndent();
+		indent();
 		 print('{'); 
 //		ns.blockCount++;
 		for(var i = 0; i < node.cases.length; i++) {
@@ -167,28 +187,97 @@ jsindentator.visitorsStyle1 = {
 		}
 //		ns.blockCount--;
 
-		ns.printIndent();
+		indent();
 		print('}'); 
+//		indent(); 
 	}
 ,	"SwitchCase": function(node) {
-		ns.printIndent();
+		indent();
 		print(node.test==null ? 'default' : 'case ');
 		visit(node.test); 
 		print(':');
 		ns.blockCount++;
-//		print(ns.newline); ns.printIndent();
+//		print(ns.newline); indent();
 		
 		for(var i = 0; i < node.consequent.length; i++) {	
-			ns.printIndent();		
+//			indent();		
 			visit(node.consequent[i]); 
 		}
 		ns.blockCount--;
 	}
 ,	"EmptyStatement": function(node) {
+//		indent(); 
 		print(';'); 
+//		indent(); 
 	}
 ,	"BreakStatement": function(node) {
+		indent(); 
 		print('break;');
+//		indent(); 
+	}
+
+,	"WhileStatement": function(node) {
+		indent(); 
+		print('while ( ');
+		visit(node.test); 
+		print(' ) ');
+		indent();
+		print('{'); 
+		
+		ns.blockCount++;
+//		indent();
+		visit(node.body);
+		ns.blockCount--;
+		
+		indent();
+		print('}'); 
+//		indent(); 
+	}
+,	"AssignmentExpression": function(node) {
+		visit(node.left);
+		print(' '+node.operator+' '); 
+		visit(node.right); 
+	}
+,	"MemberExpression": function(node) {
+		visit(node.object);
+		print('.'); 
+		visit(node.property); 
+	}
+
+,	"ThisExpression": function(node) {
+		print('this');  
+	}
+
+,	"SequenceExpression": function(node) {
+		print('( ');   
+		ns.blockCount++;
+		for ( var i = 0; i < node.expressions.length; i++) {
+			visit(node.expressions[i]);
+			if(i < node.expressions.length-1)
+				print(', ');
+		}
+		ns.blockCount--;
+		print(' )');
+	}
+,	"DoWhileStatement": function(node) {
+		indent();
+		print('do');
+		indent();
+		print('{')
+		ns.blockCount++;
+//		indent();
+		visit(node.body);
+		ns.blockCount--;
+//		print(ns.newline); 
+
+		indent();
+		print('}');	
+		indent();
+		
+		print('while ( ');
+		visit(node.test);
+		print(' );');
+//		indent(); 
 	}
 }	
 })();

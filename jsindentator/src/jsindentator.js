@@ -1,20 +1,11 @@
-
 // in this code node name means javascript language ast nodes like expression, declaration, statement, etc, not DOM or xml nodes!
-// TODO: only single line code supported !
 (function() {
 	var ns=window.jsindentator = {};
 	_.extend(ns, {
-		doDefaultChildrenVisiting: function(node) {
-			if(node.body) {
-				_(syntax.body).each(function(child){
-					ns.visit(child); 
-				}); 
-			}
-		}
-	,	logMessages: []
-	,	log: function(msg) {
-			logMessages.push(msg); 
-		}
+			quote: '\''
+		,	tab: '\t'
+		,	newline: '\n'
+		
 	,	blockCount: 0 //for block indentation
 	,	print: function(str) {
 			ns.buffer.push(str); 
@@ -29,10 +20,13 @@
 				ns.buffer.push(ns.newline); 
 			ns._printIndent(ns.blockCount); 
 		}
-	,	tab: '\t'
-	,	newline: '\n'
 	,	originalCode: function(node) {
-			return ns.code.substring(node.loc.start.column, node.loc.end.column); 
+//			return ns.code.substring(node.loc.start.column, node.loc.end.column); //only for code without newlines
+			if(!node.range)return ''; 
+			if(node.range.length==1)
+				return ns.code.substring(node.range[0], node.range[0+1]); 
+			else
+				return ns.code.substring(node.range[0], node.range[1]); 
 		}
 	,	buffer: []
 	,	main: function (code, config) {
@@ -41,13 +35,20 @@
 			ns.code = code;
 			var syntax = null, parseex=null;
 			try {
-				syntax = esprima.parse(code, {loc : true});
+				syntax = esprima.parse(code, {
+//					loc : true 
+//				,	
+				range: true
+//				,	tokens: true
+					}				
+				);
 			}catch(ex){parseex=ex;}
 			if(syntax==null) {
 				alert("JAVASCRIPT PARSING ERROR: "+parseex);
 				return; 
 			}
 			ns.buffer = [];
+//			console.log(syntax); 
 			_(syntax.body).each(function(node){
 				ns.visit(node); 
 			}); 
@@ -58,15 +59,28 @@
 		 	if(!node)
 		 		return;
 			var visitor = ns.visitors[node.type]; 
+			console.log("visiting", node, ns.originalCode(node)); 
 			if(visitor) {
 				visitor(node, config); 
 			}
 			else {
 				var origCode = ns.originalCode(node);
-				console.log(node, origCode); 
+				console.log("WARNING - Language concept not supported ", node, origCode); 
 				ns.buffer.push(origCode);
 			}
 		}
+		
+	,	logMessages: []
+	,	log: function(msg) {
+			logMessages.push(msg); 
+		}
+//	doDefaultChildrenVisiting: function(node) {
+//	if(node.body) {
+//		_(syntax.body).each(function(child){
+//			ns.visit(child); 
+//		}); 
+//	}
+//}
 	});
 		
 })();

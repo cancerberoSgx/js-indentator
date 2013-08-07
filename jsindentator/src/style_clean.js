@@ -41,8 +41,6 @@ jsindentator.visitorsStyleClean = {
 		ns.blockCount++;
 		visit(node.body); 
 		ns.blockCount--;
-//				ns.printIndent();
-//		ns.printIndent(); 
 		print('}'); 
 	}
 ,	"BlockStatement": function(node) {		
@@ -91,8 +89,10 @@ jsindentator.visitorsStyleClean = {
 		visit(node.expression);
 		print(';'); 
 	}
-,	"CallExpression": function(node) {
-		visit(node.callee);
+,	"CallExpression": function(node) {	
+		if(node.callee.type==="FunctionExpression"){print('(');ns.blockCount++;}//hack - parenthesis around functions
+		visit(node.callee)
+		if(node.callee.type==="FunctionExpression"){print(')');ns.blockCount--;}//hack - parenthesis around functions
 		print('('); 
 		for ( var i = 0; i < node.arguments.length; i++) {
 			visit(node.arguments[i]);
@@ -103,7 +103,7 @@ jsindentator.visitorsStyleClean = {
 	}
 ,	"BinaryExpression": function(node) {
 		visit(node.left); 
-		print(' '+node.operator+' '); 
+		print(node.operator); 
 		visit(node.right); 
 	}
 
@@ -129,7 +129,7 @@ jsindentator.visitorsStyleClean = {
 		print('}'); 
 	}
 ,	"ReturnStatement": function(node) {
-//				ns.printIndent();	
+//		ns.printIndent();	
 		print('return '); 
 		visit(node.argument); 
 		print(';'); 
@@ -167,8 +167,49 @@ jsindentator.visitorsStyleClean = {
 		print('break;');
 	}
 
+,	"WhileStatement": function(node) {
+		print('while(');
+		visit(node.test); 
+		print('){');
+		ns.blockCount++;
+		visit(node.body);
+		ns.blockCount--;
+		print('}'); 
+	}
+,	"AssignmentExpression": function(node) {
+		visit(node.left);
+		print(node.operator); 
+		visit(node.right); 
+	}
+,	"MemberExpression": function(node) {
+		visit(node.object);
+		print('.'); 
+		visit(node.property); 
+	}
 
-}	
+,	"ThisExpression": function(node) {
+		print('this');  
+	}
+
+,	"SequenceExpression": function(node) {
+		print('(');   
+		for ( var i = 0; i < node.expressions.length; i++) {
+			visit(node.expressions[i]);
+			if(i < node.expressions.length-1)
+				print(',');
+		}
+		print(')');
+	}
+,	"DoWhileStatement": function(node) {
+		print('do{');
+		visit(node.body);
+		print("}while(");
+		visit(node.test);
+		print(');');
+	}
+
+
+}
 })();
 
 
