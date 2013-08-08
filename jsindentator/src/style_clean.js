@@ -17,11 +17,11 @@ jsindentator.visitorsStyleClean = {
 	}
 
 ,	"VariableDeclarator" : function(node) {
-	ns.print(node.id.name);
-	if(node.init) {
-		print("="); 
-		visit(node.init);
-	}
+		ns.print(node.id.name);
+		if(node.init) {
+			print("="); 
+			visit(node.init);
+		}
 	}
 	
 	
@@ -47,12 +47,10 @@ jsindentator.visitorsStyleClean = {
 		ns.blockCount--;
 		print('}'); 
 	}
-,	"BlockStatement": function(node) {		
-//		ns.printIndent();
+,	"BlockStatement": function(node) {	
 		for ( var i = 0; i < node.body.length; i++) {
 			visit(node.body[i]);
 		}
-//		print(node.body.length>0?';':''); 
 	}
 ,	"UpdateExpression": function(node) {				  
 		if(node.prefix) {
@@ -101,21 +99,19 @@ jsindentator.visitorsStyleClean = {
 		for ( var i = 0; i < node.arguments.length; i++) {
 			visit(node.arguments[i]);
 			if(i < node.arguments.length-1)
-				print(', ');
+				print(',');
 		}
 		print(')'); 
 	}
 ,	"BinaryExpression": function(node) {
 		visit(node.left); 
-		print(node.operator); 
+		print(node.operator==='in'?' in ':node.operator); 
 		visit(node.right); 
 	}
 
 ,	"ObjectExpression": function(node) {
-//			console.log(node); 
 		print('{'); 
 		ns.blockCount++;
-//		ns.printIndent();
 		for ( var i = 0; i < node.properties.length; i++) {
 			var p = node.properties[i];
 			
@@ -123,17 +119,13 @@ jsindentator.visitorsStyleClean = {
 			print(':'); 
 			visit(p.value); //*Expression
 			if(i < node.properties.length-1) {
-//				ns.print(ns.newline); 
-//				ns._printIndent(ns.blockCount-1);
 				print(','); 
 			}
 		}
 		ns.blockCount--;
-//		ns.printIndent();
 		print('}'); 
 	}
 ,	"ReturnStatement": function(node) {
-//		ns.printIndent();	
 		print('return '); 
 		visit(node.argument); 
 		print(';'); 
@@ -242,8 +234,8 @@ jsindentator.visitorsStyleClean = {
 		ns.blockCount++;
 		visit(node.consequent);
 		ns.blockCount--;
-		print('}else ');
 		if(node.alternate) {
+			print('}else');
 			if(node.alternate.test==null) {
 				print('{');
 				ns.blockCount++;	
@@ -257,8 +249,11 @@ jsindentator.visitorsStyleClean = {
 	}
 
 ,	"FunctionDeclaration": function(node, config) {
-		print('function ');
-		visit(node.id); 
+		print('function');
+		if(node.id) {
+			print(' ');
+			visit(node.id); 
+		} 
 		print('('); 
 		if(node.params) for ( var i = 0; i < node.params.length; i++) {
 			visit(node.params[i]); 
@@ -272,7 +267,7 @@ jsindentator.visitorsStyleClean = {
 		print('}');
 	}
 ,	"UnaryExpression": function(node) {
-		print(node.operator+" ");
+		print(node.operator);
 		visit(node.argument); 
 	}
 ,	"LogicalExpression": function(node) {
@@ -316,12 +311,11 @@ jsindentator.visitorsStyleClean = {
 	}
 
 ,	"ForInStatement": function(node) {
-		print("for ( "); 
+		print("for("); 
 		visit(node.left, {noFirstNewLine: true, noLastSemicolon: true}); 	
 		print(' in '); 
 		visit(node.right); 
-		print(' )')
-		
+		print(')')		
 		print('{');
 		ns.blockCount++;
 		visit(node.body); 

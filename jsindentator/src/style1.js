@@ -6,22 +6,23 @@ var ns = jsindentator, visit=ns.visit, print=ns.print, indent=ns.printIndent;
 jsindentator.visitorsStyle1 = {
 	
 	"VariableDeclaration" : function(node, config) {
-//		console.log(node);
 		if(!config || !config.noFirstNewLine) //var decls in for stmts
 			indent(); 
 		print('var '); 
 		for ( var i = 0; i < node.declarations.length; i++) {
 			visit(node.declarations[i]); 
 			if(i< node.declarations.length-1) {
-				indent(); 
-				print(','+ns.tab); 	
-			}
-//				print(ns.newline+','+ns.tab); 		 
+				if(!config || !config.noFirstNewLine) {
+					indent(); 
+					print(','+ns.tab); 	
+				}
+				else {
+					print(', '); 
+				}
+			}	 
 		}
 		if(!config || !config.noLastSemicolon) 
-			print(';'); 
-//		if(!config || !config.noFirstNewLine)
-//			indent(); 
+			print('; '); 
 	}
 
 ,	"VariableDeclarator" : function(node) {
@@ -31,8 +32,6 @@ jsindentator.visitorsStyle1 = {
 			visit(node.init);
 		}
 	}
-	
-	
 
 ,	"Literal" : function(node) {
 		if(node.raw.indexOf('"')===0||node.raw.indexOf('\'')===0) {
@@ -46,21 +45,19 @@ jsindentator.visitorsStyle1 = {
 		print(node.name || ''); 
 	}
 ,	"FunctionExpression": function(node) {
-//	console.log(node); 
 		print('function ');
 		visit(node.id);
-		print('('); 
+		print(' ( '); 
 		for( var i = 0; i < node.params.length; i++) {
 			visit(node.params[i]); 
 			if(i < node.params.length-1)
 				print(', ');					
 		}
-		print(')');
+		print(' ) ');
 		if(node.body.body.length>0) {
 			indent();
 			print('{')
 			ns.blockCount++;	
-//			indent();		
 			visit(node.body); 
 			ns.blockCount--;
 			indent();
@@ -72,14 +69,9 @@ jsindentator.visitorsStyle1 = {
 			
 	}
 ,	"BlockStatement": function(node) {	
-//		if(node.body.length>0)
-//			indent();
 		for ( var i = 0; i < node.body.length; i++) {
-//			indent();
 			visit(node.body[i]);
 		}
-//		print(node.body.length>0?';':''); 
-//		indent();
 	}
 ,	"UpdateExpression": function(node) {				  
 		if(node.prefix) {
@@ -124,22 +116,20 @@ jsindentator.visitorsStyle1 = {
 	}
 ,	"CallExpression": function(node) {
 		if(node.callee.type==="FunctionExpression"){//hack - parenthesis around functions
-			print('(');
-//			ns.blockCount++;		
+			print('(');		
 		}
 		visit(node.callee); 
 		if(node.callee.type==="FunctionExpression"){//hack - parenthesis around functions
 			print(')');
-//			ns.blockCount--;
 		}
 	
-		print('('); 
+		print(' ( '); 
 		for ( var i = 0; i < node.arguments.length; i++) {
 			visit(node.arguments[i]);
 			if(i < node.arguments.length-1)
 				print(', ');
 		}
-		print(')'); 
+		print(' ) '); 
 	}
 ,	"BinaryExpression": function(node) {
 		visit(node.left); 
@@ -156,11 +146,10 @@ jsindentator.visitorsStyle1 = {
 		ns.blockCount++;
 		indent();
 		for ( var i = 0; i < node.properties.length; i++) {
-			var p = node.properties[i];
-			
-			visit(p.key); //Identifier
+			var p = node.properties[i];			
+			visit(p.key); 
 			print(': '); 
-			visit(p.value); //*Expression
+			visit(p.value);
 			if(i < node.properties.length-1) {
 				ns.print(ns.newline); 
 				ns._printIndent(ns.blockCount-1);
@@ -251,13 +240,11 @@ jsindentator.visitorsStyle1 = {
 
 ,	"SequenceExpression": function(node) {
 		print('( ');   
-//		ns.blockCount++;
 		for ( var i = 0; i < node.expressions.length; i++) {
 			visit(node.expressions[i]);
 			if(i < node.expressions.length-1)
 				print(', ');
 		}
-//		ns.blockCount--;
 		print(' )');
 	}
 ,	"DoWhileStatement": function(node) {
@@ -317,9 +304,9 @@ jsindentator.visitorsStyle1 = {
 		indent();
 		print('}');
 
-		indent();
-		print('else ');
 		if(node.alternate) {
+			indent();
+			print('else ');
 			if(node.alternate.test==null) {
 				indent();
 				print('{');
@@ -387,13 +374,16 @@ jsindentator.visitorsStyle1 = {
 		print('}');
 	}
 ,	"CatchClause": function(node) {
-		print('catch('); 
-		if(node.params) for ( var i = 0; i < node.params.length; i++) {
-			visit(node.params[i]); 
-			if(i< node.params.length-1)
-				print(', '); 		 
-		}
-		print(')');
+		console.log(node); 
+		indent();
+		print('catch ( '); 
+		node.param && visit(node.param); 
+//		if(node.params) for ( var i = 0; i < node.params.length; i++) {
+//			visit(node.params[i]); 
+//			if(i< node.params.length-1)
+//				print(', '); 		 
+//		}
+		print(' ) ');
 		indent();
 		print('{');
 		ns.blockCount++;

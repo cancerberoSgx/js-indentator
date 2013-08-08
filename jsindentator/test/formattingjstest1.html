@@ -10,6 +10,7 @@
 <script src="../lib/jquery-2.0.3.min.js" type="text/javascript"></script>
 <script src="../src/jsindentator.js" type="text/javascript"></script>
 <script src="../src/style1.js" type="text/javascript"></script>
+<script src="../src/style2.js" type="text/javascript"></script>
 <script src="../src/style_clean.js" type="text/javascript"></script>
 
 <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -24,11 +25,19 @@ textarea{width: 100%; height: 120px;}
 </head>
 
 <body>
-
+<h3>JavaScript Indentator</h3>
+<p>Please paste your JavaScript code in the first text area and press "do it". The indenter will produce some different styles of indentation versions of your code</p>
+ 
 <button id="doitButton">do it!</button>
 <div class="textbox">
 <h4>Original Code</h4>
 <textarea id="input">
+if(true) false; 
+if("".length===1 && a != "Apple"){alert('pp'); }
+else if("".length==2){alert('ee'); }
+else if("".length==3){alert('33e'); }
+else if("".length==4)alert('44'); 
+else {alert('kk'); }
 for(var i in o){alert(i+'='+o[i])};  
 for(var j=7; ; ) {if(false){continue; }else{break; }}; 
 try{"hello"; throw "error"; }
@@ -36,51 +45,31 @@ catch(ex){"world"; alert(ex); }
 finally{alert('nightmare end')}
 var a = typeof Object; 
 function f1(a, b){alert('seb'); return a+b; };
-if("".length===1 && a != "Apple"){alert('pp'); }
-else if("".length==2){alert('ee'); }
-else if("".length==3){alert('33e'); }
-else if("".length==4){alert('44'); }
-else {alert('kk'); }
 var o = {a: 1, b: 2};
 with (o) {  alert(a+b);}
 var Class1=function(name){this.name=name}; 
 Class1.prototype.sayHello=function(){return "hello "+this.name; };
 var c1 = new Class1('albert');   
 eval("alert('helloworld');"); 
-var f=function(a){for(var i=0;i!=10;i++){alert(i);}}; var s=2,f=function namedf(a){}; var obj1={a: [2,3,4],b:true,c:1.23,d: {e:1.23,f:"hello", f1: function(a, b, c){var v2=1; switch(v2){case 0: (function(a){})(2); break; case 1: alert('good'); break; default: alert('def'); }; return a*b+c; }}};var s1="seba"; var r = window?'inabrowser':'notabrowser', ol = (function(n){var c = 15; while(c!=0){ this.y=( --c )*n; }; do {alert('error')} while(true){}{}})(9);
-
+var f=function(a){for(var i=0;i!=10;i++){alert(i);}}; 
+var s=2,f=function namedf(a){}; 
+var obj1={a: [2,3,4],b:true,c:1.23,d: {e:1.23,f:"hello", f1: function(a, b, c){var v2=1; switch(v2){case 0: (function(a){})(2); break; case 1: alert('good'); break; default: alert('def'); }; return a*b+c; }}};
+var s1="seba"; var r = window?'inabrowser':'notabrowser', ol = (function(n){var c = 15; while(c!=0){ this.y=( --c )*n; }; do {alert('error')} while(true){}{}})(9);
 </textarea>
 </div>
-<!-- 
 
-for(var i in o){alert(i+'='+o[i])};  
-for(var j=7; ; ) {if(false){continue; }else{break; }}; 
-try{"hello"; throw "error"; }
-catch(ex){"world"; alert(ex); }
-finally{alert('nightmare end')}
-var a = typeof Object; 
-function f1(a, b){alert('seb'); return a+b; };
-if("".length===1 && a != "Apple"){alert('pp'); }
-else if("".length==2){alert('ee'); }
-else if("".length==3){alert('33e'); }
-else if("".length==4){alert('44'); }
-else {alert('kk'); }
-var o = {a: 1, b: 2};
-with (o) {  alert(a+b);}
-var Class1=function(name){this.name=name}; 
-Class1.prototype.sayHello=function(){return "hello "+this.name; };
-var c1 = new Class1('albert');   
-eval("alert('helloworld');"); 
-var f=function(a){for(var i=0;i!=10;i++){alert(i);}}; var s=2,f=function namedf(a){}; var obj1={a: [2,3,4],b:true,c:1.23,d: {e:1.23,f:"hello", f1: function(a, b, c){var v2=1; switch(v2){case 0: (function(a){})(2); break; case 1: alert('good'); break; default: alert('def'); }; return a*b+c; }}};var s1="seba"; var r = window?'inabrowser':'notabrowser', ol = (function(n){var c = 15; while(c!=0){ this.y=( --c )*n; }; do {alert('error')} while(true){}{}})(9);
--->
 <div class="textbox">
 <h4>Nice Style 1</h4>
 <textarea id="output1"></textarea>
 </div>
 
-<!-- <br/> -->
 <div class="textbox">
-<h4>Clean Style</h4>
+<h4>Nice Style 2</h4>
+<textarea id="output3"></textarea>
+</div>
+
+<div class="textbox">
+<h4>Clean Style (minification)</h4>
 <textarea id="output2"></textarea>
 </div>
 
@@ -104,6 +93,10 @@ var doit = function(e){
 	jsindentator.visitors=jsindentator.visitorsStyleClean; //installs style
 	var indentedCode = escapeHTML(jsindentator.main(code, config));	
 	jQuery('#output2').html(indentedCode);	
+	
+	jsindentator.visitors=jsindentator.visitorsStyle2; //installs style
+	var indentedCode = escapeHTML(jsindentator.main(code, config));	
+	jQuery('#output3').html(indentedCode);
 }; 
 jQuery('#doitButton').click(doit); 
 doit(); 
