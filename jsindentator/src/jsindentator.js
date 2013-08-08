@@ -56,10 +56,12 @@
 		}
 	/* this is the public visit() method which all the visitors will call for sub concept instances, like for example the FunctionExpression will call for render its parameter expression and its body statements. the visit method will delegate to registered visitor for the given type of by default, if no visitor is registered for that concept it will just dump the original code. */ 
 	 ,	visit: function(node, config) {
-		 	if(!node)
-		 		return;
+		 	if(!node) {
+//		 		console.log("WARNING - null node", node);
+		 		return; 
+		 	}
 			var visitor = ns.visitors[node.type]; 
-			console.log("visiting", node, ns.originalCode(node)); 
+//			console.log("visiting", node, ns.originalCode(node)); 
 			if(visitor) {
 				visitor(node, config); 
 			}

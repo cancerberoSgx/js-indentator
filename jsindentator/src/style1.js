@@ -1,12 +1,13 @@
 
 // in this code node name means javascript language ast nodes like expression, declaration, statement, etc, not DOM or xml nodes!
-// TODO: only single line code supported !
+// rules for indentation: 1) who call visit(anIndentedBlock) is responsible of incrementing and decrementing the indentation counter. 2) statements are responsible of indenting before and printing a last ';'
 (function() {
 var ns = jsindentator, visit=ns.visit, print=ns.print, indent=ns.printIndent; 
 jsindentator.visitorsStyle1 = {
 	
 	"VariableDeclaration" : function(node, config) {
-		indent(); 
+		if(!config || !config.noFirstNewLine) //var decls in for stmts
+			indent(); 
 		print('var '); 
 		for ( var i = 0; i < node.declarations.length; i++) {
 			visit(node.declarations[i]); 
@@ -20,10 +21,8 @@ jsindentator.visitorsStyle1 = {
 
 ,	"VariableDeclarator" : function(node) {
 		ns.print(node.id.name+" = ");
-
 //		ns.blockCount++;	
 		visit(node.init); 
-
 //		ns.blockCount--;	
 	}
 	
@@ -90,18 +89,17 @@ jsindentator.visitorsStyle1 = {
 		indent(); 
 		print('for('); 
 		visit(node.init, {noFirstNewLine: true});
-//				print('; '); 
 		visit(node.test);
 		print('; ');
 		visit(node.update);
-		print(') {'); 
-//				indent(); 
+		print(')');
+		indent();
+		print('{'); 
 		ns.blockCount++;
 		visit(node.body);
 		ns.blockCount--;
 		indent(); 
 		print('}'); 
-//		indent(); 
 	}
 ,	"ArrayExpression": function(node) {	
 		print('['); 
@@ -117,7 +115,6 @@ jsindentator.visitorsStyle1 = {
 		indent(); 
 		visit(node.expression);
 		print(';'); 
-//		indent(); 
 	}
 ,	"CallExpression": function(node) {
 		if(node.callee.type==="FunctionExpression"){print('(');ns.blockCount++;}//hack - parenthesis around functions
@@ -139,7 +136,6 @@ jsindentator.visitorsStyle1 = {
 	}
 
 ,	"ObjectExpression": function(node) {
-//			console.log(node); 
 		print('{'); 
 		ns.blockCount++;
 		indent();
@@ -164,7 +160,6 @@ jsindentator.visitorsStyle1 = {
 		print('return '); 
 		visit(node.argument); 
 		print(';'); 
-//		indent(); 
 	}
 ,	"ConditionalExpression": function(node) {
 		visit(node.test); 
@@ -181,15 +176,12 @@ jsindentator.visitorsStyle1 = {
 		print(')');
 		indent();
 		 print('{'); 
-//		ns.blockCount++;
 		for(var i = 0; i < node.cases.length; i++) {
 			visit(node.cases[i]); 
 		}
-//		ns.blockCount--;
 
 		indent();
 		print('}'); 
-//		indent(); 
 	}
 ,	"SwitchCase": function(node) {
 		indent();
@@ -197,23 +189,18 @@ jsindentator.visitorsStyle1 = {
 		visit(node.test); 
 		print(':');
 		ns.blockCount++;
-//		print(ns.newline); indent();
 		
 		for(var i = 0; i < node.consequent.length; i++) {	
-//			indent();		
 			visit(node.consequent[i]); 
 		}
 		ns.blockCount--;
 	}
 ,	"EmptyStatement": function(node) {
-//		indent(); 
 		print(';'); 
-//		indent(); 
 	}
 ,	"BreakStatement": function(node) {
 		indent(); 
 		print('break;');
-//		indent(); 
 	}
 
 ,	"WhileStatement": function(node) {
@@ -225,13 +212,11 @@ jsindentator.visitorsStyle1 = {
 		print('{'); 
 		
 		ns.blockCount++;
-//		indent();
 		visit(node.body);
 		ns.blockCount--;
 		
 		indent();
 		print('}'); 
-//		indent(); 
 	}
 ,	"AssignmentExpression": function(node) {
 		visit(node.left);
@@ -262,14 +247,12 @@ jsindentator.visitorsStyle1 = {
 ,	"DoWhileStatement": function(node) {
 		indent();
 		print('do');
+		
 		indent();
 		print('{')
 		ns.blockCount++;
-//		indent();
 		visit(node.body);
 		ns.blockCount--;
-//		print(ns.newline); 
-
 		indent();
 		print('}');	
 		indent();
@@ -277,7 +260,137 @@ jsindentator.visitorsStyle1 = {
 		print('while ( ');
 		visit(node.test);
 		print(' );');
-//		indent(); 
 	}
+,	"NewExpression": function(node) {
+		print('new '); 
+		visit(node.callee); 
+		print('('); 
+		for ( var i = 0; i < node.arguments.length; i++) {
+			visit(node.arguments[i]);
+			if(i < node.arguments.length-1)
+				print(', ');
+		}
+		print(')'); 
+	}
+,	"WithStatement": function(node) {
+		indent();
+		print('with ( '); 
+		visit(node.object); 
+		print(' )'); 
+		indent();
+		print('{')
+		ns.blockCount++;
+		visit(node.body);
+		ns.blockCount--;
+		indent();
+		print('};');	
+		indent();
+	}
+,	"IfStatement": function(node, config) {
+		if(!config || !config.noFirstNewLine)
+			indent(); 
+		print('if ( '); 
+		visit(node.test); 
+		print(' )'); 
+		indent();
+		
+		print('{');
+		ns.blockCount++;
+		visit(node.consequent);
+		ns.blockCount--;
+		indent();
+		print('}');
+
+		indent();
+		print('else ');
+		if(node.alternate) {
+			if(node.alternate.test==null) {
+				indent();
+				print('{');
+				ns.blockCount++;
+			}
+			visit(node.alternate, {noFirstNewLine: true});
+			if(node.alternate.test==null) {
+				ns.blockCount--;
+				indent();
+				print('}');
+			}
+		}
+	}
+
+,	"FunctionDeclaration": function(node, config) {
+		indent(); 
+		print('function ');
+		visit(node.id); 
+		print(' ( '); 
+		if(node.params) for ( var i = 0; i < node.params.length; i++) {
+			visit(node.params[i]); 
+			if(i< node.params.length-1)
+				print(', '); 		 
+		}
+		print(' ) '); 
+		indent();
+		print('{');
+		ns.blockCount++;
+		visit(node.body); 
+		ns.blockCount--;
+		indent();
+		print('}');
+	}
+,	"UnaryExpression": function(node) {
+		print(node.operator+" ");
+		visit(node.argument); 
+	}
+,	"LogicalExpression": function(node) {
+		visit(node.left); 
+		print(' '+node.operator+' '); 
+		visit(node.right); 
+	}
+
+,	"TryStatement": function(node) {
+		print('try'); 
+		indent();
+		print('{');
+		ns.blockCount++;
+		visit(node.block); 
+		ns.blockCount--;
+		indent();
+		print('}');
+		for ( var i = 0; i < node.handlers.length; i++) {
+			visit(node.handlers[i]); 
+		}
+		indent();
+		print('finally'); 
+		indent();
+		print('{');
+		ns.blockCount++;
+		visit(node.finalizer); 
+		ns.blockCount--;
+		indent();
+		print('}');
+	}
+,	"CatchClause": function(node) {
+		print('catch('); 
+		if(node.params) for ( var i = 0; i < node.params.length; i++) {
+			visit(node.params[i]); 
+			if(i< node.params.length-1)
+				print(', '); 		 
+		}
+		print(')');
+		indent();
+		print('{');
+		ns.blockCount++;
+		visit(node.body); 
+		ns.blockCount--;
+		indent();
+		print('}');
+	}
+,	"ThrowStatement": function(node) {
+		indent();
+		print('throw '); 
+		visit(node.argument);
+		print(';')
+	}
+
 }	
 })();

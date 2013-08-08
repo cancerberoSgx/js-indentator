@@ -208,7 +208,72 @@ jsindentator.visitorsStyleClean = {
 		print(');');
 	}
 
+,	"NewExpression": function(node) {
+		print('new '); 
+		visit(node.callee); 
+		print('('); 
+		for ( var i = 0; i < node.arguments.length; i++) {
+			visit(node.arguments[i]);
+			if(i < node.arguments.length-1)
+				print(',');
+		}
+		print(')'); 
+	}
+,	"WithStatement": function(node) {
+		print('with('); 
+		visit(node.object); 
+		print(')'); 
+		print('{')
+		ns.blockCount++;
+		visit(node.body);
+		ns.blockCount--;
+		print('};');
+	}
 
+,	"IfStatement": function(node, config) {
+		print('if('); 
+		visit(node.test); 
+		print(')'); 		
+		print('{');
+		ns.blockCount++;
+		visit(node.consequent);
+		ns.blockCount--;
+		print('}else ');
+		if(node.alternate.test==null) {
+			print('{');
+			ns.blockCount++;	
+			visit(node.alternate, {noFirstNewLine: true});
+			ns.blockCount--;
+			print('}');
+		}
+		else
+			visit(node.alternate, {noFirstNewLine: true});
+	}
+
+,	"FunctionDeclaration": function(node, config) {
+		print('function ');
+		visit(node.id); 
+		print('('); 
+		if(node.params) for ( var i = 0; i < node.params.length; i++) {
+			visit(node.params[i]); 
+			if(i< node.params.length-1)
+				print(','); 		 
+		}
+		print('){');
+		ns.blockCount++;
+		visit(node.body); 
+		ns.blockCount--;
+		print('}');
+	}
+,	"UnaryExpression": function(node) {
+		print(node.operator+" ");
+		visit(node.argument); 
+	}
+,	"LogicalExpression": function(node) {
+		visit(node.left); 
+		print(node.operator); 
+		visit(node.right); 
+	}
 }
 })();
 

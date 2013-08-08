@@ -27,6 +27,24 @@ textarea{width: 100%; height: 120px;}
 <div class="textbox">
 <h4>Original Code</h4>
 <textarea id="input">
+try{"hello"; throw "error"; }
+catch(ex){"world"; alert(ex); }
+finally{alert('nightmare end')}
+var a = typeof Object; 
+function f1(a, b){alert('seb'); return a+b; };
+if("".length===1 && a != "Apple"){alert('pp'); }
+else if("".length==2){alert('ee'); }
+else if("".length==3){alert('33e'); }
+else if("".length==4){alert('44'); }
+else {alert('kk'); }
+var o = {a: 1, b: 2}; 
+with (o) {
+  alert(a+b);
+}
+var Class1=function(name){this.name=name}; 
+Class1.prototype.sayHello=function(){return "hello "+this.name; };
+var c1 = new Class1('albert');   
+eval("alert('helloworld');"); 
 var f=function(a){for(var i=0;i!=10;i++){alert(i);}}; var s=2,f=function namedf(a){}; var obj1={a: [2,3,4],b:true,c:1.23,d: {e:1.23,f:"hello", f1: function(a, b, c){var v2=1; switch(v2){case 0: (function(a){})(2); break; case 1: alert('good'); break; default: alert('def'); }; return a*b+c; }}};var s1="seba"; var r = window?'inabrowser':'notabrowser', ol = (function(n){var c = 15; while(c!=0){ this.y=( --c )*n; }; do {alert('error')} while(true){}{}})(9);
 </textarea>
 <!-- 
@@ -54,13 +72,14 @@ var f=function(a){for(var i=0;i!=10;i++){alert(i);}}; var s=2,f=function namedf(
 <script>
 var doit = function(e){
 	var config = {tab: '\t'}; 
-	
+	var code = jQuery('#input').val() || jQuery('#input').html();  
+// 	alert(code); 
 	jsindentator.visitors=jsindentator.visitorsStyle1; //installs style
-	var indentedCode = jsindentator.main(jQuery('#input').html(), config);	
+	var indentedCode = jsindentator.main(code, config);	
 	jQuery('#output1').html(indentedCode);	 
 	
 	jsindentator.visitors=jsindentator.visitorsStyleClean; //installs style
-	var indentedCode = jsindentator.main(jQuery('#input').html(), config);	
+	var indentedCode = jsindentator.main(code, config);	
 	jQuery('#output2').html(indentedCode);	
 }; 
 jQuery('#doitButton').click(doit); 
