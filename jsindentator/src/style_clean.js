@@ -12,12 +12,16 @@ jsindentator.visitorsStyleClean = {
 			if(i< node.declarations.length-1)
 				print(','); 		 
 		}
-		print(';'); 
+		if(!config || !config.noLastSemicolon) 
+			print(';'); 
 	}
 
 ,	"VariableDeclarator" : function(node) {
-		ns.print(node.id.name+"=");
-		visit(node.init); 
+	ns.print(node.id.name);
+	if(node.init) {
+		print("="); 
+		visit(node.init);
+	}
 	}
 	
 	
@@ -239,15 +243,17 @@ jsindentator.visitorsStyleClean = {
 		visit(node.consequent);
 		ns.blockCount--;
 		print('}else ');
-		if(node.alternate.test==null) {
-			print('{');
-			ns.blockCount++;	
-			visit(node.alternate, {noFirstNewLine: true});
-			ns.blockCount--;
-			print('}');
+		if(node.alternate) {
+			if(node.alternate.test==null) {
+				print('{');
+				ns.blockCount++;	
+				visit(node.alternate, {noFirstNewLine: true});
+				ns.blockCount--;
+				print('}');
+			}
+			else
+				visit(node.alternate, {noFirstNewLine: true});
 		}
-		else
-			visit(node.alternate, {noFirstNewLine: true});
 	}
 
 ,	"FunctionDeclaration": function(node, config) {
@@ -273,6 +279,57 @@ jsindentator.visitorsStyleClean = {
 		visit(node.left); 
 		print(node.operator); 
 		visit(node.right); 
+	}
+,	"TryStatement": function(node) {
+		print('try{');
+		ns.blockCount++;
+		visit(node.block); 
+		ns.blockCount--;
+		print('}');
+		for ( var i = 0; i < node.handlers.length; i++) {
+			visit(node.handlers[i]); 
+		}
+		print('finally'); 
+		print('{');
+		ns.blockCount++;
+		visit(node.finalizer); 
+		ns.blockCount--;
+		print('}');
+	}
+,	"CatchClause": function(node) {
+		print('catch('); 
+		if(node.params) for ( var i = 0; i < node.params.length; i++) {
+			visit(node.params[i]); 
+			if(i< node.params.length-1)
+				print(','); 		 
+		}
+		print('){');
+		ns.blockCount++;
+		visit(node.body); 
+		ns.blockCount--;
+		print('}');
+	}
+,	"ThrowStatement": function(node) {
+		print('throw '); 
+		visit(node.argument);
+		print(';')
+	}
+
+,	"ForInStatement": function(node) {
+		print("for ( "); 
+		visit(node.left, {noFirstNewLine: true, noLastSemicolon: true}); 	
+		print(' in '); 
+		visit(node.right); 
+		print(' )')
+		
+		print('{');
+		ns.blockCount++;
+		visit(node.body); 
+		ns.blockCount--;
+		print('}');
+	}
+,	"ContinueStatement": function(node){
+		print('continue;'); 
 	}
 }
 })();
