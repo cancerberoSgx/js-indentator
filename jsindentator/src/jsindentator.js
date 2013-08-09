@@ -1,12 +1,10 @@
 // in this code node name means javascript language ast nodes like expression, declaration, statement, etc, not DOM or xml nodes!
+var GLOBALOBJECT=this; //must be outside any function
 (function() {
-	var ns=window.jsindentator = {};
+	var ns=GLOBALOBJECT.jsindentator = {};
 	_.extend(ns, {
-			quote: '\''
-		,	tab: '\t'
-		,	newline: '\n'
 		
-	,	blockCount: 0 //for block indentation
+		blockCount: 0 //for block indentation
 	,	print: function(str) {
 			ns.buffer.push(str); 
 		}
@@ -20,6 +18,9 @@
 				ns.buffer.push(ns.newline); 
 			ns._printIndent(ns.blockCount); 
 		}
+	
+	,	styles: {}
+	
 	,	originalCode: function(node) {
 //			return ns.code.substring(node.loc.start.column, node.loc.end.column); //only for code without newlines
 			if(!node.range)return ''; 
