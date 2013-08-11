@@ -1,7 +1,8 @@
 js-indentator
 =============
 
-A javascript indentation tool based on esprima JavaScript parser that can be run on the browser. For a demo, just download this project and open test/*:html
+A javascript indentation tool based on esprima JavaScript parser that can be run on the browser. 
+Online Demo : http://cancerberosgx.github.io/js-indentator/jsindentator/test/formattingjstest1.html
 
 *Warning*: this is a very new, fresh project, and it needs more testing before parsing production code. It is not ready, not yet.
  
