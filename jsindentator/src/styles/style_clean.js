@@ -3,7 +3,8 @@
 // TODO: only single line code supported !
 (function() {
 var ns = jsindentator, visit=ns.visit, print=ns.print; 
-jsindentator.visitorsStyleClean = {
+if(!jsindentator.styles)jsindentator.styles={}; 
+jsindentator.styles.clean = {
 	
 	"VariableDeclaration" : function(node, config) {
 		print('var '); 

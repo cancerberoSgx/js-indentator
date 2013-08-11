@@ -440,7 +440,7 @@ jsindentator.styles.style1 = {
 }; 
 
 //ns object is ready - register as nodejs module
-if(module && module.exports){
-	module.exports.style1=jsindentator.styles.style1; 
-}
+//if(module && module.exports){
+//	module.exports.style1=jsindentator.styles.style1; 
+//}
 })();

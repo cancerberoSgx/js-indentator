@@ -6,7 +6,8 @@ var ns = jsindentator, visit=ns.visit, print=ns.print, indent=ns.printIndent;
 ns.quote = '\''; 
 ns.tab = '\t';
 ns.newline = '\n';
-jsindentator.visitorsStyle2 = {
+if(!jsindentator.styles)jsindentator.styles={};
+jsindentator.styles.style2 = {
 	
 	"VariableDeclaration" : function(node, config) {
 		if(!config || !config.noFirstNewLine) //var decls in for stmts

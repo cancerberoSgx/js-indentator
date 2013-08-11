@@ -6,20 +6,24 @@
 
 
 var usage = function(){
-	console.log('ERROR, incorrect amount of arguments given, at least 2 parameters config and '+
-			'inputFile are required. \nUsage: "node indent.js \'\{\}\' aJsFile.js"');	
+	console.log('ERROR, incorrect amount of arguments given, at least 2 parameters config and inputFile are required. ');
+	console.log('Usage: node indent.js "{}" aJsFile.js');	
+	console.log('Where the third parameter "{}" is a valid json object with the following configuration options:')		
+	console.log('initialIndentationLevel: is the initial indentation level, default is 0');	
 	var s = ''; 
-	for(var i in styleFiles) {
-		s+=i+', '; 
-	}
-	console.log('Where styles is one of '+s);
+	for(var i in styleFiles) s+=i+', ';	
+	console.log('style: one of '+s);
 	process.exit(1);
 }
 
 ,	configStr = process.argv[2]
 ,	filename = process.argv[3]
 ,	config=null
-,	styleFiles={style1: './src/styles/style1.js'}
+,	styleFiles={
+		style1: './src/styles/style1.js'
+	,	style2: './src/styles/style2.js'
+	,	clean: './src/styles/style_clean.js'
+	}
 ,	main = function(){
 		if(process.argv.length<4) {
 			usage(); 	
@@ -29,10 +33,14 @@ var usage = function(){
 			fs = require('fs');
 	
 		try {
-			config=eval(configStr); 
+//			console.log(configStr); 
+			config=eval('('+configStr+')');
+//			console.log(config+" - "+config.style); 
 		} catch (e) {
+			console.log('mal formed configuration json string: '+e); 
 			config = {}; 
 		}
+		
 		if(!config)
 			config = {}; 
 		if(!config.style)
@@ -41,7 +49,7 @@ var usage = function(){
 		var fs = require('fs'), 
 			jsindentatorSrc = fs.readFileSync('./src/jsindentator.js','utf8'), 
 			styleFilePath = styleFiles[config.style],
-			styleSrc = fs.readFileSync('./src/styles/style1.js','utf8') ;
+			styleSrc = fs.readFileSync(styleFilePath,'utf8') ;
 	
 		var GLOBAL=this;
 		GLOBAL.syntaxOutput=null;
@@ -53,7 +61,10 @@ var usage = function(){
 		var fn = eval(buf.join(';')); 
 		fn(_, esprima);  
 	
-		jsindentator.setStyle(jsindentator.styles.style1);
+		
+		jsindentator.setStyle(jsindentator.styles[config.style]);
+		if(config.initialIndentationLevel)
+			jsindentator.blockCount=config.initialIndentationLevel; //set an initial indentation level
 		var code = fs.readFileSync(filename,'utf8'),
 			codeOutput = jsindentator.main(code);
 		console.log(codeOutput);

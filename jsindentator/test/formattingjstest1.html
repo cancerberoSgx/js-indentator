@@ -148,11 +148,11 @@ jsindentator.setStyle(jsindentator.styles.style1);
 	var indentedCode = escapeHTML(jsindentator.main(code, config));	
 	jQuery('#output1').html(indentedCode);	 
 	
-	jsindentator.setStyle(jsindentator.visitorsStyleClean); //jsindentator.visitors=jsindentator.visitorsStyleClean; //installs style
+	jsindentator.setStyle(jsindentator.styles.clean); //jsindentator.visitors=jsindentator.visitorsStyleClean; //installs style
 	var indentedCode = escapeHTML(jsindentator.main(code, config));	
 	jQuery('#output2').html(indentedCode);	
 	
-	jsindentator.setStyle(jsindentator.visitorsStyle2); 
+	jsindentator.setStyle(jsindentator.styles.style2); 
 // 	jsindentator.visitors=jsindentator.visitorsStyle2; //installs style
 	var indentedCode = escapeHTML(jsindentator.main(code, config));	
 	jQuery('#output3').html(indentedCode);
