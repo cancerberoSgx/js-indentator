@@ -425,5 +425,19 @@ jsindentator.styles.style2 = {
 		print('continue;'); 
 	}
 
+,	"Block": function(node) {/* support for block comments like this one*/
+		indent();
+		print('/* '); 
+		print(node.value); 
+		print(' */'); 
+//		indent(); 
+	}
+,	"Line": function(node) {//support for line comments like this one
+		indent(); 
+		print('// '); 
+		print(node.value); 
+		indent(); 
+	}
+
 }	
 })();

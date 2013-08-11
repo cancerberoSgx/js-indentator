@@ -58,9 +58,14 @@
 <div class="textbox">
 <h4>Original Code</h4>
 <textarea id="input">
+var a=0; 
+/* hello world */
+var b = 0; 
 if(true) false; 
 if("".length===1 && a != "Apple"){alert('pp'); }
+/*hello*/
 else if("".length==2){alert('ee'); }
+//world
 else if("".length==3){alert('33e'); }
 else if("".length==4)alert('44'); 
 else {alert('kk'); }
@@ -79,7 +84,7 @@ var c1 = new Class1('albert');
 eval("alert('helloworld');"); 
 var f=function(a){for(var i=0;i!=10;i++){alert(i);}}; 
 var s=2,f=function namedf(a){}; 
-var obj1={a: [2,3,4],b:true,c:1.23,d: {e:1.23,f:"hello", f1: function(a, b, c){var v2=1; switch(v2){case 0: (function(a){})(2); break; case 1: alert('good'); break; default: alert('def'); }; return a*b+c; }}};
+var obj1={a: [2,3,4],b:true,c:1.23,d: {e:1.23,f:"hello", f1: function(a, b, c){var v2=1; /* before this switch */switch(v2){case 0: (function(a){})(2); break; case 1: alert('good'); break; default: alert('def'); }; return a*b+c; }}};
 var s1="seba"; var r = window?'inabrowser':'notabrowser', ol = (function(n){var c = 15; while(c!=0){ this.y=( --c )*n; }; do {alert('error')} while(true){}{}})(9);
 </textarea>
 </div>
@@ -92,8 +97,14 @@ var s1="seba"; var r = window?'inabrowser':'notabrowser', ol = (function(n){var 
 		<div class="span3">
 		
 		<h4>Configuration</h4>
-		<select><option>style1</option></select>
-		<textarea id="config">{}</textarea>
+		<p>You can edit this configuration JSON and "do it again". </p>
+<!-- 		<select><option>style1</option></select> -->
+		<textarea id="config">
+{
+	tab : '\t',
+	newline : '\n'
+}
+		</textarea>
 		
 		</div>
 		
@@ -140,11 +151,25 @@ function escapeHTML( html ) {
     return html;
 }
 var doit = function(e){
-	var config = {tab: '\t'}; 
+	var config = null; 
+	try {
+// 		console.log($('#config').html()); 
+		config=eval('(' + $('#config').val() + ')');
+	}catch(ex){
+		alert('config.parse error, using default. error: '+ex); 
+		config={};
+	}
+	 //{tab: '\t'}; 
+	if(!config){
+		alert('config parse error, using default. '); 
+		config={}; 
+	}
+	
 	var code = jQuery('#input').val() || jQuery('#input').html();  
-// 	alert(code); 
-jsindentator.setStyle(jsindentator.styles.style1);
-// 	jsindentator.visitors=jsindentator.styles.style1; //installs style
+	
+	// 	alert(code); 
+	jsindentator.setStyle(jsindentator.styles.style1);
+	// 	jsindentator.visitors=jsindentator.styles.style1; //installs style
 	var indentedCode = escapeHTML(jsindentator.main(code, config));	
 	jQuery('#output1').html(indentedCode);	 
 	
@@ -164,20 +189,22 @@ $('#myTab a').click(function(e){
 	$(this).tab('show');
 });
 
-//textarea auto focus - http://stackoverflow.com/questions/5797539/jquery-select-all-text-from-a-textarea
-var selectAll= function() {
-    var $this = $(this);
-    $this.select();
 
-    // Work around Chrome's little problem
-    $this.mouseup(function() {
-        // Prevent further mouseup intervention
-        $this.unbind("mouseup");
-        return false;
-    });
-}; 
-$("textarea").focus(selectAll);
-$("textarea").click(selectAll);
+// //textarea auto focus - http://stackoverflow.com/questions/5797539/jquery-select-all-text-from-a-textarea
+// var selectAll= function() {
+//     var $this = $(this);
+//     $this.select();
+
+//     // Work around Chrome's little problem
+//     $this.mouseup(function() {
+//         // Prevent further mouseup intervention
+//         $this.unbind("mouseup");
+//         return false;
+//     });
+// }; 
+// $("textarea").focus(selectAll);
+// $("textarea").click(selectAll);
+
 // $('#myTab a:last').tab('show');
 </script>
 

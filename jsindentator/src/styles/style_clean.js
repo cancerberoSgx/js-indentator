@@ -328,6 +328,11 @@ jsindentator.styles.clean = {
 ,	"ContinueStatement": function(node){
 		print('continue;'); 
 	}
+
+,	"Block": function(node) {/* support for block comments like this one*/
+	}
+,	"Line": function(node) {//support for line comments like this one
+	}
 }
 })();
 

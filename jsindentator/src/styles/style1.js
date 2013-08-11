@@ -13,15 +13,22 @@
 //	}
 	
 var ns = jsindentator, visit=ns.visit, print=ns.print, indent=ns.printIndent; 
+if(!ns.styles) ns.styles={}; 
+
+//if(!jsindentator.styles.style) jsindentator.styles.style1={};
+
 //add some config props
 ns.quote = '\''; 
 ns.tab = '\t';
 ns.newline = '\n';
 
-
+ 
 jsindentator.styles.style1 = {
-	'StyleName': 'style1'
-,	"VariableDeclaration" : function(node, config) {
+//	'StyleName': 'style1'
+		
+	"VariableDeclaration" : function(node, config) {
+			
+		ns._checkComments(node);
 		if(!config || !config.noFirstNewLine) //var decls in for stmts
 			indent(); 
 		print('var '); 
@@ -51,7 +58,10 @@ jsindentator.styles.style1 = {
 
 ,	"Literal" : function(node) {
 		if(node.raw.indexOf('"')===0||node.raw.indexOf('\'')===0) {
-			print(ns.quote+node.value+ns.quote); 
+			//we do not force to configured string quotes because changing it can invalidate the output js but we warned it.
+			//print(ns.quote+node.value+ns.quote); 
+			print(node.raw);
+	//		ns.log('String literal with incorrect quotes. Position: '+ns.printNodePosition(node)+' - value: '+node.raw+); 
 		}
 		else {
 			print(node.raw);
@@ -305,6 +315,7 @@ jsindentator.styles.style1 = {
 		print('};');	
 		indent();
 	}
+
 ,	"IfStatement": function(node, config) {
 		if(!config || !config.noFirstNewLine)
 			indent(); 
@@ -435,6 +446,21 @@ jsindentator.styles.style1 = {
 ,	"ContinueStatement": function(node){
 		indent();
 		print('continue;'); 
+	}
+
+	
+,	"Block": function(node) {/* support for block comments like this one*/
+		indent();
+		print('/* '); 
+		print(node.value); 
+		print(' */'); 
+//		indent(); 
+	}
+,	"Line": function(node) {//support for line comments like this one
+		indent(); 
+		print('// '); 
+		print(node.value); 
+		indent(); 
 	}
 
 }; 

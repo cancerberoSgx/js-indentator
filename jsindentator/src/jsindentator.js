@@ -56,7 +56,7 @@
 				syntax = esprima.parse(code, {
 					raw: true						
 				,	range: true
-				
+				,	comment: true
 //				,	tokens: true
 //				,	loc : true
 					}				
@@ -67,6 +67,7 @@
 				return; 
 			}
 			ns.buffer = [];
+			ns._checkCommentsArray=syntax.comments; 
 //			console.log(syntax); 
 			_(syntax.body).each(function(node){
 				ns.visit(node); 
@@ -82,6 +83,7 @@
 			var visitor = ns.visitors[node.type]; 
 //			console.log("visiting", node, ns.originalCode(node)); 
 			if(visitor) {
+				ns._checkComments(node);
 				visitor(node, config); 
 			}
 			else {
@@ -90,10 +92,27 @@
 				ns.buffer.push(origCode);
 			}
 		}
+	 
+	 ,	_checkComments: function(node) {
+		 	var previousNodeRange=ns._comments_currentNodeRange || [0,0]; 
+		 	ns._comments_currentNodeRange=node.range || [0,0]; 
+		 	
+		 	for ( var i = 0; i < ns._checkCommentsArray.length; i++) { //TODO: do it efficient- save previsou comment node.
+				var c = ns._checkCommentsArray[i]; 
+//				console.log('COMPARING', c.range, previousNodeRange, ns._comments_currentNodeRange); 
+				if(c.range[0]>=previousNodeRange[1] && c.range[1]<=ns._comments_currentNodeRange[0]) {
+					ns.visit(c); 
+					break; 
+				}
+			}
+	 	}
 		
 	,	logMessages: []
 	,	log: function(msg) {
 			logMessages.push(msg); 
+		}
+	,	setConfig: function(config) {
+			_.extend(ns, config); 
 		}
 //	doDefaultChildrenVisiting: function(node) {
 //	if(node.body) {
