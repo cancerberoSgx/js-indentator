@@ -284,12 +284,14 @@ jsindentator.visitorsStyleClean = {
 		for ( var i = 0; i < node.handlers.length; i++) {
 			visit(node.handlers[i]); 
 		}
-		print('finally'); 
-		print('{');
-		ns.blockCount++;
-		visit(node.finalizer); 
-		ns.blockCount--;
-		print('}');
+		if(node.finalizer) {
+			print('finally'); 
+			print('{');
+			ns.blockCount++;
+			visit(node.finalizer); 
+			ns.blockCount--;
+			print('}');
+		}
 	}
 ,	"CatchClause": function(node) {
 		print('catch('); 

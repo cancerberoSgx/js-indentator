@@ -366,15 +366,17 @@ jsindentator.visitorsStyle2 = {
 		for ( var i = 0; i < node.handlers.length; i++) {
 			visit(node.handlers[i]); 
 		}
-		indent();
-		print('finally'); 
-//		indent();
-		print(' {');
-		ns.blockCount++;
-		visit(node.finalizer); 
-		ns.blockCount--;
-		indent();
-		print('}');
+		if(node.finalizer) {
+			indent();
+			print('finally'); 
+//			indent();
+			print(' {');
+			ns.blockCount++;
+			visit(node.finalizer); 
+			ns.blockCount--;
+			indent();
+			print('}');
+		}
 	}
 ,	"CatchClause": function(node) {
 //		console.log(node); 

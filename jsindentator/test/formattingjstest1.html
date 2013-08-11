@@ -7,13 +7,13 @@
 <title>formatting js test1</title>
 <script src="../lib/esprima.js" type="text/javascript"></script>
 <script src="../lib/underscore.js" type="text/javascript"></script>
-<script src="../lib/jquery-2.0.3.min.js" type="text/javascript"></script>
+<!-- <script src="../lib/jquery-2.0.3.min.js" type="text/javascript"></script> -->
 <script src="../src/jsindentator.js" type="text/javascript"></script>
 <script src="../src/styles/style1.js" type="text/javascript"></script>
 <script src="../src/styles/style2.js" type="text/javascript"></script>
 <script src="../src/styles/style_clean.js" type="text/javascript"></script>
 
-<!-- <script src="jquery/jquery-2.0.3.min.js" type="text/javascript"></script> -->
+<script src="jquery/jquery-2.0.3.min.js" type="text/javascript"></script>
 <script src="bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
 <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
 <script src="bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
@@ -143,15 +143,17 @@ var doit = function(e){
 	var config = {tab: '\t'}; 
 	var code = jQuery('#input').val() || jQuery('#input').html();  
 // 	alert(code); 
-	jsindentator.visitors=jsindentator.styles.style1; //installs style
+jsindentator.setStyle(jsindentator.styles.style1);
+// 	jsindentator.visitors=jsindentator.styles.style1; //installs style
 	var indentedCode = escapeHTML(jsindentator.main(code, config));	
 	jQuery('#output1').html(indentedCode);	 
 	
-	jsindentator.visitors=jsindentator.visitorsStyleClean; //installs style
+	jsindentator.setStyle(jsindentator.visitorsStyleClean); //jsindentator.visitors=jsindentator.visitorsStyleClean; //installs style
 	var indentedCode = escapeHTML(jsindentator.main(code, config));	
 	jQuery('#output2').html(indentedCode);	
 	
-	jsindentator.visitors=jsindentator.visitorsStyle2; //installs style
+	jsindentator.setStyle(jsindentator.visitorsStyle2); 
+// 	jsindentator.visitors=jsindentator.visitorsStyle2; //installs style
 	var indentedCode = escapeHTML(jsindentator.main(code, config));	
 	jQuery('#output3').html(indentedCode);
 }; 
@@ -163,7 +165,7 @@ $('#myTab a').click(function(e){
 });
 
 //textarea auto focus - http://stackoverflow.com/questions/5797539/jquery-select-all-text-from-a-textarea
-$("textarea").focus(function() {
+var selectAll= function() {
     var $this = $(this);
     $this.select();
 
@@ -173,7 +175,9 @@ $("textarea").focus(function() {
         $this.unbind("mouseup");
         return false;
     });
-});
+}; 
+$("textarea").focus(selectAll);
+$("textarea").click(selectAll);
 // $('#myTab a:last').tab('show');
 </script>
 

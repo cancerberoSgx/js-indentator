@@ -2,11 +2,22 @@
 // in this code node name means javascript language ast nodes like expression, declaration, statement, etc, not DOM or xml nodes!
 // rules for indentation: 1) who call visit(anIndentedBlock) is responsible of incrementing and decrementing the indentation counter. 2) statements are responsible of indenting before and printing a last ';'
 (function() {
+
+//	var _ = null, jsindentator=null; 
+//	if(typeof window === 'undefined'){ //in node
+//		_ = require('underscore');  
+//		jsindentator = require()
+//	}
+//	else {
+//		_=window._;
+//	}
+	
 var ns = jsindentator, visit=ns.visit, print=ns.print, indent=ns.printIndent; 
 //add some config props
 ns.quote = '\''; 
 ns.tab = '\t';
 ns.newline = '\n';
+
 
 jsindentator.styles.style1 = {
 	'StyleName': 'style1'
@@ -368,15 +379,17 @@ jsindentator.styles.style1 = {
 		for ( var i = 0; i < node.handlers.length; i++) {
 			visit(node.handlers[i]); 
 		}
-		indent();
-		print('finally'); 
-		indent();
-		print('{');
-		ns.blockCount++;
-		visit(node.finalizer); 
-		ns.blockCount--;
-		indent();
-		print('}');
+		if(node.finalizer) {
+			indent();
+			print('finally'); 
+			indent();
+			print('{');
+			ns.blockCount++;
+			visit(node.finalizer); 
+			ns.blockCount--;
+			indent();
+			print('}');
+		}
 	}
 ,	"CatchClause": function(node) {
 //		console.log(node); 
@@ -424,5 +437,10 @@ jsindentator.styles.style1 = {
 		print('continue;'); 
 	}
 
-}	
+}; 
+
+//ns object is ready - register as nodejs module
+if(module && module.exports){
+	module.exports.style1=jsindentator.styles.style1; 
+}
 })();

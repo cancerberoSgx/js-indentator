@@ -1,7 +1,20 @@
 // in this code node name means javascript language ast nodes like expression, declaration, statement, etc, not DOM or xml nodes!
-var GLOBALOBJECT=this; //must be outside any function
+//var GLOBALOBJECT=this; //must be outside any function
+
 (function() {
-	var ns=GLOBALOBJECT.jsindentator = {};
+	
+//	var _ = null, esprima=null; 
+//	if(typeof window === 'undefined'){ //in node
+//		_ = require('underscore'); 
+//		esprima = require('esprima'); 
+//	}
+//	else {
+//		_=window._;
+//		esprima = window.esprima; 
+//	}
+	
+	
+	var ns=jsindentator = {};
 	_.extend(ns, {
 		
 		blockCount: 0 //for block indentation
@@ -30,22 +43,27 @@ var GLOBALOBJECT=this; //must be outside any function
 				return ns.code.substring(node.range[0], node.range[1]); 
 		}
 	,	buffer: []
+	,	setStyle: function(style) {
+			ns.visitors=style; 
+		}
 	,	main: function (code, config) {
+			//console.log('jsindentator.main'); 
 			if(config)
 				_.extend(ns, config); 
 			ns.code = code;
 			var syntax = null, parseex=null;
 			try {
 				syntax = esprima.parse(code, {
-//					loc : true 
-//				,	
-				range: true
+					raw: true						
+				,	range: true
+				
 //				,	tokens: true
+//				,	loc : true
 					}				
 				);
 			}catch(ex){parseex=ex;}
 			if(syntax==null) {
-				alert("JAVASCRIPT PARSING ERROR: "+parseex);
+				console.log("JAVASCRIPT PARSING ERROR: "+parseex);
 				return; 
 			}
 			ns.buffer = [];
@@ -85,5 +103,10 @@ var GLOBALOBJECT=this; //must be outside any function
 //	}
 //}
 	});
-		
+	
+	//ns object is ready - register as nodejs module
+//	if(module && module.exports){
+//		module.exports.main=ns.main;
+//		module.exports.setStyle=ns.setStyle; 
+//	}
 })();
