@@ -59,17 +59,15 @@ var usage = function(){
 		buf.push(styleSrc); 
 		buf.push('})'); 
 		var fn = eval(buf.join(';')); 
-		fn(_, esprima);  
-	
+		fn(_, esprima);  	
 		
 		jsindentator.setStyle(jsindentator.styles[config.style]);
 		if(config.initialIndentationLevel)
 			jsindentator.blockCount=config.initialIndentationLevel; //set an initial indentation level
 		var code = fs.readFileSync(filename,'utf8'),
-			codeOutput = jsindentator.main(code);
+			codeOutput = jsindentator.main(code, config);
 		
 		fs.writeFileSync('jsindentator_output.txt', codeOutput); 
 		console.log(codeOutput);
 }
 main();
-

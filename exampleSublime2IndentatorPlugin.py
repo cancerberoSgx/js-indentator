@@ -3,17 +3,19 @@
 #then in sublime 2 goto Tools->new Plugin and there type copy and paste this file
 and for using it, select the javascript code you want to indent and goto View->Show Console and there type view.run_command('jsindentator') and enter
 
+import sublime, sublime_plugin, subprocess, os, json; 
 
-import sublime, sublime_plugin, subprocess, os; 
+jsindentatorConfig = {"style": "style2", "tab": "\t\t", "newline": "\n\n"}; #configuration for the indenter
+nodePath = "c:\\Program Files\\nodejs\\node.exe"; #path to node js
+indentjsFolderPath = "C:\\Users\\sgurin\\Desktop\\js-indentator\\jsindentator"; 
+indentjsPath = indentjsFolderPath + "\\indent.js"
+indentjsOutputPath = indentjsFolderPath+"\\jsindentator_output.txt"
+indentjsInputPath = indentjsFolderPath+"\\jsindentator_input.txt"
 
-class JsindentatorCommand(sublime_plugin.TextCommand):  
+configStr = json.dumps(jsindentatorConfig, indent=0, separators=(',', ':'));  
+
+class JsIndentatorCommand(sublime_plugin.TextCommand):  
     def run(self, edit):  
-        #self.view.insert(edit, 0, "Hello, World!")        
-        nodePath = "c:\\Program Files\\nodejs\\node.exe"; 
-        indentjsFolderPath = "C:\\Users\\sgurin\\Desktop\\js-indentator\\jsindentator"; 
-        indentjsPath = indentjsFolderPath + "\\indent.js"
-        indentjsOutputPath = indentjsFolderPath+"\\jsindentator_output.txt"
-        indentjsInputPath = indentjsFolderPath+"\\jsindentator_input.txt"
 
         for region in self.view.sel():  
             if not region.empty():  
@@ -25,7 +27,7 @@ class JsindentatorCommand(sublime_plugin.TextCommand):
                 outputFile.close()
 
                 os.chdir(indentjsFolderPath)
-                subprocess.call([nodePath, indentjsPath, " ", indentjsOutputPath])
+                subprocess.call([nodePath, indentjsPath, configStr, indentjsOutputPath])
 
                 outputCode = open(indentjsOutputPath, 'r').read()
                 self.view.replace(edit, region, outputCode)
