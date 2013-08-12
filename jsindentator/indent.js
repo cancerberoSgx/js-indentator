@@ -67,6 +67,8 @@ var usage = function(){
 			jsindentator.blockCount=config.initialIndentationLevel; //set an initial indentation level
 		var code = fs.readFileSync(filename,'utf8'),
 			codeOutput = jsindentator.main(code);
+		
+		fs.writeFileSync('jsindentator_output.txt', codeOutput); 
 		console.log(codeOutput);
 }
 main();
