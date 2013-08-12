@@ -8,11 +8,19 @@ Online Demo : http://cancerberosgx.github.io/js-indentator/jsindentator/test/for
  
 TODO: native file drag and drop (html5)
 
-Also you can run the JavaScript indentator tool from command line using nodejs using the script indent.js, For example:
+## Using it in the desktop/server with Node Js
+Also you can run the JavaScript indentator tool from command line using nodejs using 
+the script indent.js. For example:
 
 ```
 cd jsindentator
 node indent.js " " /path/to/some.js > some_indented.js 
 ```
 
+Just make sure you have installed the *required nodejs modules* (you need to do this only once):
 
+```
+cd jsindentator
+npm install underscore --save-dev
+npm install esprima --save-dev
+```
