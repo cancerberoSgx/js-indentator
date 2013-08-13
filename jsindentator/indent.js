@@ -55,10 +55,10 @@ var usage = function(){
 		GLOBAL.syntaxOutput=null;
 		var buf = []; 
 		buf.push('(function(_, esprima){');
-		buf.push(jsindentatorSrc);
-		buf.push(styleSrc); 
+		buf.push(jsindentatorSrc+';');
+		buf.push(styleSrc+';'); 
 		buf.push('})'); 
-		var fn = eval(buf.join(';')); 
+		var fn = eval(buf.join('')); 
 		fn(_, esprima);  	
 		
 		jsindentator.setStyle(jsindentator.styles[config.style]);

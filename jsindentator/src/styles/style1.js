@@ -27,8 +27,6 @@ jsindentator.styles.style1 = {
 //	'StyleName': 'style1'
 		
 	"VariableDeclaration" : function(node, config) {
-			
-		ns._checkComments(node);
 		if(!config || !config.noFirstNewLine) //var decls in for stmts
 			indent(); 
 		print('var '); 

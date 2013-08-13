@@ -1,7 +1,9 @@
 #author: sgurin
 #For install this, first fix the nodePath and indentjsFolderPath according to your system
 #then in sublime 2 goto Tools->new Plugin and there type copy and paste this file
-and for using it, select the javascript code you want to indent and goto View->Show Console and there type view.run_command('jsindentator') and enter
+#and for using it, select the javascript code you want to indent and goto View->Show Console 
+#and there type view.run_command('jsindentator') and enter
+#TODO: 1) get selection's prefix blockcount nand set it to the parser config.  
 
 import sublime, sublime_plugin, subprocess, os, json; 
 

@@ -45,6 +45,9 @@
 	,	buffer: []
 	,	setStyle: function(style) {
 			ns.visitors=style; 
+			if(style.installStyle && _.isFunction(style.installStyle)) {
+				style.installStyle();
+			}
 		}
 	,	main: function (code, config) {
 			//console.log('jsindentator.main'); 
