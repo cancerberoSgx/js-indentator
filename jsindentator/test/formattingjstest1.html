@@ -133,6 +133,8 @@ var s1="seba"; var r = window?'inabrowser':'notabrowser', ol = (function(n){var 
 }
 		
 		</textarea>
+		<label><input type="checkbox" id="applyConfigCheckbox"></input>Apply this configuration</label>
+		
 
 			</div>
 
@@ -191,17 +193,22 @@ var s1="seba"; var r = window?'inabrowser':'notabrowser', ol = (function(n){var 
 			return html;
 		}
 		var doit = function(e) {
+						
 			var config = null;
-			try {
-				config = eval('(' + $('#config').val() + ')');
-			} catch (ex) {
-				alert('config.parse error, using default. error: ' + ex);
-				config = {};
-			}
-			if (!config) {
-				alert('config parse error, using default. ');
-				config = {};
-			}
+			
+// 			if(jQuery("#applyConfigCheckbox").val()) {
+// 			try {
+// 				config = eval('(' + $('#config').val() + ')');
+// 			} catch (ex) {
+// 				alert('config.parse error, using default. error: ' + ex);
+// 				config = {};
+// 			}
+// 			}
+
+// 			if (!config) {
+// 				alert('config parse error, using default. ');
+// 				config = {};
+// 			}
 
 			var code = jQuery('#input').val() || jQuery('#input').html();
 			var indentedCode = "";

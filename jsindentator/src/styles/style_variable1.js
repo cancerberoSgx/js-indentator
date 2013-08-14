@@ -2,18 +2,84 @@
 (function() {
 var ns = jsindentator, visit=ns.visit, print=ns.print, indent=ns.printIndent;
 
-if(!ns.styles)ns.styles={};
-ns.config={}; //this style's configuration is defined in its own config namespace
-ns.config["VAR"]='var ';
-ns.config["VAR_COMMA"]=', ';
-ns.config["VAR_DECL_NEWLINE='ns.Indent()+","+ns.tab;'; //all values are eval() uated and the objects _ and ns are available
-ns.config.VAR_DECL_INIT=' = '; 
-ns.config.STMT_SEMICOLON='; ';//the semicolon after a statement. 
-ns.config.FUNCTION='function /* FFF*/'; 
-ns.config.FUNCTION_LP=' ( ';
-ns.config.FUNCTION_RP=' ) ';
-ns.config.FUNCTION_PARAM_COMMA=', ';
-ns.config.FUNCTION_BODY_LP='"{"+ns.Indent()'; 
+if(!ns.styles)
+	ns.styles={};
+
+///////////////////////////////////////////////////////////////////////////
+// DEFAULT CONFIGURATION - ALL CONFIGURABLE VARIABLES WITH DOCUMENTATION
+///////////////////////////////////////////////////////////////////////////
+/* A little introduction. 
+ * 
+ * This is a configurable style that each relevant part of the language is configurable by the user. 
+ * For example, the user may indicate how he want to print the "var " or new keywords. All these 
+ * relevant parts of the language are configurable as templates and each value will be evaluated so
+ * you can iterate, conditions and calling built in utilities for blockquote, indentation, etc. 
+ * Template example code example: 
+ * 
+ * VAR: 'return "var \n\n"'
+ * 
+ * will define that two new lines are added before every 'var' keyword. 
+ * 
+ * The templates will be simply valid strings that will be evaluated with pure eval() (so be careful) 
+ * and must be a valid function body that returns an string, being that string what the 
+ * user want to print in the case of that particular language concept. 
+ * This allows the user to use any javascript statements as needed for printing the ast node.
+ * Also the properties can be functions, for example: 
+ * 
+ * 	LITERAL: 				function(node, ns, _){
+		//if the literal is an string in double quotes print a nasty warning comment. 
+		if(node.raw.indexOf('"')===0) {
+			print(' /* TODO: HEY, we use single quotes, fix this literal: *hug!/'+ node.raw);
+		}
+		else {
+			print(node.raw);
+		}
+	}
+	
+	If it is a string, then the string itself must be the result of the output and use helper functions that generate strings, like ns.Indent()
+	On the other side, if it is a function, then the function itself must call the print statements manually, 
+	like ns.print() and ns.indent(), just like visitors objects do. 
+ * 
+ * The javascript template code will have available in its context
+ * 1) the 'node' ast input object 
+ * 2) the 'ns' namespace object 
+ * 3) and the _ underscore library object. 
+ * See ns.evalStr sources for looking at what is exactly done. 
+ * 
+ */
+ 
+ns.config = { //this style's configuration is defined in its own config namespace
+	VAR: 					'return "var "',
+	VAR_COMMA: 				'return ", "',
+	VAR_DECL_NEWLINE: 		'return ns.Indent() + "," + ns.tab',
+	VAR_DECL_INIT: 			'return " = "',
+	STMT_SEMICOLON: 		'return "; "',
+	
+	FUNCTION: 				'return "function "',
+	FUNCTION_LP:			'return " ( "',
+	FUNCTION_RP: 			'return" ) "',
+	FUNCTION_PARAM_COMMA: 	'return", "',
+	FUNCTION_BODY_LP:		'return "{" + ns.Indent()'
+		
+,	LITERAL: 				function(node, ns, _){
+		//if the literal is an string in double quotes print a nasty warning comment. 
+		if(node.raw.indexOf('"')===0) {
+			print(' /* TODO: HEY, we use single quotes, fix this literal: */'+ node.raw);
+		}
+		else {
+			print(node.raw);
+		}
+	}
+,	IDENTIFIER: 			'return node.name'
+	
+	//Block comment (using /* */)
+,	"Block": 				'ns.Indent() + "/* " + node.value + " */"'
+	
+	//line comment (using //) 
+,	"Line": 				'ns.Indent() + "// " + node.value '
+	
+}; 
+
 
 
 ns.Indent=function(nonl) {
@@ -25,83 +91,96 @@ ns.Indent=function(nonl) {
 	return s.join(''); 
 }
 
-ns.evalStr = function(s) {
-	var buf = [], quoted = '\''+s.replace(/'/g, '\\\'')+'\''; 
-	buf.push('(function(_, ns){');
-	buf.push('  return ('+quoted+'); ');
-	buf.push('})'); 
-	var fn = eval(buf.join('')); 
-	return fn(_, ns); 	
+
+ns.createRenderer = function(s) {
+	if(_.isFunction(s)){
+		return s;
+	}
+	else {
+		var buf = []; //, quoted = s;//'\''+s.replace(/'/g, '\\\'')+'\'';
+		buf.push('(function(node, ns, _){');
+//		buf.push('  return ('+quoted+'); ');
+		buf.push(s);
+		buf.push('})'); 
+		var str = buf.join(''); 
+		try {
+			var fn = eval(str); 
+			return fn;
+//			return fn(_, ns);
+		} catch (e) {
+			console.log('"ERROR evaluating renderer '+s+'\noutput: '+str)
+			throw e; 
+		}	
+ 	
+	}
+
 }; 
 
-//compile all variables:
 
 
 jsindentator.styles.variable1 = {
 	installStyle: function() {
 		ns.variables = {};
+		console.log(ns.config); 
 		for(var i in ns.config) {
-			debugger; 
-			ns.variables[i] = ns.evalStr(ns.config[i]); 
+			try {
+				ns.variables[i] = ns.createRenderer(ns.config[i]); 
+			} catch (ex) {
+				console.log(i, ex); 
+				debugger; 
+			}
+			
 		}
 	}
 	
 ,	"VariableDeclaration" : function(node, config) {
 		if(!config || !config.noFirstNewLine) //var decls in for stmts
 			indent(); 
-		print(ns.variables.VAR); 
+		print(ns.variables.VAR(node, ns, _)); 
 		for ( var i = 0; i < node.declarations.length; i++) {
 			visit(node.declarations[i]); 
 			if(i< node.declarations.length-1) {
 //				if((!config || !config.noFirstNewLine) && ns.variables.VAR_DECL_NEWLINE) {
 				if(!config || !config.noFirstNewLine) {
-					ns.variables.VAR_DECL_NEWLINE; 
+					ns.variables.VAR_DECL_NEWLINE(node, ns, _); 
 				}
 				else {
-					print(ns.variables.VAR_COMMA); 
+					print(ns.variables.VAR_COMMA(node, ns, _)); 
 				}
 			}	 
 		}
 		if(!config || !config.noLastSemicolon) //this is a statement! so we may need to print a semicolon
-			print(ns.variables.STMT_SEMICOLON); 
+			print(ns.variables.STMT_SEMICOLON(node, ns, _)); 
 	}
 
 ,	"VariableDeclarator" : function(node) {
 		ns.print(node.id.name);
-		debugger; 
+//		debugger; 
 		if(node.init) {
-			print(ns.variables.VAR_DECL_INIT); 
+			print(ns.variables.VAR_DECL_INIT(node, ns, _)); 
 			visit(node.init);
 		}
 	}
 
 ,	"Literal" : function(node) {
-		if(node.raw.indexOf('"')===0||node.raw.indexOf('\'')===0) {
-			//we do not force to configured string quotes because changing it can invalidate the output js but we warned it.
-			//print(ns.quote+node.value+ns.quote); 
-			print(node.raw);
-	//		ns.log('String literal with incorrect quotes. Position: '+ns.printNodePosition(node)+' - value: '+node.raw+); 
-		}
-		else {
-			print(node.raw);
-		}
+		ns.variables.LITERAL(node, ns, _);
 	}
 ,	"Identifier": function(node) {
-		print(node.name || ''); 
+		ns.variables.IDENTIFIER(node, ns, _);
 	}
 ,	"FunctionExpression": function(node) {
-		print(ns.variables.FUNCTION);
+		print(ns.variables.FUNCTION(node, ns, _));
 		visit(node.id);
 		
-		print(ns.variables.FUNCTION_LP); 
+		print(ns.variables.FUNCTION_LP(node, ns, _)); 
 		for( var i = 0; i < node.params.length; i++) {
 			visit(node.params[i]); 
 			if(i < node.params.length-1)
-				print(ns.variables.FUNCTION_PARAM_COMMA);					
+				print(ns.variables.FUNCTION_PARAM_COMMA(node, ns, _));					
 		}
-		print(ns.variables.FUNCTION_RP);
+		print(ns.variables.FUNCTION_RP(node, ns, _));
 		if(node.body.body.length>0) {
-			print(ns.variables.FUNCTION_BODY_LP);
+			print(ns.variables.FUNCTION_BODY_LP(node, ns, _));
 			ns.blockCount++;	
 			visit(node.body); 
 			ns.blockCount--;
@@ -157,7 +236,7 @@ jsindentator.styles.variable1 = {
 ,	"ExpressionStatement": function(node) {
 		indent(); 
 		visit(node.expression);
-		print(ns.variables.STMT_SEMICOLON); //print(';'); 
+		print(ns.variables.STMT_SEMICOLON(node, ns, _)); //print(';'); 
 	}
 ,	"CallExpression": function(node) {
 		if(node.callee.type==="FunctionExpression"){//hack - parenthesis around functions
@@ -209,7 +288,7 @@ jsindentator.styles.variable1 = {
 		indent();	
 		print('return '); 
 		visit(node.argument); 
-		print(ns.variables.STMT_SEMICOLON); 
+		print(ns.variables.STMT_SEMICOLON(node, ns, _)); 
 	}
 ,	"ConditionalExpression": function(node) {
 		visit(node.test); 
@@ -246,7 +325,7 @@ jsindentator.styles.variable1 = {
 		ns.blockCount--;
 	}
 ,	"EmptyStatement": function(node) {
-	print(ns.variables.STMT_SEMICOLON);//print(';'); 
+	print(ns.variables.STMT_SEMICOLON(node, ns, _));//print(';'); 
 	}
 ,	"BreakStatement": function(node) {
 		indent(); 
@@ -308,7 +387,7 @@ jsindentator.styles.variable1 = {
 		print('while ( ');
 		visit(node.test);
 		print(' )');
-		print(ns.variables.STMT_SEMICOLON);
+		print(ns.variables.STMT_SEMICOLON(node, ns, _));
 	}
 ,	"NewExpression": function(node) {
 		print('new '); 
@@ -333,7 +412,7 @@ jsindentator.styles.variable1 = {
 		ns.blockCount--;
 		indent();
 		print('}');
-		print(ns.variables.STMT_SEMICOLON);	
+		print(ns.variables.STMT_SEMICOLON(node, ns, _));	
 		indent();
 	}
 ,	"IfStatement": function(node, config) {
@@ -443,7 +522,7 @@ jsindentator.styles.variable1 = {
 		indent();
 		print('throw '); 
 		visit(node.argument);
-		print(ns.variables.STMT_SEMICOLON);//print(';')
+		print(ns.variables.STMT_SEMICOLON(node, ns, _));//print(';')
 	}
 ,	"ForInStatement": function(node) {
 		indent();
@@ -460,12 +539,12 @@ jsindentator.styles.variable1 = {
 		ns.blockCount--;
 		indent();
 		print('}');
-		print(ns.variables.STMT_SEMICOLON);
+		print(ns.variables.STMT_SEMICOLON(node, ns, _));
 	}
 ,	"ContinueStatement": function(node){
 		indent();
 		print('continue'); 
-		print(ns.variables.STMT_SEMICOLON);
+		print(ns.variables.STMT_SEMICOLON(node, ns, _));
 	}
 
 
