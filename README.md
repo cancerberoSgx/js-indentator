@@ -21,19 +21,29 @@ File test/formattingtest1.html show how to use all the build-in styles. In gener
 because we can configure almost everithing using a josn object.  -->
 <script src="../src/styles/style_variable1.js" type="text/javascript"></script>
 
+<!-- ......... -->
+
 <script>
+
 //Now the real usage code: 
 
 //first, the code we want to parse: 
 var code = 'var a = {b: 1, c: false, d: function(e,f){return "hello";}}';
+
 </script>
 
 See test/*.html files for more examples. 
+
+Also, notice that production ready files are available in the folder build/*.js each separated 
+module or the file js-indentator-all.min.js that contains everything.  Those files are generated using *gruntjs*. 
+
+
 
 ## Using it in the desktop/server with Node Js
 
 Also you can run the JavaScript indentator tool from command line using nodejs using 
 the script indent.js. For example:
+
 
 ```
 cd jsindentator
