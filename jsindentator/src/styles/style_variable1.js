@@ -60,7 +60,8 @@ ns.config = { //this style's configuration is defined in its own config namespac
 	FUNCTION_RP: 			'return" ) "',
 	FUNCTION_PARAM_COMMA: 	'return", "',
 	FUNCTION_BODY_LP:		'return "{" + ns.Indent()'
-		
+	
+	//a simple type literal like strings, number, boolean, null, undefined, etc. Not object or functions. 
 ,	LITERAL: 				function(node, ns, _){
 		//if the literal is an string in double quotes print a nasty warning comment. 
 		if(node.raw.indexOf('"')===0) {

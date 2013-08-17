@@ -1,48 +1,47 @@
 
-// in this code node name means javascript language ast nodes like expression, declaration, statement, etc, not DOM or xml nodes!
-// rules for indentation: 1) who call visit(anIndentedBlock) is responsible of incrementing and decrementing the indentation counter. 2) statements are responsible of indenting before and printing a last ';'
+// TODO: docs
 (function() {
+var ns = jsindentator, visit=ns.visit, print=ns.print;
 
-//	var _ = null, jsindentator=null; 
-//	if(typeof window === 'undefined'){ //in node
-//		_ = require('underscore');  
-//		jsindentator = require()
-//	}
-//	else {
-//		_=window._;
-//	}
-	
-var ns = jsindentator, visit=ns.visit, print=ns.print, indent=ns.printIndent; 
-if(!ns.styles) ns.styles={}; 
+if(!jsindentator.styles)jsindentator.styles={};
 
-//if(!jsindentator.styles.style) jsindentator.styles.style1={};
+if(!ns.styles.prettify1)
+	ns.styles.prettify1={};
 
+var config = {};
+
+if(!ns.styles.prettify1.config)
+	ns.styles.prettify1.config=config={
+		keywordTag, keyword
+		
+		indentTag: 'blockquote', 
+		indentClass="block"	
+	};
+
+var indent=function(){
+	if(config.indentWithBlockQuote) {
+		if(ns.blockCount>0) {
+			print('</blockquote>')
+		}
+	}
+}
 //add some config props
 ns.quote = '\''; 
 ns.tab = '\t';
 ns.newline = '\n';
 
- 
-jsindentator.styles.style1 = {
-//	'StyleName': 'style1'
-		
-	installStyle: function() {
-	}
+jsindentator.styles.style2 = {
 	
-,	"VariableDeclaration" : function(node, config) {
+	"VariableDeclaration" : function(node, config) {
 		if(!config || !config.noFirstNewLine) //var decls in for stmts
 			indent(); 
 		print('var '); 
 		for ( var i = 0; i < node.declarations.length; i++) {
 			visit(node.declarations[i]); 
 			if(i< node.declarations.length-1) {
-				if(!config || !config.noFirstNewLine) {
-					indent(); 
-					print(','+ns.tab); 	
-				}
-				else {
-					print(', '); 
-				}
+				print(', '); 
+				indent();
+				print(ns.tab); 
 			}	 
 		}
 		if(!config || !config.noLastSemicolon) 
@@ -62,7 +61,7 @@ jsindentator.styles.style1 = {
 			//we do not force to configured string quotes because changing it can invalidate the output js but we warned it.
 			//print(ns.quote+node.value+ns.quote); 
 			print(node.raw);
-	//		ns.log('String literal with incorrect quotes. Position: '+ns.printNodePosition(node)+' - value: '+node.raw+); 
+//			ns.log('String literal with incorrect quotes. Position: '+ns.printNodePosition(node)+' - value: '+node.raw+); 
 		}
 		else {
 			print(node.raw);
@@ -82,7 +81,7 @@ jsindentator.styles.style1 = {
 		}
 		print(' ) ');
 		if(node.body.body.length>0) {
-			indent();
+//			indent();
 			print('{')
 			ns.blockCount++;	
 			visit(node.body); 
@@ -112,13 +111,13 @@ jsindentator.styles.style1 = {
 	}
 ,	"ForStatement": function(node) {
 		indent(); 
-		print('for('); 
+		print('for ( '); 
 		visit(node.init, {noFirstNewLine: true});
 		visit(node.test);
 		print('; ');
 		visit(node.update);
-		print(')');
-		indent();
+		print(' ) ');
+//		indent();
 		print('{'); 
 		ns.blockCount++;
 		visit(node.body);
@@ -178,9 +177,10 @@ jsindentator.styles.style1 = {
 			print(': '); 
 			visit(p.value);
 			if(i < node.properties.length-1) {
-				ns.print(ns.newline); 
-				ns._printIndent(ns.blockCount-1);
-				print(','+ns.tab); 
+//				ns.print(ns.newline); 
+//				ns._printIndent(ns.blockCount-1);
+				print(', ');
+				indent();
 			}
 		}
 		ns.blockCount--;
@@ -206,8 +206,8 @@ jsindentator.styles.style1 = {
 		print('switch (');
 		visit(node.discriminant); 
 		print(')');
-		indent();
-		 print('{'); 
+//		indent();
+		 print(' {'); 
 		for(var i = 0; i < node.cases.length; i++) {
 			visit(node.cases[i]); 
 		}
@@ -240,7 +240,7 @@ jsindentator.styles.style1 = {
 		print('while ( ');
 		visit(node.test); 
 		print(' ) ');
-		indent();
+//		indent();
 		print('{'); 
 		
 		ns.blockCount++;
@@ -278,14 +278,14 @@ jsindentator.styles.style1 = {
 		indent();
 		print('do');
 		
-		indent();
+//		indent();
 		print('{')
 		ns.blockCount++;
 		visit(node.body);
 		ns.blockCount--;
 		indent();
-		print('}');	
-		indent();
+		print('} ');	
+//		indent();
 		
 		print('while ( ');
 		visit(node.test);
@@ -307,8 +307,8 @@ jsindentator.styles.style1 = {
 		print('with ( '); 
 		visit(node.object); 
 		print(' )'); 
-		indent();
-		print('{')
+//		indent();
+		print(' {')
 		ns.blockCount++;
 		visit(node.body);
 		ns.blockCount--;
@@ -316,16 +316,15 @@ jsindentator.styles.style1 = {
 		print('};');	
 		indent();
 	}
-
 ,	"IfStatement": function(node, config) {
 		if(!config || !config.noFirstNewLine)
 			indent(); 
 		print('if ( '); 
 		visit(node.test); 
 		print(' )'); 
-		indent();
+//		indent();
 		
-		print('{');
+		print(' { ');
 		ns.blockCount++;
 		visit(node.consequent);
 		ns.blockCount--;
@@ -336,8 +335,8 @@ jsindentator.styles.style1 = {
 			indent();
 			print('else ');
 			if(node.alternate.test==null) {
-				indent();
-				print('{');
+//				indent();
+				print(' {');
 				ns.blockCount++;
 			}
 			visit(node.alternate, {noFirstNewLine: true});
@@ -360,7 +359,7 @@ jsindentator.styles.style1 = {
 				print(', '); 		 
 		}
 		print(' ) '); 
-		indent();
+//		indent();
 		print('{');
 		ns.blockCount++;
 		visit(node.body); 
@@ -381,8 +380,8 @@ jsindentator.styles.style1 = {
 ,	"TryStatement": function(node) {
 		indent();
 		print('try');
-		indent();
-		print('{');
+//		indent();
+		print(' {');
 		ns.blockCount++;
 		visit(node.block); 
 		ns.blockCount--;
@@ -394,8 +393,8 @@ jsindentator.styles.style1 = {
 		if(node.finalizer) {
 			indent();
 			print('finally'); 
-			indent();
-			print('{');
+//			indent();
+			print(' {');
 			ns.blockCount++;
 			visit(node.finalizer); 
 			ns.blockCount--;
@@ -413,9 +412,9 @@ jsindentator.styles.style1 = {
 //			if(i< node.params.length-1)
 //				print(', '); 		 
 //		}
-		print(' ) ');
-		indent();
-		print('{');
+		print(' )');
+//		indent();
+		print(' {');
 		ns.blockCount++;
 		visit(node.body); 
 		ns.blockCount--;
@@ -436,8 +435,8 @@ jsindentator.styles.style1 = {
 		visit(node.right); 
 		print(' )')
 		
-		indent();
-		print('{');
+//		indent();
+		print(' {');
 		ns.blockCount++;
 		visit(node.body); 
 		ns.blockCount--;
@@ -449,7 +448,6 @@ jsindentator.styles.style1 = {
 		print('continue;'); 
 	}
 
-	
 ,	"Block": function(node) {/* support for block comments like this one*/
 		indent();
 		print('/* '); 
@@ -464,10 +462,5 @@ jsindentator.styles.style1 = {
 		indent(); 
 	}
 
-}; 
-
-//ns object is ready - register as nodejs module
-//if(module && module.exports){
-//	module.exports.style1=jsindentator.styles.style1; 
-//}
+}	
 })();
