@@ -50,10 +50,16 @@
 			}
 		}
 	,	main: function (code, config) {
-			//console.log('jsindentator.main'); 
-			if(config)
+			//configdebugger;
+			if(config && !ns.visitors.setStyleConfig) {
 				_.extend(ns, config); 
+			}
+			else if(config && ns.visitors.setStyleConfig) {
+				ns.visitors.setStyleConfig(config); 
+			}
+			
 			ns.code = code;
+			
 			var syntax = null, parseex=null;
 			try {
 				syntax = esprima.parse(code, {
@@ -64,7 +70,10 @@
 //				,	loc : true
 					}				
 				);
-			}catch(ex){parseex=ex;}
+			}
+			catch(ex){
+				parseex=ex;
+			}
 			if(syntax==null) {
 				console.log("JAVASCRIPT PARSING ERROR: "+parseex);
 				return; 

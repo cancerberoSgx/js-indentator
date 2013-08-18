@@ -1,5 +1,6 @@
 
 (function() {
+	
 var ns = jsindentator, visit=ns.visit, print=ns.print, indent=ns.printIndent;
 
 if(!ns.styles)
@@ -48,10 +49,18 @@ if(!ns.styles)
  * 
  */
  
-ns.config = { //this style's configuration is defined in its own config namespace
+var variable1DefaultConfig = ns.config = { /* this style's configuration is defined in its own config namespace */
+	
+	/*general style properties*/
+		
+	tab : '\t',
+	newline : '\n',
+	
+	/*variable1 only styles*/
+	
 	VAR: 					'return "var "',
 	VAR_COMMA: 				'return ", "',
-	VAR_DECL_NEWLINE: 		'return ns.Indent() + "," + ns.tab',
+	VAR_COMMA_NEWLINE: 		'return ns.Indent() + "," + ns.tab',
 	VAR_DECL_INIT: 			'return " = "',
 	STMT_SEMICOLON: 		'return "; "',
 	
@@ -61,14 +70,14 @@ ns.config = { //this style's configuration is defined in its own config namespac
 	FUNCTION_PARAM_COMMA: 	'return", "',
 	FUNCTION_BODY_LP:		'return "{" + ns.Indent()'
 	
-	//a simple type literal like strings, number, boolean, null, undefined, etc. Not object or functions. 
+	/*a simple type literal like strings, number, boolean, null, undefined, etc. Not object or functions.*/ 
 ,	LITERAL: 				function(node, ns, _){
-		//if the literal is an string in double quotes print a nasty warning comment. 
+		/*if the literal is an string in double quotes print a nasty warning comment.*/ 
 		if(node.raw.indexOf('"')===0) {
-			print(' /* TODO: HEY, we use single quotes, fix this literal: */'+ node.raw);
+			ns.print(' /* TODO: HEY, we use single quotes, fix this literal: */'+ node.raw);
 		}
 		else {
-			print(node.raw);
+			ns.print(node.raw);
 		}
 	}
 ,	IDENTIFIER: 			'return node.name'
@@ -106,8 +115,11 @@ ns.createRenderer = function(s) {
 		var str = buf.join(''); 
 		try {
 			var fn = eval(str); 
-			return fn;
-//			return fn(_, ns);
+			var wrapped  = _.wrap(fn, function() {
+				var node = arguments[1], ns=arguments[2], _=arguments[3]; 
+				ns.print(fn.apply(fn, [node, ns, _]));
+			});
+			return wrapped;
 		} catch (e) {
 			console.log('"ERROR evaluating renderer '+s+'\noutput: '+str)
 			throw e; 
@@ -120,32 +132,47 @@ ns.createRenderer = function(s) {
 
 
 jsindentator.styles.variable1 = {
-	installStyle: function() {
-		ns.variables = {};
-		console.log(ns.config); 
-		for(var i in ns.config) {
-			try {
-				ns.variables[i] = ns.createRenderer(ns.config[i]); 
-			} catch (ex) {
-				console.log(i, ex); 
-				debugger; 
+		
+	setStyleConfig: function(newConfig) {
+		ns.config = variable1DefaultConfig; 
+		_.each(_.keys(newConfig), function(k){
+			if(k) {
+				ns.config[k] = newConfig[k];
+//				console.log('setStyleConfig: '+k+" - "+newConfig[k]); 
 			}
-			
-		}
+		});
+//		for(var i in newConfig) {
+//			if(i)
+//				ns.config[i]=newConfig[i];
+//		}				
+		ns.styles.variable1.installStyle(); //rebuild the variables with the new configuration. 
+	}	
+
+,	installStyle: function() {
+		ns.variables = {};
+		_.each(_.keys(ns.config), function(k){
+			if(k) try {
+				ns.variables[k] = ns.createRenderer(ns.config[k]); 
+//				console.log('variables: '+k+" - "+ns.variables[k]); 
+			} catch (ex) {
+				console.log("ERROR PARSING VARIABLE: ", k, ex); 
+			}
+		});
 	}
 	
 ,	"VariableDeclaration" : function(node, config) {
 		if(!config || !config.noFirstNewLine) //var decls in for stmts
 			indent(); 
-		print(ns.variables.VAR(node, ns, _)); 
+		ns.variables.VAR(node, ns, _); 
 		for ( var i = 0; i < node.declarations.length; i++) {
 			visit(node.declarations[i]); 
 			if(i< node.declarations.length-1) {
-//				if((!config || !config.noFirstNewLine) && ns.variables.VAR_DECL_NEWLINE) {
+//				if((!config || !config.noFirstNewLine) && ns.variables.VAR_COMMA_NEWLINE) {
 				if(!config || !config.noFirstNewLine) {
-					ns.variables.VAR_DECL_NEWLINE(node, ns, _); 
+					ns.variables.VAR_COMMA_NEWLINE(node, ns, _); 
 				}
 				else {
+					debugger; 
 					print(ns.variables.VAR_COMMA(node, ns, _)); 
 				}
 			}	 
@@ -158,7 +185,7 @@ jsindentator.styles.variable1 = {
 		ns.print(node.id.name);
 //		debugger; 
 		if(node.init) {
-			print(ns.variables.VAR_DECL_INIT(node, ns, _)); 
+			ns.variables.VAR_DECL_INIT(node, ns, _); 
 			visit(node.init);
 		}
 	}
@@ -170,7 +197,7 @@ jsindentator.styles.variable1 = {
 		ns.variables.IDENTIFIER(node, ns, _);
 	}
 ,	"FunctionExpression": function(node) {
-		print(ns.variables.FUNCTION(node, ns, _));
+		ns.variables.FUNCTION(node, ns, _);
 		visit(node.id);
 		
 		print(ns.variables.FUNCTION_LP(node, ns, _)); 

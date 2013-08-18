@@ -104,3 +104,4 @@ TODO / ideas
 * javascript function call linking (like the prettyprit but function calls are links to function definition. )
 * code ast types charts
 * in the html example, support native file drag and drop (html5)
+* a general style based on underscore templates

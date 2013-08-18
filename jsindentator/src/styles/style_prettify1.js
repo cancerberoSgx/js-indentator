@@ -10,32 +10,35 @@ if(!ns.styles.prettify1)
 
 var config = {};
 
-if(!ns.styles.prettify1.config)
-	ns.styles.prettify1.config=config={
-		keywordTag, keyword
-		
-		indentTag: 'blockquote', 
-		indentClass="block"	
+if(!ns.styles.prettify1.config) {
+	ns.styles.prettify1.config = config = {
+		tag: 'b'
 	};
-
-var indent=function(){
-	if(config.indentWithBlockQuote) {
-		if(ns.blockCount>0) {
-			print('</blockquote>')
-		}
-	}
 }
-//add some config props
-ns.quote = '\''; 
-ns.tab = '\t';
-ns.newline = '\n';
+var htmlOpen = function(classes) {
+	print('<'+config.tag + (classes ? 'class="' + classes + '"' : '') + '>' )
+}
+,	htmlClose = function() {
+	print('</'+config.tag+'>' )
+}
+,	htmlPrint(classes, content) {
+	htmlOpen(classes); 
+	print(content)
+	htmlClose(); 
+}; 
 
-jsindentator.styles.style2 = {
+var indentOpen=function(){
+	print()
+}
+
+jsindentator.styles.prettify1 = {
 	
 	"VariableDeclaration" : function(node, config) {
+		htmlOpen('VariableDeclaration'); 
 		if(!config || !config.noFirstNewLine) //var decls in for stmts
 			indent(); 
-		print('var '); 
+		htmlPrint('var', 'var'); 
+		//print('var '); 
 		for ( var i = 0; i < node.declarations.length; i++) {
 			visit(node.declarations[i]); 
 			if(i< node.declarations.length-1) {
@@ -46,6 +49,7 @@ jsindentator.styles.style2 = {
 		}
 		if(!config || !config.noLastSemicolon) 
 			print('; '); 
+		htmlClose();
 	}
 
 ,	"VariableDeclarator" : function(node) {
