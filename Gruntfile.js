@@ -6,6 +6,7 @@ grunt.initConfig({
 	uglify : {
 		options : {
 			banner : '/*! <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n'
+//			mangle: false
 		},
 
 		my_target : {

@@ -1,7 +1,7 @@
 // in this code node name means javascript language ast nodes like expression, declaration, statement, etc, not DOM or xml nodes!
 //var GLOBALOBJECT=this; //must be outside any function
 
-(function() {
+//(function() {
 	
 //	var _ = null, esprima=null; 
 //	if(typeof window === 'undefined'){ //in node
@@ -13,8 +13,9 @@
 //		esprima = window.esprima; 
 //	}
 	
+	jsindentator={}; //global
+	var ns = jsindentator = {};
 	
-	var ns=jsindentator = {};
 	_.extend(ns, {
 		
 		blockCount: 0 //for block indentation
@@ -140,4 +141,4 @@
 //		module.exports.main=ns.main;
 //		module.exports.setStyle=ns.setStyle; 
 //	}
-})();
+//})();
