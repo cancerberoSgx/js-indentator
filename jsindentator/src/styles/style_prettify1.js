@@ -1,7 +1,7 @@
 
 // TODO: docs
 (function() {
-var ns = jsindentator, visit=ns.visit, print=ns.print;
+var ns = jsindentator, visit=ns.visit, print=ns.print, indent=ns.printIndent;
 
 if(!jsindentator.styles)jsindentator.styles={};
 
@@ -16,63 +16,63 @@ if(!ns.styles.prettify1.config) {
 	};
 }
 var htmlOpen = function(classes) {
-	print('<'+config.tag + (classes ? 'class="' + classes + '"' : '') + '>' )
+	print('<'+config.tag + (classes ? ' class="' + classes + '"' : '') + '>' )
 }
 ,	htmlClose = function() {
 	print('</'+config.tag+'>' )
 }
-,	htmlPrint(classes, content) {
+,	htmlPrint = function(content, classes) {
 	htmlOpen(classes); 
-	print(content)
+	print(content); 
 	htmlClose(); 
 }; 
-
-var indentOpen=function(){
-	print()
-}
 
 jsindentator.styles.prettify1 = {
 	
 	"VariableDeclaration" : function(node, config) {
-		htmlOpen('VariableDeclaration'); 
+		htmlOpen('VariableDeclaration'+((config&&config.noFirstNewLine)?' noNewLine':'')); 
 		if(!config || !config.noFirstNewLine) //var decls in for stmts
 			indent(); 
-		htmlPrint('var', 'var'); 
+		htmlPrint('var', 'var keyword'); 
 		//print('var '); 
 		for ( var i = 0; i < node.declarations.length; i++) {
 			visit(node.declarations[i]); 
 			if(i< node.declarations.length-1) {
-				print(', '); 
-				indent();
-				print(ns.tab); 
+				htmlPrint(',', 'comma'); 
+//				print(', '); 
+//				indent();
+//				print(ns.tab); 
 			}	 
 		}
-		if(!config || !config.noLastSemicolon) 
-			print('; '); 
+		if(!config || !config.noLastSemicolon) {
+//			print('; ');
+			htmlPrint(';', 'semicolon'); 
+		}
 		htmlClose();
 	}
 
 ,	"VariableDeclarator" : function(node) {
-		ns.print(node.id.name);
+		htmlOpen('VariableDeclarator'); 
+		visit(node.id);
+//		htmlPrint(node.id.name, 'identifier');
+//		ns.print(node.id.name);
 		if(node.init) {
-			print(" = "); 
+			htmlPrint("=", 'operand');
+//			print(" = "); 
 			visit(node.init);
 		}
+		htmlClose();
 	}
 
 ,	"Literal" : function(node) {
-		if(node.raw.indexOf('"')===0||node.raw.indexOf('\'')===0) {
-			//we do not force to configured string quotes because changing it can invalidate the output js but we warned it.
-			//print(ns.quote+node.value+ns.quote); 
-			print(node.raw);
-//			ns.log('String literal with incorrect quotes. Position: '+ns.printNodePosition(node)+' - value: '+node.raw+); 
-		}
-		else {
-			print(node.raw);
-		}
+		htmlOpen('Literal'); 
+		print(node.raw);
+		htmlClose();
 	}
 ,	"Identifier": function(node) {
-		print(node.name || ''); 
+		htmlOpen('Identifier'); 
+		print(node.name);
+		htmlClose(); 
 	}
 ,	"FunctionExpression": function(node) {
 		print('function ');

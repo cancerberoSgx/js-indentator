@@ -27,9 +27,6 @@ because we can configure almost everithing using a josn object.  -->
 <script src="jquery/jquery-2.0.3.min.js" type="text/javascript"></script>
 <script src="bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
 <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
-<!-- <script src="bootstrap/js/bootstrap.min.js" type="text/javascript"></script> -->
-
-<link href="bootstrap/css/bootstrap.css" rel="stylesheet">
 <link href="bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
 
 <style type="text/css">
@@ -88,7 +85,7 @@ h4 { */
 
 
 		<div class="row">
-			<div class="span6">
+			<div class="span7">
 
 				<div class="textbox">
 					<h4>Original Code</h4>
@@ -132,18 +129,35 @@ var s=2,f=function namedf(a){};
 			<div class="span5">
 
 				<h4>Configuration</h4>
-				<p>You can edit this configuration JSON and "do it again".</p>
-				<!-- 		<select><option>style1</option></select> -->
+				
+				 <a class="btn" data-toggle="collapse" data-target="#config-notes">
+				     Read Some Notes
+				  </a>
+			
+				<div id="config-notes" class="collapse in">
+					<p>You can edit this configuration JSON and "do it again".</p>
+					<p>Note that properties like 'tab' and 'newline' are supported by all the indentators, 
+					while properties like VAR, VAR_COMMA, FUNCTION, etc are only supported by the 'variable1' style </p>
+					<p>You can see a list of al supported variable properties of this style and default values 
+					<a href="https://github.com/cancerberoSgx/js-indentator/blob/master/jsindentator/src/styles/style_variable1.js#L52">in the sources</a>. </p>
+				</div>
+				
 				<textarea id="config">
+				
 { 	
-	/* general configuration properties - valid for all indentators bug 'clean' */
-	tab : '\t',
-	newline : '\n',
-	
-	/* configuration properties only valid for 'variable1' */
-	VAR: 					'return "var /*VARR*/"',
-	VAR_COMMA: 				'return ", /*123 */"',
-	VAR_COMMA_NEWLINE: 		'return ns.Indent() + ",/*234*/" + ns.tab',
+
+/* general configuration properties - valid for all indentators bug 'clean' */
+
+tab : '\t',
+newline : '\n',
+
+/* configuration properties only valid for 'variable1'. 
+*/
+
+VAR: 'return "var /*VARR*/"',
+VAR_COMMA: 'return ", /*123 */"',
+VAR_COMMA_NEWLINE: 'return ns.Indent() + ",/*234*/" + ns.tab',
+
 }
 		
 		</textarea>
@@ -180,16 +194,16 @@ var s=2,f=function namedf(a){};
 	
 }
 -->
-		<label><input type="checkbox" id="applyConfigCheckbox"></input>Apply this configuration</label>
+<!-- 		<label><input type="checkbox" id="applyConfigCheckbox"></input>Apply this configuration</label> -->
 		
 
 			</div>
 
-			<div class="span1">
-				<h4>Debug Console</h4>
-				<select><option>debug</option></select>
-				<textarea id="debug">{}</textarea>
-			</div>
+<!-- 			<div class="span1"> -->
+<!-- 				<h4>Debug Console</h4> -->
+<!-- 				<select><option>debug</option></select> -->
+<!-- 				<textarea id="debug">{}</textarea> -->
+<!-- 			</div> -->
 
 		</div>
 
@@ -239,14 +253,14 @@ var s=2,f=function namedf(a){};
 						
 			var config = null;
 			
-			if(jQuery("#applyConfigCheckbox").val()) {
-				try {
-					config = eval('(' + $('#config').val() + ')');
-				} catch (ex) {
-					alert('config.parse error, using default. error: ' + ex);
-					config = {};
-				}
+// 			if(jQuery("#applyConfigCheckbox").val()) {
+			try {
+				config = eval('(' + $('#config').val() + ')');
+			} catch (ex) {
+				alert('config.parse error, using default. error: ' + ex);
+				config = {};
 			}
+// 			}
 
 			if (!config) {
 				alert('config parse error, using default. ');
@@ -281,6 +295,9 @@ var s=2,f=function namedf(a){};
 		});
 		$('#myTab a:last').tab('show');
 		
+		$(document).ready(function(){
+	        $(".collapse").collapse()
+		});
 		
 		// //textarea auto focus - http://stackoverflow.com/questions/5797539/jquery-select-all-text-from-a-textarea
 		// var selectAll= function() {
