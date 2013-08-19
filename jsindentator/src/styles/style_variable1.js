@@ -182,7 +182,8 @@ jsindentator.styles.variable1 = {
 	}
 
 ,	"VariableDeclarator" : function(node) {
-		ns.print(node.id.name);
+//		ns.print(node.id.name);
+		visit(node.id);
 //		debugger; 
 		if(node.init) {
 			ns.variables.VAR_DECL_INIT(node, ns, _); 

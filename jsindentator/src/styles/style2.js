@@ -26,7 +26,8 @@ jsindentator.styles.style2 = {
 	}
 
 ,	"VariableDeclarator" : function(node) {
-		ns.print(node.id.name);
+//		ns.print(node.id.name);
+		visit(node.id);
 		if(node.init) {
 			print(" = "); 
 			visit(node.init);
