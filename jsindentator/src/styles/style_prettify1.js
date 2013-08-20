@@ -1,5 +1,13 @@
+/*
+ * a very basic javascript code prettifier to HTML using js-indentator. Available CSS class names: 
+ * 
+	operators:
+	operand, colon, semicolon, paren, curly, coma
+	
+	keywords: 
+	keyword keyword-return keyword-function, keyword-var keyword-for, etc
 
-// TODO: docs
+ */
 (function() {
 var ns = jsindentator, visit=ns.visit, print=ns.print, indent=ns.printIndent;
 
@@ -29,16 +37,16 @@ var htmlOpen = function(classes) {
 
 jsindentator.styles.prettify1 = {
 	
-	"VariableDeclaration" : function(node, config) {
-		htmlOpen('VariableDeclaration'+((config&&config.noFirstNewLine)?' noNewLine':'')); 
+	"VariableDeclaration" : function(node, config) {		
+		htmlOpen('VariableDeclaration '+((config&&config.noFirstNewLine)?' noNewLine':'')); 
 		if(!config || !config.noFirstNewLine) //var decls in for stmts
 			indent(); 
-		htmlPrint('var', 'var keyword'); 
+		htmlPrint('var', 'keyword-var keyword'); 
 		//print('var '); 
 		for ( var i = 0; i < node.declarations.length; i++) {
 			visit(node.declarations[i]); 
 			if(i< node.declarations.length-1) {
-				htmlPrint(',', 'comma'); 
+				htmlPrint(',', 'comma operand'); 
 //				print(', '); 
 //				indent();
 //				print(ns.tab); 
@@ -65,208 +73,301 @@ jsindentator.styles.prettify1 = {
 	}
 
 ,	"Literal" : function(node) {
-		htmlOpen('Literal'); 
-		print(node.raw);
-		htmlClose();
+		htmlPrint(node.raw, 'Literal');
+//		htmlOpen('Literal'); 
+//		var classStr = '';
+//		if(!node.raw)
+//			classStr = "literal-false";
+//		else if(_.isString(node.raw))
+//		TODO: make a html class like litera-string, literal-boolean, literal-number, etc.
+//		print(node.raw);
+//		htmlClose();
 	}
-,	"Identifier": function(node) {
-		htmlOpen('Identifier'); 
-		print(node.name);
-		htmlClose(); 
+,	"Identifier": function(node) {		
+		htmlPrint(node.name, 'Identifier');
 	}
 ,	"FunctionExpression": function(node) {
-		print('function ');
+		htmlOpen('FunctionExpression'); 
+//		print('function ');
+		htmlPrint('function', 'keyword-function keyword');
 		visit(node.id);
-		print(' ( '); 
+//		print(' ( '); 
+		htmlPrint('(', 'paren-left');
 		for( var i = 0; i < node.params.length; i++) {
 			visit(node.params[i]); 
 			if(i < node.params.length-1)
-				print(', ');					
+//				print(', ');
+				htmlPrint(',', 'comma operand'); 
 		}
-		print(' ) ');
+//		print(' ) ');
+		htmlPrint(')', 'paren-right'); 
 		if(node.body.body.length>0) {
 //			indent();
-			print('{')
+//			print('{')
+			htmlPrint('{', 'curly-left');	
+//			htmlOpen('block'); 
 			ns.blockCount++;	
 			visit(node.body); 
 			ns.blockCount--;
-			indent();
-			print('}')
+//			htmlClose();
+//			indent();
+//			print('}')
+			htmlPrint('}', 'curly-right');	
 		}
 		else {
-			print('{}');  
+//			print('{}');
+			htmlPrint('{', 'curly-left');	
+			htmlPrint('}', 'curly-right');	
 		}
-			
+		htmlClose();	
 	}
 ,	"BlockStatement": function(node) {	
+		htmlOpen('BlockStatement'); 
 		for ( var i = 0; i < node.body.length; i++) {
 			visit(node.body[i]);
 		}
+		htmlClose();
 	}
-,	"UpdateExpression": function(node) {				  
+,	"UpdateExpression": function(node) {
+		htmlOpen('UpdateExpression'); 
 		if(node.prefix) {
-			print(node.operator);
+//			print(node.operator);
+			htmlPrint(node.operator, 'operator');	
 			visit(node.argument); 
 		}
 		else {
 			visit(node.argument); 
-			print(node.operator);
+//			print(node.operator);
+			htmlPrint(node.operator, 'operator');	
 		}
+		htmlClose();
 	}
 ,	"ForStatement": function(node) {
-		indent(); 
-		print('for ( '); 
+		htmlOpen('BlockStatement statement'); 
+//		indent();  
+//		print('for ( '); 
+		htmlPrint('for', 'keyword keyword-for');	
+		htmlPrint('(', 'paren-left');
 		visit(node.init, {noFirstNewLine: true});
 		visit(node.test);
-		print('; ');
+//		print('; ');
+		htmlPrint(';', 'semicolon'); 
 		visit(node.update);
-		print(' ) ');
+//		print(' ) ');
+		htmlPrint(')', 'paren-right'); 
 //		indent();
-		print('{'); 
+//		print('{'); 
+		htmlPrint('{', 'curly-right');	
 		ns.blockCount++;
 		visit(node.body);
 		ns.blockCount--;
-		indent(); 
-		print('}'); 
+//		indent(); 
+//		print('}'); 
+		htmlPrint('}', 'curly-right');	
+		htmlClose();
 	}
-,	"ArrayExpression": function(node) {	
-		print('['); 
+,	"ArrayExpression": function(node) {
+		htmlOpen('ArrayExpression'); 
+//		print('[');
+		htmlPrint('[', 'square-left');	
 		for ( var i = 0; i < node.elements.length; i++) {
 			visit(node.elements[i]);
 			if(i < node.elements.length-1)
 				print(', ');
 		}
-		print(']'); 
+//		print(']'); 
+		htmlPrint(']', 'square-right');
+		htmlClose();
 	}
 
 ,	"ExpressionStatement": function(node) {
-		indent(); 
+		htmlOpen('ExpressionStatement'); 
+//		indent(); 
 		visit(node.expression);
-		print(';'); 
+//		print(';'); 
+		htmlPrint(';', 'semicolon'); 
+		htmlClose();
 	}
 ,	"CallExpression": function(node) {
+		htmlOpen('CallExpression'); 
 		if(node.callee.type==="FunctionExpression"){//hack - parenthesis around functions
-			print('(');		
+//			print('(');		
+			htmlPrint('(', 'paren-left'); 
 		}
 		visit(node.callee); 
 		if(node.callee.type==="FunctionExpression"){//hack - parenthesis around functions
-			print(')');
+//			print(')');
+			htmlPrint(')', 'paren-right'); 
 		}
 	
-		print(' ( '); 
+//		print(' ( '); 
+		htmlPrint('(', 'paren-left'); 
 		for ( var i = 0; i < node.arguments.length; i++) {
 			visit(node.arguments[i]);
-			if(i < node.arguments.length-1)
-				print(', ');
+			if(i < node.arguments.length-1) {
+//				print(', ');
+				htmlPrint(',', 'comma operand');
+			}
 		}
-		print(' ) '); 
+//		print(' ) ');
+		htmlPrint(')', 'paren-right');
+		htmlClose();
 	}
 ,	"BinaryExpression": function(node) {
+		htmlOpen('BinaryExpression');
 		visit(node.left); 
-		print(' '+node.operator+' '); 
+		htmlPrint(node.operator, 'operand');
+//		print(' '+node.operator+' '); 
 		visit(node.right); 
+		htmlClose();
 	}
 
 ,	"ObjectExpression": function(node) {
+		htmlOpen('ObjectExpression');
 		if(node.properties.length===0) {
-			print('{}'); 
+//			print('{}'); 
+			htmlPrint('{', 'curly-left');	
+			htmlPrint('}', 'curly-right');	
 			return; 
 		}
-		print('{'); 
+//		print('{'); 
+		htmlPrint('{', 'curly-left');	
 		ns.blockCount++;
-		indent();
+//		indent();
 		for ( var i = 0; i < node.properties.length; i++) {
 			var p = node.properties[i];			
 			visit(p.key); 
-			print(': '); 
+//			print(': '); 
+			htmlPrint(node.operator, 'operand colon');
 			visit(p.value);
 			if(i < node.properties.length-1) {
 //				ns.print(ns.newline); 
 //				ns._printIndent(ns.blockCount-1);
-				print(', ');
-				indent();
+//				print(', ');
+				htmlPrint(',', 'comma operand');
+//				indent();
 			}
 		}
 		ns.blockCount--;
-		indent();
-		print('}'); 
+//		indent();
+//		print('}'); 		
+		htmlPrint('}', 'curly-right');
+		htmlClose();
 	}
 ,	"ReturnStatement": function(node) {
-		indent();	
-		print('return '); 
+		htmlOpen('ReturnStatement');
+//		indent();	
+//		print('return '); 
+		htmlPrint('return', 'keyword keyword-return');
 		visit(node.argument); 
-		print(';'); 
+//		print(';'); 
+		htmlPrint(';', 'semicolon'); 
+		htmlClose();
 	}
 ,	"ConditionalExpression": function(node) {
+		htmlOpen('ConditionalExpression');
 		visit(node.test); 
-		print(' ? '); 
+//		print(' ? '); 
+		htmlPrint('?', 'question operand');
 		visit(node.consequent);
-		print(' : '); 
+//		print(' : '); 
+		htmlPrint(':', 'colon operand');
 		visit(node.alternate);
+		htmlClose();
 	}
 
 ,	"SwitchStatement": function(node) {
-		indent();
-		print('switch (');
-		visit(node.discriminant); 
-		print(')');
+		htmlOpen('SwitchStatement');
 //		indent();
-		 print(' {'); 
+		
+//		print('switch');
+		htmlPrint('switch', 'keyword keyword-switch');
+		htmlPrint('(', 'paren-left');
+		
+		visit(node.discriminant); 
+//		print(')');
+		htmlPrint(')', 'paren-right');	
+//		indent();
+//		 print(' {'); 
+		htmlPrint('{', 'curly-left');				
 		for(var i = 0; i < node.cases.length; i++) {
 			visit(node.cases[i]); 
 		}
-
-		indent();
-		print('}'); 
+//		indent();
+//		print('}');
+		htmlPrint('}', 'curly-right');
+		htmlClose();
 	}
 ,	"SwitchCase": function(node) {
-		indent();
-		print(node.test==null ? 'default' : 'case ');
+		htmlOpen('SwitchCase');
+//		indent();		
+//		print(node.test==null ? 'default' : 'case ');
+		htmlPrint(node.test==null ? 'default' : 'case', 'keyword case');		
 		visit(node.test); 
-		print(':');
-		ns.blockCount++;
-		
+//		print(':');
+		htmlPrint(':', 'operand colon');
+		ns.blockCount++;		
 		for(var i = 0; i < node.consequent.length; i++) {	
 			visit(node.consequent[i]); 
 		}
 		ns.blockCount--;
+		htmlClose();
 	}
 ,	"EmptyStatement": function(node) {
-		print(';'); 
+		htmlOpen('EmptyStatement');
+//		print(';'); 
+		htmlPrint(';', 'semicolon');
+		htmlClose();
 	}
 ,	"BreakStatement": function(node) {
-		indent(); 
-		print('break;');
+		htmlOpen('EmptyStatement');
+		htmlPrint('break', 'keyword keyword-break');
+		htmlPrint(';', 'semicolon');		
+		htmlClose();
+//		indent(); 
+//		print('break;');
 	}
 
 ,	"WhileStatement": function(node) {
-		indent(); 
-		print('while ( ');
+//		indent(); 
+//		print('while ( ');
+		htmlOpen('EmptyStatement');
+		htmlPrint('(', 'paren-left');		
 		visit(node.test); 
-		print(' ) ');
+//		print(' ) ');
+		htmlPrint(')', 'paren-right');		
 //		indent();
-		print('{'); 
-		
+//		print('{'); 
+		htmlPrint('{', 'curly-left');			
 		ns.blockCount++;
 		visit(node.body);
-		ns.blockCount--;
-		
-		indent();
-		print('}'); 
+		ns.blockCount--;		
+//		indent();
+//		print('}'); 		
+		htmlPrint('}', 'curly-right');	
+
 	}
 ,	"AssignmentExpression": function(node) {
+		htmlOpen('MemberExpression');
 		visit(node.left);
 		print(' '+node.operator+' '); 
-		visit(node.right); 
+		visit(node.right); 	
+		htmlClose();
 	}
 ,	"MemberExpression": function(node) {
+		htmlOpen('MemberExpression');
 		visit(node.object);
-		print('.'); 
-		visit(node.property); 
+		htmlPrint('.', 'operand dot');
+//		print('.'); 
+		visit(node.property); 	
+		htmlClose();
 	}
 
 ,	"ThisExpression": function(node) {
-		print('this');  
+		htmlOpen('ThisExpression');
+//		print('this');  
+		htmlPrint('this', 'keyword keyword-this');		
+		htmlClose();
 	}
 
 ,	"SequenceExpression": function(node) {
