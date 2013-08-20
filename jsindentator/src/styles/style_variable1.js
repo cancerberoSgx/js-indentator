@@ -47,6 +47,9 @@ if(!ns.styles)
  * 3) and the _ underscore library object. 
  * See ns.evalStr sources for looking at what is exactly done. 
  * 
+ * * TODO: 
+ * * configuration option for "always use curly braces in blocks" (even if they are not mandatory). Currently this always uses curly braces.
+ * * the same for mandatory colons.  
  */
  
 var variable1DefaultConfig = ns.config = { /* this style's configuration is defined in its own config namespace */

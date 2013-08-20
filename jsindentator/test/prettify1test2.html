@@ -1,0 +1,233 @@
+<!-- similar to prettify1test but with real CSS not configurable by the user.  -->
+
+<!doctype html>
+
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+<title>formatting js test1</title>
+
+<!-- load javascript dependencies -->
+<script src="../lib/esprima.js" type="text/javascript"></script>
+<script src="../lib/underscore.js" type="text/javascript"></script>
+
+<!-- <script src="../../build/js-indentator-all.min.js" type="text/javascript"></script> -->
+
+<script src="../src/jsindentator.js" type="text/javascript"></script>
+<script src="../src/styles/style_prettify1.js" type="text/javascript"></script>
+
+
+<script src="jquery/jquery-2.0.3.min.js" type="text/javascript"></script>
+<script src="bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+<link href="bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+
+<style type="text/css">
+body {
+	font-size: 13px;
+}
+
+textarea {
+	width: 99%;
+	height: 220px;
+	-moz-tab-size: 4;
+	-o-tab-size: 4;
+	-webkit-tab-size: 4;
+	tab-size: 4;
+	font-family: monospace;
+	font-size: 12px;
+}
+#output1{width: 100%; display: block; }
+
+.textbox {
+	display: inline;
+	width: 40%
+}
+
+h4 { */
+	display: block;
+	font-size: 1.1em;
+	margin: 0;
+	padding: 0;
+}
+
+.outputcode {
+	height: 500px;
+}
+
+
+
+
+/* warning, the CSS property 'content' do not work here and can be very useful 
+	in this case, but it should work in a pure CSS stylesheet. In fact, don't use 
+	this text area example, use a .css !! this is only for demo purposes*/ 
+b {
+	display: inline; 
+	font-size: 1.0em; 
+	font-family: monospace; 
+	font-weight: normal; font-style: 0; text-decoration: 0;
+}
+/* .keyword:after{content: '\A'} */
+
+.keyword {
+	padding-right: 1.5em; 	
+}
+.BlockStatement{
+/* 	display: block; */
+/* 	margin-left: 2.1em; */
+}
+/*
+.expression{font-style: italic; text-decoration: 0; }
+.statement{font-style: 0;text-decoration: underline; }*/
+.operand, .comma{color: red; ; padding-left: 1.5em; padding-right: 1.5em; }
+.comma{padding-left: 0;}
+
+.Identifier{color: green;}
+
+.keyword{color: blue; }
+
+.Literal{color: #c3a63f; }
+
+.paren-left, .paren-right, 
+.square-left, .square-right, 
+.curly-left, .curly-right {
+	color: pink; 
+}
+
+
+</style>
+
+</head>
+
+<body>
+	<div class="container">
+
+		<div class="row">
+
+			<div class="span2">
+				<button id="doitButton" class="btn-large">do it!</button>
+			</div>
+			<div class="span10">
+				<h3>JavaScript Code prettifier</h3>
+			</div>
+		</div>
+
+
+		<p>Please paste your JavaScript code in the first text area and
+			press "do it". </p>
+
+
+		<div class="row">
+			<div class="span12">
+
+				<div class="textbox">
+					<h4>Original Code</h4>
+					<textarea id="input">
+var a='work in progress!!', b=false, obj1={a: [2,3,4],b:true,c:1.23,d: {e:1.23,f:"hello", f1: function(a, b, c){var v2=1; /*com1*/switch(v2){case 0: (function(a){alert(a); })(2); break; case 1: alert('good'); break; default: alert('def'); }; return a*b+c; }}};
+var s1="seba"; var r = window?'inabrowser':'notabrowser', ol = (function(n){var c = 15; for(var i in o){alert(i+'='+o[i])};  while(c!=0){ this.y=( --c )*n; }; do {alert('error')} while(true){}{}})(9);
+</textarea>
+				</div>
+			</div>
+
+<!-- 			<div class="span7"> -->
+
+<!-- 				<h4>Prettify CSS</h4> -->
+<!-- 				<p>You can edit this style that will apply to prettify generated markup.</p> -->
+<!-- 				<textarea id="config">		</textarea> -->
+<!-- 		<label><input type="checkbox" id="applyConfigCheckbox"></input>Apply this configuration</label> -->
+		
+
+<!-- 			</div> -->
+
+		</div>
+
+		<ul class="nav nav-tabs" id="myTab">
+			<li class="active"><a href="#home">Prettify 1</a></li>
+<!-- 			<li><a href="#profile">Prettify 2</a></li> -->
+<!-- 			<li><a href="#messages">Style 1</a></li> -->
+<!-- 			<li><a href="#variableStyle1">Variable Style 1</a></li> -->
+		</ul>
+
+		<div class="tab-content">
+
+			<div class="tab-pane active" id="home">
+				<h4>Prettify Style 1</h4>
+<!-- 				<textarea id="output1" class="outputcode"></textarea> -->
+				<div id="output1"></div>
+			</div>
+
+<!-- 			<div class="tab-pane" id="profile"> -->
+<!-- 				<h4>Prettify Style - 2</h4> -->
+<!-- 				<textarea id="output2" class="outputcode"></textarea> -->
+<!-- 			</div> -->
+			
+		</div>
+
+	</div>
+
+	<script>
+		function escapeHTML(html) {
+			html = html.replace(/[<>]/g, function(match) {
+				if (match === '<')
+					return '&lt;';
+				else
+					return '&gt;';
+			});
+			return html;
+		}; 
+		var doit = function(e) {
+// 			var css=jQuery('#config').val(); 
+// 			$('<style>'+jQuery('#config').val()+'</style>').appendTo('head'); 
+
+			var config = {}; 
+			var code = jQuery('#input').val() || jQuery('#input').html();
+			var indentedCode = "";
+
+			jsindentator.setStyle(jsindentator.styles.prettify1);
+			indentedCode = jsindentator.main(code, config);
+			jQuery('#output1').html(indentedCode);
+
+// 			jsindentator.setStyle(jsindentator.styles.clean);
+// 			indentedCode = escapeHTML(jsindentator.main(code, config));
+// 			jQuery('#output2').html(indentedCode);
+
+// 			jsindentator.setStyle(jsindentator.styles.style2);
+// 			indentedCode = escapeHTML(jsindentator.main(code, config));
+// 			jQuery('#output3').html(indentedCode);
+
+// 			jsindentator.setStyle(jsindentator.styles.variable1);
+// 			indentedCode = escapeHTML(jsindentator.main(code, config));
+// 			jQuery('#variableStyle1Output1').html(indentedCode);
+
+		};
+		jQuery('#doitButton').click(doit);
+		doit();
+		$('#myTab a').click(function(e) {
+			e.preventDefault();
+			$(this).tab('show');
+		});
+		$('#myTab a:last').tab('show');
+		
+		
+		// //textarea auto focus - http://stackoverflow.com/questions/5797539/jquery-select-all-text-from-a-textarea
+		// var selectAll= function() {
+		//     var $this = $(this);
+		//     $this.select();
+
+		//     // Work around Chrome's little problem
+		//     $this.mouseup(function() {
+		//         // Prevent further mouseup intervention
+		//         $this.unbind("mouseup");
+		//         return false;
+		//     });
+		// }; 
+		// $("textarea").focus(selectAll);
+		// $("textarea").click(selectAll);
+
+		// 
+	</script>
+
+</body>
+
+</html>

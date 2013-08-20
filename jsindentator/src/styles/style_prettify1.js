@@ -1,6 +1,9 @@
 /*
  * a very basic javascript code prettifier to HTML using js-indentator. Available CSS class names: 
  * 
+ * TODO: 
+ * * configuration option for "always use curly braces in blocks" (even if they are not mandatory). Currently this always uses curly braces.
+ * * the same for mandatory colons.  
 	operators:
 	operand, colon, semicolon, paren, curly, coma
 	
@@ -38,7 +41,7 @@ var htmlOpen = function(classes) {
 jsindentator.styles.prettify1 = {
 	
 	"VariableDeclaration" : function(node, config) {		
-		htmlOpen('VariableDeclaration '+((config&&config.noFirstNewLine)?' noNewLine':'')); 
+		htmlOpen('VariableDeclaration declaration'+((config&&config.noFirstNewLine)?' noNewLine':'')); 
 		if(!config || !config.noFirstNewLine) //var decls in for stmts
 			indent(); 
 		htmlPrint('var', 'keyword-var keyword'); 
@@ -87,7 +90,7 @@ jsindentator.styles.prettify1 = {
 		htmlPrint(node.name, 'Identifier');
 	}
 ,	"FunctionExpression": function(node) {
-		htmlOpen('FunctionExpression'); 
+		htmlOpen('FunctionExpression expression'); 
 //		print('function ');
 		htmlPrint('function', 'keyword-function keyword');
 		visit(node.id);
@@ -122,14 +125,14 @@ jsindentator.styles.prettify1 = {
 		htmlClose();	
 	}
 ,	"BlockStatement": function(node) {	
-		htmlOpen('BlockStatement'); 
+		htmlOpen('BlockStatement statement'); 
 		for ( var i = 0; i < node.body.length; i++) {
 			visit(node.body[i]);
 		}
 		htmlClose();
 	}
 ,	"UpdateExpression": function(node) {
-		htmlOpen('UpdateExpression'); 
+		htmlOpen('UpdateExpression expression'); 
 		if(node.prefix) {
 //			print(node.operator);
 			htmlPrint(node.operator, 'operator');	
@@ -167,13 +170,14 @@ jsindentator.styles.prettify1 = {
 		htmlClose();
 	}
 ,	"ArrayExpression": function(node) {
-		htmlOpen('ArrayExpression'); 
+		htmlOpen('ArrayExpression expression'); 
 //		print('[');
 		htmlPrint('[', 'square-left');	
 		for ( var i = 0; i < node.elements.length; i++) {
 			visit(node.elements[i]);
 			if(i < node.elements.length-1)
-				print(', ');
+//				print(', ');
+				htmlPrint(',', 'comma operand'); 
 		}
 //		print(']'); 
 		htmlPrint(']', 'square-right');
@@ -181,7 +185,7 @@ jsindentator.styles.prettify1 = {
 	}
 
 ,	"ExpressionStatement": function(node) {
-		htmlOpen('ExpressionStatement'); 
+		htmlOpen('ExpressionStatement statement'); 
 //		indent(); 
 		visit(node.expression);
 //		print(';'); 
@@ -189,7 +193,7 @@ jsindentator.styles.prettify1 = {
 		htmlClose();
 	}
 ,	"CallExpression": function(node) {
-		htmlOpen('CallExpression'); 
+		htmlOpen('CallExpression expression'); 
 		if(node.callee.type==="FunctionExpression"){//hack - parenthesis around functions
 //			print('(');		
 			htmlPrint('(', 'paren-left'); 
@@ -214,7 +218,7 @@ jsindentator.styles.prettify1 = {
 		htmlClose();
 	}
 ,	"BinaryExpression": function(node) {
-		htmlOpen('BinaryExpression');
+		htmlOpen('BinaryExpression expression');
 		visit(node.left); 
 		htmlPrint(node.operator, 'operand');
 //		print(' '+node.operator+' '); 
@@ -223,7 +227,7 @@ jsindentator.styles.prettify1 = {
 	}
 
 ,	"ObjectExpression": function(node) {
-		htmlOpen('ObjectExpression');
+		htmlOpen('ObjectExpression expression');
 		if(node.properties.length===0) {
 //			print('{}'); 
 			htmlPrint('{', 'curly-left');	
@@ -255,7 +259,7 @@ jsindentator.styles.prettify1 = {
 		htmlClose();
 	}
 ,	"ReturnStatement": function(node) {
-		htmlOpen('ReturnStatement');
+		htmlOpen('ReturnStatement statement');
 //		indent();	
 //		print('return '); 
 		htmlPrint('return', 'keyword keyword-return');
@@ -265,7 +269,7 @@ jsindentator.styles.prettify1 = {
 		htmlClose();
 	}
 ,	"ConditionalExpression": function(node) {
-		htmlOpen('ConditionalExpression');
+		htmlOpen('ConditionalExpression expression');
 		visit(node.test); 
 //		print(' ? '); 
 		htmlPrint('?', 'question operand');
@@ -277,7 +281,7 @@ jsindentator.styles.prettify1 = {
 	}
 
 ,	"SwitchStatement": function(node) {
-		htmlOpen('SwitchStatement');
+		htmlOpen('SwitchStatement statement');
 //		indent();
 		
 //		print('switch');
@@ -314,13 +318,13 @@ jsindentator.styles.prettify1 = {
 		htmlClose();
 	}
 ,	"EmptyStatement": function(node) {
-		htmlOpen('EmptyStatement');
+		htmlOpen('EmptyStatement statement');
 //		print(';'); 
 		htmlPrint(';', 'semicolon');
 		htmlClose();
 	}
 ,	"BreakStatement": function(node) {
-		htmlOpen('EmptyStatement');
+		htmlOpen('BreakStatement statement');
 		htmlPrint('break', 'keyword keyword-break');
 		htmlPrint(';', 'semicolon');		
 		htmlClose();
@@ -331,7 +335,7 @@ jsindentator.styles.prettify1 = {
 ,	"WhileStatement": function(node) {
 //		indent(); 
 //		print('while ( ');
-		htmlOpen('EmptyStatement');
+		htmlOpen('WhileStatement statement');
 		htmlPrint('(', 'paren-left');		
 		visit(node.test); 
 //		print(' ) ');
@@ -344,18 +348,19 @@ jsindentator.styles.prettify1 = {
 		ns.blockCount--;		
 //		indent();
 //		print('}'); 		
-		htmlPrint('}', 'curly-right');	
-
+		htmlPrint('}', 'curly-right');
+		htmlPrint(';', 'semicolon');
+		htmlClose(); 
 	}
 ,	"AssignmentExpression": function(node) {
-		htmlOpen('MemberExpression');
+		htmlOpen('AssignmentExpression expression');
 		visit(node.left);
 		print(' '+node.operator+' '); 
 		visit(node.right); 	
 		htmlClose();
 	}
 ,	"MemberExpression": function(node) {
-		htmlOpen('MemberExpression');
+		htmlOpen('MemberExpression expression');
 		visit(node.object);
 		htmlPrint('.', 'operand dot');
 //		print('.'); 
@@ -364,201 +369,289 @@ jsindentator.styles.prettify1 = {
 	}
 
 ,	"ThisExpression": function(node) {
-		htmlOpen('ThisExpression');
+		htmlOpen('ThisExpression expression');
 //		print('this');  
 		htmlPrint('this', 'keyword keyword-this');		
 		htmlClose();
 	}
 
 ,	"SequenceExpression": function(node) {
-		print('( ');   
+		htmlOpen('SequenceExpression expression');
+//		print('( ');   
+		htmlPrint('(', 'paren-left');	
 		for ( var i = 0; i < node.expressions.length; i++) {
 			visit(node.expressions[i]);
 			if(i < node.expressions.length-1)
-				print(', ');
+//				print(', ');
+				htmlPrint(',', 'comma operand');
 		}
-		print(' )');
+//		print(' )');
+		htmlPrint(')', 'paren-right');	
+		htmlClose();
 	}
 ,	"DoWhileStatement": function(node) {
-		indent();
-		print('do');
-		
 //		indent();
-		print('{')
+		htmlOpen('DoWhileStatement statement');
+//		print('do');
+		htmlPrint('do', 'keyword keyword-do');
+//		indent();
+//		print('{')
+		htmlPrint('{', 'curly-left');
 		ns.blockCount++;
 		visit(node.body);
 		ns.blockCount--;
-		indent();
-		print('} ');	
 //		indent();
-		
-		print('while ( ');
+//		print('} ');
+		htmlPrint('}', 'curly-right');
+//		indent();		
+//		print('while ( ');
+		htmlPrint('while', 'keyword keyword-while');
+		htmlPrint('(', 'paren-left');
 		visit(node.test);
-		print(' );');
+//		print(' );');
+		htmlPrint(')', 'paren-right');
+		htmlPrint(';', 'semicolon');
+		htmlClose(); 
 	}
 ,	"NewExpression": function(node) {
-		print('new '); 
+		htmlOpen('NewExpression expression');
+//		print('new '); 
+		htmlPrint('new', 'keyword keyword-new');
 		visit(node.callee); 
-		print('('); 
+//		print('('); 
+		htmlPrint('(', 'paren-left');
 		for ( var i = 0; i < node.arguments.length; i++) {
 			visit(node.arguments[i]);
 			if(i < node.arguments.length-1)
-				print(', ');
+//				print(', ');
+				htmlPrint(',', 'comma operand');
 		}
-		print(')'); 
+//		print(')');
+		htmlPrint(')', 'paren-right'); 
+		htmlClose(); 
 	}
 ,	"WithStatement": function(node) {
-		indent();
-		print('with ( '); 
-		visit(node.object); 
-		print(' )'); 
+		htmlOpen('WithStatement statement');
 //		indent();
-		print(' {')
+//		print('with ( '); 
+		htmlPrint('with', 'keyword keyword-with');
+		htmlPrint('(', 'paren-left');
+		visit(node.object); 
+//		print(' )'); 
+//		indent();
+		htmlPrint(')', 'paren-right');
+//		print(' {')
+		htmlPrint('{', 'curly-left');
 		ns.blockCount++;
 		visit(node.body);
 		ns.blockCount--;
-		indent();
-		print('};');	
-		indent();
+//		indent();
+//		print('};');
+		htmlPrint('}', 'curly-right');
+		htmlPrint(';', 'semicolon');		
+//		indent();
+		htmlClose(); 
 	}
 ,	"IfStatement": function(node, config) {
-		if(!config || !config.noFirstNewLine)
-			indent(); 
-		print('if ( '); 
+		htmlOpen('IfStatement statement '+((config&&config.noFirstNewLine)?' noNewLine':'')); 
+//		if(!config || !config.noFirstNewLine)
+//			indent(); 
+//		print('if ( '); 
+		htmlPrint('if', 'keyword keyword-if');
+		htmlPrint('(', 'paren-left');
 		visit(node.test); 
-		print(' )'); 
+//		print(' )'); 
 //		indent();
-		
-		print(' { ');
+		htmlPrint(')', 'paren-right');
+//		print(' { ');
+		htmlPrint('{', 'curly-left');
 		ns.blockCount++;
 		visit(node.consequent);
 		ns.blockCount--;
-		indent();
-		print('}');
-
+//		indent();
+//		print('}');
+		htmlPrint('}', 'curly-right');
+		
 		if(node.alternate) {
-			indent();
-			print('else ');
+//			indent();
+//			print('else ');
+			htmlPrint('else', 'keyword keyword-else');
 			if(node.alternate.test==null) {
 //				indent();
-				print(' {');
+//				print(' {');
+				htmlPrint('{', 'curly-left');
 				ns.blockCount++;
 			}
 			visit(node.alternate, {noFirstNewLine: true});
 			if(node.alternate.test==null) {
 				ns.blockCount--;
-				indent();
-				print('}');
+//				indent();
+//				print('}');
+				htmlPrint('}', 'curly-right');
 			}
 		}
+		htmlClose(); 
 	}
 
 ,	"FunctionDeclaration": function(node, config) {
-		indent(); 
-		print('function ');
+		htmlOpen('FunctionDeclaration declaration');
+//		indent(); 
+//		print('function ');
+		htmlPrint('function', 'keyword keyword-function');
 		visit(node.id); 
-		print(' ( '); 
+//		print(' ( ');
+		htmlPrint('(', 'paren-left'); 
 		if(node.params) for ( var i = 0; i < node.params.length; i++) {
 			visit(node.params[i]); 
 			if(i< node.params.length-1)
-				print(', '); 		 
+//				print(', '); 	
+				htmlPrint(',', 'comma operand');	 
 		}
-		print(' ) '); 
+//		print(' ) '); 
+		htmlPrint(')', 'paren-right');
 //		indent();
-		print('{');
+//		print('{');
+		htmlPrint('{', 'curly-left');
 		ns.blockCount++;
 		visit(node.body); 
 		ns.blockCount--;
-		indent();
-		print('}');
+//		indent();
+//		print('}');
+		htmlPrint('}', 'curly-right');
+		htmlClose(); 
 	}
 ,	"UnaryExpression": function(node) {
-		print(node.operator+" ");
+		htmlOpen('UnaryExpression expression');
+//		print(node.operator+" ");
+		htmlPrint(node.operator, 'operand');
 		visit(node.argument); 
+		htmlClose(); 
 	}
 ,	"LogicalExpression": function(node) {
+		htmlOpen('LogicalExpression expression');
 		visit(node.left); 
-		print(' '+node.operator+' '); 
+//		print(' '+node.operator+' '); 
+		htmlPrint(node.operator, 'operand');
 		visit(node.right); 
+		htmlClose(); 
 	}
 
 ,	"TryStatement": function(node) {
-		indent();
-		print('try');
+		htmlOpen('TryStatement statement');
 //		indent();
-		print(' {');
+//		print('try');
+		htmlPrint('try', 'keyword keyword-try');
+//		indent();
+//		print(' {');
+		htmlPrint('{', 'curly-left');
 		ns.blockCount++;
 		visit(node.block); 
 		ns.blockCount--;
-		indent();
-		print('}');
+//		indent();
+//		print('}');
+		htmlPrint('}', 'curly-right');
 		for ( var i = 0; i < node.handlers.length; i++) {
 			visit(node.handlers[i]); 
 		}
 		if(node.finalizer) {
-			indent();
-			print('finally'); 
 //			indent();
-			print(' {');
+//			print('finally'); 
+			htmlPrint('finally', 'keyword keyword-finally');
+//			indent();
+//			print(' {');
+			htmlPrint('{', 'curly-left');
 			ns.blockCount++;
 			visit(node.finalizer); 
 			ns.blockCount--;
-			indent();
-			print('}');
+//			indent();
+//			print('}');
+			htmlPrint('}', 'curly-right');
 		}
+		htmlPrint(';', 'semicolon');
+		htmlClose(); 
 	}
 ,	"CatchClause": function(node) {
+		htmlOpen('CatchClause');
 //		console.log(node); 
-		indent();
-		print('catch ( '); 
+//		indent();
+//		print('catch ( '); 
+		htmlPrint('catch', 'keyword keyword-catch');
+		htmlPrint('(', 'paren-left'); 
 		node.param && visit(node.param); 
 //		if(node.params) for ( var i = 0; i < node.params.length; i++) {
 //			visit(node.params[i]); 
 //			if(i< node.params.length-1)
 //				print(', '); 		 
 //		}
-		print(' )');
+//		print(' )');
+		htmlPrint(')', 'paren-eight'); 
 //		indent();
-		print(' {');
+//		print(' {');
+		htmlPrint('{', 'curly-left');
 		ns.blockCount++;
 		visit(node.body); 
 		ns.blockCount--;
-		indent();
-		print('}');
+//		indent();
+//		print('}');
+		htmlPrint('}', 'curly-right');
+		htmlClose(); 
 	}
 ,	"ThrowStatement": function(node) {
-		indent();
-		print('throw '); 
+		htmlOpen('ThrowStatement statement');
+//		indent();
+//		print('throw '); 
+		htmlPrint('throw', 'keyword keyword-throw');
 		visit(node.argument);
-		print(';')
+//		print(';')
+		htmlPrint(';', 'semicolon');
+		htmlClose(); 
 	}
 ,	"ForInStatement": function(node) {
-		indent();
-		print("for ( "); 
+		htmlOpen('ForInStatement statement');
+//		indent();
+//		print("for ( "); 
+		htmlPrint('for', 'keyword keyword-for');
+		htmlPrint('(', 'paren-left'); 
 		visit(node.left, {noFirstNewLine: true, noLastSemicolon: true}); 	
-		print(' in '); 
+//		print(' in '); 
+		htmlPrint('in', 'keyword keyword-in');
 		visit(node.right); 
-		print(' )')
+//		print(' )')
+		htmlPrint(')', 'paren-right'); 
 		
 //		indent();
-		print(' {');
+//		print(' {');
+		htmlPrint('{', 'curly-left');
 		ns.blockCount++;
 		visit(node.body); 
 		ns.blockCount--;
-		indent();
-		print('}');
+//		indent();
+//		print('}');
+		htmlPrint('}', 'curly-right');
+		htmlClose(); 
 	}
 ,	"ContinueStatement": function(node){
-		indent();
-		print('continue;'); 
+		htmlOpen('ContinueStatement statement');
+//		indent();
+//		print('continue;'); 
+		htmlPrint('continue', 'keyword keyword-continue');
+		htmlClose(); 
 	}
 
 ,	"Block": function(node) {/* support for block comments like this one*/
-		indent();
-		print('/* '); 
+		htmlOpen('Block comment'); 
+//		indent();		
+//		print('/* ');
+		htmlPrint('/*', 'block-comment-start'); 
+		
+		htmlOpen('comment-value'); 
 		print(node.value); 
-		print(' */'); 
+		htmlClose();
+		
+//		print(' */'); 
+		htmlPrint('*/', 'block-comment-end'); 
 //		indent(); 
+		htmlClose();
 	}
 ,	"Line": function(node) {//support for line comments like this one
 		indent(); 
