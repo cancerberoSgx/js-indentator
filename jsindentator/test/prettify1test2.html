@@ -40,11 +40,6 @@ textarea {
 }
 #output1{width: 100%; display: block; }
 
-.textbox {
-	display: inline;
-	width: 40%
-}
-
 h4 { */
 	display: block;
 	font-size: 1.1em;
@@ -52,48 +47,70 @@ h4 { */
 	padding: 0;
 }
 
-.outputcode {
-	height: 500px;
-}
 
-
-
-
-/* warning, the CSS property 'content' do not work here and can be very useful 
-	in this case, but it should work in a pure CSS stylesheet. In fact, don't use 
-	this text area example, use a .css !! this is only for demo purposes*/ 
+/*general */
 b {
-	display: inline; 
 	font-size: 1.0em; 
 	font-family: monospace; 
 	font-weight: normal; font-style: 0; text-decoration: 0;
 }
-/* .keyword:after{content: '\A'} */
 
-.keyword {
-	padding-right: 1.5em; 	
+/*statements and blocks */
+.BlockStatement, 
+.SwitchCase, 
+.ObjectProperty {
+	display: block;
+	margin-left: 2.1em;
 }
-.BlockStatement{
-/* 	display: block; */
-/* 	margin-left: 2.1em; */
+.semicolon{padding-right: 1.5em;}
+.statement, 
+.declaration { 
+	display: block;
 }
-/*
-.expression{font-style: italic; text-decoration: 0; }
-.statement{font-style: 0;text-decoration: underline; }*/
-.operand, .comma{color: red; ; padding-left: 1.5em; padding-right: 1.5em; }
-.comma{padding-left: 0;}
+.EmptyStatement{
+	display: inline;
+}
+.Block, .Line {display: block;}
 
-.Identifier{color: green;}
 
-.keyword{color: blue; }
 
-.Literal{color: #c3a63f; }
+/* operands */
+
+.operand{
+	color: red; 
+	padding-right: 1.5em; 
+}
+.comma{
+	color: red; 
+	padding-right: 1.5em; 
+}
+.dot{
+	padding: 0;
+}
+
+
+.Identifier{
+	color: green;
+	padding-right: 1.5em;
+}
+.keyword{
+	color: blue;
+	padding-right: 1.5em; 
+}
+
+.Literal{
+	color: #c3a63f; 
+}
 
 .paren-left, .paren-right, 
 .square-left, .square-right, 
 .curly-left, .curly-right {
 	color: pink; 
 }
+
+
+.noNewLine{display: inline;}/*must be at last*/
+
 
 
 </style>
@@ -124,9 +141,34 @@ b {
 				<div class="textbox">
 					<h4>Original Code</h4>
 					<textarea id="input">
-var a='work in progress!!', b=false, obj1={a: [2,3,4],b:true,c:1.23,d: {e:1.23,f:"hello", f1: function(a, b, c){var v2=1; /*com1*/switch(v2){case 0: (function(a){alert(a); })(2); break; case 1: alert('good'); break; default: alert('def'); }; return a*b+c; }}};
-var s1="seba"; var r = window?'inabrowser':'notabrowser', ol = (function(n){var c = 15; for(var i in o){alert(i+'='+o[i])};  while(c!=0){ this.y=( --c )*n; }; do {alert('error')} while(true){}{}})(9);
-</textarea>
+var obj1={a: [2,3,4],b:true,c:1.23,d: {e:1.23,f:"hello", f1: function(a, b, c){var v2=1; /* before this switch */switch(v2){case 0: (function(a){})(2); break; case 1: alert('good'); break; default: alert('def'); }; return a*b+c; }}};
+var s1="seba"; var r = window?'inabrowser':'notabrowser', ol = (function(n){var c = 15; while(c!=0){ this.y=( --c )*n; }; do {alert('error')} while(true){}{}})(9);
+var a=0; 
+/* hello world */
+var b = 0; 
+if(true) false; 
+if("".length===1 && a != "Apple"){alert('pp'); }
+/*hello*/
+else if("".length==2){alert('ee'); }
+//world
+else if("".length==3){alert('33e'); }
+else if("".length==4)alert('44'); 
+else {alert('kk'); }
+for(var i in o){alert(i+'='+o[i])};  
+for(var j=7; ; ) {if(false){continue; }else{break; }}; 
+try{"hello"; throw "error"; }
+catch(ex){"world"; alert(ex); }
+finally{alert('nightmare end')}
+var a = typeof Object; 
+function f1(a, b){alert('seb'); return a+b; };
+var o = {a: 1, b: 2};
+with (o) {  alert(a+b);}
+var Class1=function(name){this.name=name}; 
+Class1.prototype.sayHello=function(){return "hello "+this.name; };
+var c1 = new Class1('albert');   
+eval("alert('helloworld');"); 
+var f=function(a){for(var i=0;i!=10;i++){alert(i);}}; 
+var s=2,f=function namedf(a){}; </textarea>
 				</div>
 			</div>
 

@@ -1,14 +1,21 @@
 /*
- * a very basic javascript code prettifier to HTML using js-indentator. Available CSS class names: 
+ * This is a pure HTML Javascript prettifier identifying AST node types with HTML class names and preserving the AST structure in HTML. 
  * 
- * TODO: 
- * * configuration option for "always use curly braces in blocks" (even if they are not mandatory). Currently this always uses curly braces.
- * * the same for mandatory colons.  
+ * No extra spaces for indentation are added to the markup, only the necessary so this means the spacing must be done in CSS or 
+ * dynamically changing the DOM (for example using jquery). 
+ * 
+ * Available CSS class names:
+ * <pre>
 	operators:
 	operand, colon, semicolon, paren, curly, coma
 	
 	keywords: 
 	keyword keyword-return keyword-function, keyword-var keyword-for, etc
+	 </pre>
+ * 
+ * TODO: 
+ * * configuration option for "always use curly braces in blocks" (even if they are not mandatory). Currently this always uses curly braces.
+ * * the same for mandatory colons.  
 
  */
 (function() {
@@ -239,10 +246,12 @@ jsindentator.styles.prettify1 = {
 		ns.blockCount++;
 //		indent();
 		for ( var i = 0; i < node.properties.length; i++) {
-			var p = node.properties[i];			
+			var p = node.properties[i];	
+			/* adding an artificial class : object-property*/
+			htmlOpen('ObjectProperty');
 			visit(p.key); 
 //			print(': '); 
-			htmlPrint(node.operator, 'operand colon');
+			htmlPrint(':', 'operand colon');
 			visit(p.value);
 			if(i < node.properties.length-1) {
 //				ns.print(ns.newline); 
@@ -251,6 +260,7 @@ jsindentator.styles.prettify1 = {
 				htmlPrint(',', 'comma operand');
 //				indent();
 			}
+			htmlClose();
 		}
 		ns.blockCount--;
 //		indent();
@@ -336,6 +346,7 @@ jsindentator.styles.prettify1 = {
 //		indent(); 
 //		print('while ( ');
 		htmlOpen('WhileStatement statement');
+		htmlPrint('while', 'keyword keyword-while');
 		htmlPrint('(', 'paren-left');		
 		visit(node.test); 
 //		print(' ) ');
@@ -355,7 +366,8 @@ jsindentator.styles.prettify1 = {
 ,	"AssignmentExpression": function(node) {
 		htmlOpen('AssignmentExpression expression');
 		visit(node.left);
-		print(' '+node.operator+' '); 
+//		print(' '+node.operator+' '); 
+		htmlPrint(node.operator, 'operand');
 		visit(node.right); 	
 		htmlClose();
 	}
@@ -654,10 +666,13 @@ jsindentator.styles.prettify1 = {
 		htmlClose();
 	}
 ,	"Line": function(node) {//support for line comments like this one
-		indent(); 
-		print('// '); 
+//		indent(); 
+		htmlOpen('Line comment'); 
+		htmlPrint('//', 'line-comment-prefix'); 
+//		print('// '); 
 		print(node.value); 
-		indent(); 
+//		indent(); 
+		htmlClose();
 	}
 
 }	

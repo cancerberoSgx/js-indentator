@@ -36,12 +36,6 @@ textarea {
 	font-family: monospace;
 	font-size: 12px;
 }
-
-.textbox {
-	display: inline;
-	width: 40%
-}
-
 h4 { */
 	display: block;
 	font-size: 1.1em;
@@ -69,6 +63,22 @@ h4 { */
 				<h3>JavaScript Code prettifier</h3>
 			</div>
 		</div>
+		
+		 <a class="btn" data-toggle="collapse" data-target="#intro-sec">
+		     Read Some Notes
+		  </a>
+	
+		<div id="intro-sec" class="collapse in">
+			
+			<p>This is a pure html+CSS Javascript prettifier. HTML markup is very rich in classnames, 
+			and for each AST node an HTML element is created and structure is preserved in a straightforward way.</p>  
+			
+			<p>All the CSS style that give the prettify stuff like espaces, indenting and colors is available at the 
+			right and is editable by the user, just edit it and press the button "do it".  </p> 
+		 
+			<p>For more information go to the 
+			<a href="https://github.com/cancerberoSgx/js-indentator/blob/master/jsindentator/src/styles/style_prettify1.js">style_prettify1 indentator implementation sources</a>. </p>
+		</div>
 
 
 		<p>Please paste your JavaScript code in the first text area and
@@ -95,29 +105,59 @@ var s1="seba"; var r = window?'inabrowser':'notabrowser', ol = (function(n){var 
 /* warning, the CSS property 'content' do not work here and can be very useful 
 	in this case, but it should work in a pure CSS stylesheet. In fact, don't use 
 	this text area example, use a .css !! this is only for demo purposes*/ 
+
+/*general */
 b {
 	font-size: 1.0em; 
 	font-family: monospace; 
 	font-weight: normal; font-style: 0; text-decoration: 0;
 }
-.keyword {
-	padding-right: 1.5em; 	
-}
-.BlockStatement{
+
+/*statements and blocks */
+.BlockStatement, 
+.SwitchCase, 
+.ObjectProperty {
 	display: block;
 	margin-left: 2.1em;
 }
-/*
-.expression{font-style: italic; text-decoration: 0; }
-.statement{font-style: 0;text-decoration: underline; }*/
-.operand, .comma{color: red; ; padding-left: 1.5em; padding-right: 1.5em; }
-.comma{padding-left: 0;}
+.statement, 
+.declaration { 
+	display: block;
+}
+.EmptyStatement{
+	display: inline;
+}
+.Block, Line {display: block;}
 
-.Identifier{color: green;}
 
-.keyword{color: blue; }
 
-.Literal{color: #c3a63f; }
+/* operands */
+
+.operand{
+	color: red; 
+	padding-right: 1.5em; 
+}
+.comma{
+	color: red; 
+	padding-right: 1.5em; 
+}
+.dot{
+	padding: 0;
+}
+
+
+.Identifier{
+	color: green;
+	padding-right: 1.5em;
+}
+.keyword{
+	color: blue;
+	padding-right: 1.5em; 
+}
+
+.Literal{
+	color: #c3a63f; 
+}
 
 .paren-left, .paren-right, 
 .square-left, .square-right, 
@@ -125,6 +165,8 @@ b {
 	color: pink; 
 }
 
+
+.noNewLine{display: inline;}/*must be at last*/
 
 
 		</textarea>
@@ -200,6 +242,10 @@ b {
 			$(this).tab('show');
 		});
 		$('#myTab a:last').tab('show');
+
+		$(document).ready(function(){
+	        $(".collapse").collapse()
+		});
 		
 		
 		// //textarea auto focus - http://stackoverflow.com/questions/5797539/jquery-select-all-text-from-a-textarea
