@@ -4,7 +4,22 @@ js-indentator
 A javascript indentation tool based on esprima JavaScript parser that can be run on the browser 
 and on the desktop using nodejs. 
 
-Online Demo : http://cancerberosgx.github.io/js-indentator/jsindentator/test/formattingjstest1.html
+Online Demo
+=============
+http://cancerberosgx.github.io/js-indentator/jsindentator/test/formattingjstest1.html
+
+Compiling it
+=============
+Install nodejs on your system
+
+```
+cd jseditors
+npm install grunt
+npm install grunt-contrib-uglify
+grunt
+```
+If all goes fine, then files will be available under the dist/ folder. 
+
 
 *Warning*: this is a very new, fresh project, and it needs more testing before parsing production code. It is not ready, not yet.
  
