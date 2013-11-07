@@ -11,7 +11,14 @@
 <script src="../lib/underscore.js" type="text/javascript"></script>
 
 <!-- we will use all the styles of js-indent in this document so we only include -all.js file:   -->
-<script src="../../build/js-indentator-all.min.js" type="text/javascript"></script>
+<!-- <script src="../../build/js-indentator-all.min.js" type="text/javascript"></script> -->
+<script src="../src/jsindentator.js" type="text/javascript"></script>
+<script src="../src/styles/style_clean.js" type="text/javascript"></script>
+<script src="../src/styles/style_prettify1.js" type="text/javascript"></script>
+<script src="../src/styles/style_variable1.js" type="text/javascript"></script>
+<script src="../src/styles/style1.js" type="text/javascript"></script>
+<script src="../src/styles/style2.js" type="text/javascript"></script>
+<script src="../src/styles/jsdocgenerator1.js" type="text/javascript"></script>
 
 <!-- <script src="../src/jsindentator.js" type="text/javascript"></script> -->
 
@@ -209,9 +216,11 @@ VAR_COMMA_NEWLINE: 'return ns.Indent() + ",/*234*/" + ns.tab',
 
 		<ul class="nav nav-tabs" id="myTab">
 			<li class="active"><a href="#home">Style 2</a></li>
-			<li><a href="#profile">Minification</a></li>
-			<li><a href="#messages">Style 1</a></li>
+			<li><a href="#minify">Minification</a></li>
+			<li><a href="#style1">Style 1</a></li>
 			<li><a href="#variableStyle1">Variable Style 1</a></li>
+			
+			<li><a href="#jsdocgenerator1">Variable Style 1</a></li>
 		</ul>
 
 		<div class="tab-content">
@@ -221,12 +230,12 @@ VAR_COMMA_NEWLINE: 'return ns.Indent() + ",/*234*/" + ns.tab',
 				<textarea id="output3" class="outputcode"></textarea>
 			</div>
 
-			<div class="tab-pane" id="profile">
+			<div class="tab-pane" id="minify">
 				<h4>Clean Style - Minification</h4>
 				<textarea id="output2" class="outputcode"></textarea>
 			</div>
 
-			<div class="tab-pane" id="messages">
+			<div class="tab-pane" id="style1">
 				<h4>Nice Style 1</h4>
 				<textarea id="output1" class="outputcode"></textarea>
 			</div>
@@ -234,6 +243,12 @@ VAR_COMMA_NEWLINE: 'return ns.Indent() + ",/*234*/" + ns.tab',
 				<h4>Nice Style 1</h4>
 				<textarea id="variableStyle1Output1" class="outputcode"></textarea>
 			</div>
+			
+			<div class="tab-pane" id="jsdocgenerator1">
+				<h4>jsdocgenerator1</h4>
+				<textarea id="jsdocgenerator1Output1" class="outputcode"></textarea>
+			</div>
+			
 			
 		</div>
 
@@ -285,6 +300,13 @@ VAR_COMMA_NEWLINE: 'return ns.Indent() + ",/*234*/" + ns.tab',
 			jsindentator.setStyle(jsindentator.styles.variable1);
 			indentedCode = escapeHTML(jsindentator.main(code, config));
 			jQuery('#variableStyle1Output1').html(indentedCode);
+			
+			jsindentator.setStyle(jsindentator.styles.jsdocgenerator1);
+			indentedCode = escapeHTML(jsindentator.main(code, config));
+			jQuery('#jsdocgenerator1Output1').html(indentedCode);
+			
+			
+			
 
 		};
 		jQuery('#doitButton').click(doit);

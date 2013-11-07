@@ -17,6 +17,7 @@ grunt.initConfig({
 			,	'build/<%= pkg.name %>-style_clean.min.js' : [ 'jsindentator/src/styles/style_clean.js' ]
 			,	'build/<%= pkg.name %>-style_variable1.min.js' : [ 'jsindentator/src/styles/style_variable1.js' ]
 			,	'build/<%= pkg.name %>-style_prettify1.min.js' : [ 'jsindentator/src/styles/style_prettify1.js' ]
+			,	'build/<%= pkg.name %>-jsdocgenerator1.min.js' : [ 'jsindentator/src/styles/jsdocgenerator1.js' ]
 		
 			,	'build/<%= pkg.name %>-all.min.js' : [ 
 			 	    'jsindentator/src/jsindentator.js' 
@@ -24,7 +25,8 @@ grunt.initConfig({
                 ,	'jsindentator/src/styles/style2.js'
                 ,	'jsindentator/src/styles/style_clean.js'
                 ,	'jsindentator/src/styles/style_variable1.js'
-                ,	'jsindentator/src/styles/style_prettify1.js' 
+                ,	'jsindentator/src/styles/style_prettify1.js'
+                ,	'jsindentator/src/styles/jsdocgenerator1.js' 
                 ]
 			}
 		}

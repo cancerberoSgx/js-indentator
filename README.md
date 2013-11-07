@@ -10,15 +10,14 @@ http://cancerberosgx.github.io/js-indentator/jsindentator/test/formattingjstest1
 
 Compiling it
 =============
-Install nodejs on your system
+Install nodejs on your system and: 
 
 ```
-cd jseditors
-npm install grunt
-npm install grunt-contrib-uglify
+cd jsindentator
+npm install 
 grunt
 ```
-If all goes fine, then files will be available under the dist/ folder. 
+If all goes fine, then files will be available under the build/ folder. 
 
 
 *Warning*: this is a very new, fresh project, and it needs more testing before parsing production code. It is not ready, not yet.
@@ -27,6 +26,7 @@ If all goes fine, then files will be available under the dist/ folder.
 
 File test/formattingtest1.html show how to use all the build-in styles. In general it is: 
 
+```
 <!-- load javascript dependencies -->
 <script src="../lib/esprima.js" type="text/javascript"></script>
 <script src="../lib/underscore.js" type="text/javascript"></script>
@@ -39,13 +39,15 @@ because we can configure almost everithing using a josn object.  -->
 <!-- ......... -->
 
 <script>
-
 //Now the real usage code: 
 
 //first, the code we want to parse: 
 var code = 'var a = {b: 1, c: false, d: function(e,f){return "hello";}}';
 
+//now use the configured style_variable1 implementation for processing and get the output code.
+var pretty = jsindentator.main(code); 
 </script>
+```
 
 See test/*.html files for more examples. 
 

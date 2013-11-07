@@ -75,29 +75,37 @@
 			catch(ex){
 				parseex=ex;
 			}
-			if(syntax==null) {
+			if(!syntax) {
 				console.log("JAVASCRIPT PARSING ERROR: "+parseex);
 				return; 
 			}
+			ns.syntax = syntax; 
 			ns.buffer = [];
-			ns._checkCommentsArray=syntax.comments; 
+//			ns.syntax.comments=syntax.comments; 
 //			console.log(syntax); 
 			_(syntax.body).each(function(node){
 				ns.visit(node); 
 			}); 
+			
+			//postRender
+			ns.buffer = ( ns.visitors.postRender && ns.visitors.postRender() ) || ns.buffer;
+			
 			return ns.buffer.join('');  
 		}
 	/* this is the public visit() method which all the visitors will call for sub concept instances, like for example the FunctionExpression will call for render its parameter expression and its body statements. the visit method will delegate to registered visitor for the given type of by default, if no visitor is registered for that concept it will just dump the original code. */ 
-	 ,	visit: function(node, config) {
+	 ,	visit: function(node, config, parentNode) {
 		 	if(!node) {
 //		 		console.log("WARNING - null node", node);
 		 		return; 
-		 	}
+		 	}	 	
+		 	
+		 	//do the visiting
 			var visitor = ns.visitors[node.type]; 
 //			console.log("visiting", node, ns.originalCode(node)); 
 			if(visitor) {
 				ns._checkComments(node);
-				visitor(node, config); 
+				visitor.apply(ns.visitors, [node, config]); 
+//				visitor(node, config); 
 			}
 			else {
 				var origCode = ns.originalCode(node);
@@ -105,15 +113,16 @@
 				ns.buffer.push(origCode);
 			}
 		}
-	 
+
+	 //in esprima there are no comment nodes, just comment meta information so we need to build the comments by our self. TODO: make this work OK. 
 	 ,	_checkComments: function(node) {
 		 	var previousNodeRange=ns._comments_currentNodeRange || [0,0]; 
 		 	ns._comments_currentNodeRange=node.range || [0,0]; 
 		 	
-		 	for ( var i = 0; i < ns._checkCommentsArray.length; i++) { //TODO: do it efficient- save previsou comment node.
-				var c = ns._checkCommentsArray[i]; 
+		 	for ( var i = 0; i < ns.syntax.comments.length; i++) { //TODO: do it efficient- save previsou comment node.
+				var c = ns.syntax.comments[i]; 
 //				console.log('COMPARING', c.range, previousNodeRange, ns._comments_currentNodeRange); 
-				if(c.range[0]>=previousNodeRange[1] && c.range[1]<=ns._comments_currentNodeRange[0]) {
+				if(c.range[0] >= previousNodeRange[1] && c.range[1] <= ns._comments_currentNodeRange[0]) {
 					ns.visit(c); 
 					break; 
 				}

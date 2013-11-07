@@ -1,9 +1,16 @@
 
 // in this code node name means javascript language ast nodes like expression, declaration, statement, etc, not DOM or xml nodes!
+// style clean can be used for those concrete data generation tools only for make sure every ast node is iterated. 
+// It also support the config.saveParents config prop for saving the parent node
 // TODO: only single line code supported !
 (function() {
-var ns = jsindentator, visit=ns.visit, print=ns.print; 
-if(!jsindentator.styles)jsindentator.styles={}; 
+var ns = jsindentator, print=ns.print; 
+if(!jsindentator.styles)jsindentator.styles={};
+var visit=function(child, config, parent) {
+	config=config||{};
+	config.parentNode=parent?parent:null;		
+	ns.visit(child, config)
+}
 jsindentator.styles.clean = {
 	
 	"VariableDeclaration" : function(node, config) {
@@ -17,7 +24,7 @@ jsindentator.styles.clean = {
 			print(';'); 
 	}
 
-,	"VariableDeclarator" : function(node) {
+,	"VariableDeclarator" : function(node, config) {
 //		ns.print(node.id.name);
 		visit(node.id);
 		if(node.init) {
