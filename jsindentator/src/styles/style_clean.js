@@ -6,17 +6,18 @@
 (function() {
 var ns = jsindentator, print=ns.print; 
 if(!jsindentator.styles)jsindentator.styles={};
-var visit=function(child, config, parent) {
-	config=config||{};
-	config.parentNode=parent?parent:null;		
-	ns.visit(child, config)
-}
+var visit=ns.visit;
+//var visit=function(child, config, parent) {
+//	config=config||{};
+//	config.parentNode=parent?parent:null;		
+//	ns.visit(child, config)
+//}
 jsindentator.styles.clean = {
 	
 	"VariableDeclaration" : function(node, config) {
 		print('var '); 
 		for ( var i = 0; i < node.declarations.length; i++) {
-			visit(node.declarations[i]); 
+			visit(node.declarations[i], {}, node); 
 			if(i< node.declarations.length-1)
 				print(','); 		 
 		}
@@ -29,7 +30,7 @@ jsindentator.styles.clean = {
 		visit(node.id);
 		if(node.init) {
 			print("="); 
-			visit(node.init);
+			visit(node.init, {}, node);
 		}
 	}
 	
@@ -43,45 +44,45 @@ jsindentator.styles.clean = {
 	}
 ,	"FunctionExpression": function(node) {
 		print('function ');
-		visit(node.id);
+		visit(node.id, {}, node);
 		print('('); 
 		for( var i = 0; i < node.params.length; i++) {
-			visit(node.params[i]); 
+			visit(node.params[i], {}, node); 
 			if(i < node.params.length-1)
 				print(',');					
 		}
 		print('){');
 		ns.blockCount++;
-		visit(node.body); 
+		visit(node.body, {}, node); 
 		ns.blockCount--;
 		print('}'); 
 	}
 ,	"BlockStatement": function(node) {	
 		for ( var i = 0; i < node.body.length; i++) {
-			visit(node.body[i]);
+			visit(node.body[i], {}, node);
 		}
 	}
 ,	"UpdateExpression": function(node) {				  
 		if(node.prefix) {
 			print(node.operator);
-			visit(node.argument); 
+			visit(node.argument, {}, node); 
 		}
 		else {
-			visit(node.argument); 
+			visit(node.argument, {}, node); 
 			print(node.operator);
 		}
 	}
 ,	"ForStatement": function(node) {
 		print('for('); 
-		visit(node.init, {noFirstNewLine: true});
+		visit(node.init, {noFirstNewLine: true}, node);
 //				print('; '); 
-		visit(node.test);
+		visit(node.test, {}, node);
 		print(';');
-		visit(node.update);
+		visit(node.update, {}, node);
 		print('){'); 
 //				ns.printIndent(); 
 		ns.blockCount++;
-		visit(node.body);
+		visit(node.body, {}, node);
 		ns.blockCount--;
 //		ns.printIndent(); 
 		print('};'); 
@@ -89,7 +90,7 @@ jsindentator.styles.clean = {
 ,	"ArrayExpression": function(node) {	
 		print('['); 
 		for ( var i = 0; i < node.elements.length; i++) {
-			visit(node.elements[i]);
+			visit(node.elements[i], {}, node);
 			if(i < node.elements.length-1)
 				print(',');
 		}
@@ -102,20 +103,20 @@ jsindentator.styles.clean = {
 	}
 ,	"CallExpression": function(node) {	
 		if(node.callee.type==="FunctionExpression"){print('(');ns.blockCount++;}//hack - parenthesis around functions
-		visit(node.callee)
+		visit(node.callee, {}, node)
 		if(node.callee.type==="FunctionExpression"){print(')');ns.blockCount--;}//hack - parenthesis around functions
 		print('('); 
 		for ( var i = 0; i < node.arguments.length; i++) {
-			visit(node.arguments[i]);
+			visit(node.arguments[i], {}, node);
 			if(i < node.arguments.length-1)
 				print(',');
 		}
 		print(')'); 
 	}
 ,	"BinaryExpression": function(node) {
-		visit(node.left); 
+		visit(node.left, {}, node); 
 		print(node.operator==='in'?' in ':node.operator); 
-		visit(node.right); 
+		visit(node.right, {}, node); 
 	}
 
 ,	"ObjectExpression": function(node) {
@@ -124,9 +125,9 @@ jsindentator.styles.clean = {
 		for ( var i = 0; i < node.properties.length; i++) {
 			var p = node.properties[i];
 			
-			visit(p.key); //Identifier
+			visit(p.key, {}, node); //Identifier
 			print(':'); 
-			visit(p.value); //*Expression
+			visit(p.value, {}, node); //*Expression
 			if(i < node.properties.length-1) {
 				print(','); 
 			}
@@ -136,16 +137,16 @@ jsindentator.styles.clean = {
 	}
 ,	"ReturnStatement": function(node) {
 		print('return '); 
-		visit(node.argument); 
+		visit(node.argument, {}, node); 
 		print(';'); 
 	}
 
 ,	"ConditionalExpression": function(node) {
-		visit(node.test); 
+		visit(node.test, {}, node); 
 		print('?'); 
-		visit(node.consequent);
+		visit(node.consequent, {}, node);
 		print(':'); 
-		visit(node.alternate);
+		visit(node.alternate, {}, node);
 	}
 ,	"EmptyStatement": function(node) {
 		print(';'); 
@@ -153,19 +154,19 @@ jsindentator.styles.clean = {
 
 ,	"SwitchStatement": function(node) {
 		print('switch(');
-		visit(node.discriminant); 
+		visit(node.discriminant, {}, node); 
 		print('){');
 		for(var i = 0; i < node.cases.length; i++) {
-			visit(node.cases[i]); 
+			visit(node.cases[i], {}, node); 
 		}
 		print('}'); 
 	}
 ,	"SwitchCase": function(node) {
 		print(node.test==null ? 'default' : 'case ');
-		visit(node.test); 
+		visit(node.test, {}, node); 
 		print(':'); 
 		for(var i = 0; i < node.consequent.length; i++) {			
-			visit(node.consequent[i]); 
+			visit(node.consequent[i], {}, node); 
 		}
 	}
 ,	"BreakStatement": function(node) {
@@ -174,22 +175,22 @@ jsindentator.styles.clean = {
 
 ,	"WhileStatement": function(node) {
 		print('while(');
-		visit(node.test); 
+		visit(node.test, {}, node); 
 		print('){');
 		ns.blockCount++;
-		visit(node.body);
+		visit(node.body, {}, node);
 		ns.blockCount--;
 		print('}'); 
 	}
 ,	"AssignmentExpression": function(node) {
-		visit(node.left);
+		visit(node.left, {}, node);
 		print(node.operator); 
-		visit(node.right); 
+		visit(node.right, {}, node); 
 	}
 ,	"MemberExpression": function(node) {
-		visit(node.object);
+		visit(node.object, {}, node);
 		print('.'); 
-		visit(node.property); 
+		visit(node.property, {}, node); 
 	}
 
 ,	"ThisExpression": function(node) {
@@ -199,7 +200,7 @@ jsindentator.styles.clean = {
 ,	"SequenceExpression": function(node) {
 		print('(');   
 		for ( var i = 0; i < node.expressions.length; i++) {
-			visit(node.expressions[i]);
+			visit(node.expressions[i], {}, node);
 			if(i < node.expressions.length-1)
 				print(',');
 		}
@@ -207,18 +208,18 @@ jsindentator.styles.clean = {
 	}
 ,	"DoWhileStatement": function(node) {
 		print('do{');
-		visit(node.body);
+		visit(node.body, {}, node);
 		print("}while(");
-		visit(node.test);
+		visit(node.test, {}, node);
 		print(');');
 	}
 
 ,	"NewExpression": function(node) {
 		print('new '); 
-		visit(node.callee); 
+		visit(node.callee, {}, node); 
 		print('('); 
 		for ( var i = 0; i < node.arguments.length; i++) {
-			visit(node.arguments[i]);
+			visit(node.arguments[i], {}, node);
 			if(i < node.arguments.length-1)
 				print(',');
 		}
@@ -226,34 +227,34 @@ jsindentator.styles.clean = {
 	}
 ,	"WithStatement": function(node) {
 		print('with('); 
-		visit(node.object); 
+		visit(node.object, {}, node); 
 		print(')'); 
 		print('{')
 		ns.blockCount++;
-		visit(node.body);
+		visit(node.body, {}, node);
 		ns.blockCount--;
 		print('};');
 	}
 
 ,	"IfStatement": function(node, config) {
 		print('if('); 
-		visit(node.test); 
+		visit(node.test, {}, node); 
 		print(')'); 		
 		print('{');
 		ns.blockCount++;
-		visit(node.consequent);
+		visit(node.consequent, {}, node);
 		ns.blockCount--;
 		if(node.alternate) {
 			print('}else ');//TODO: this space can be better minified
 			if(node.alternate.test==null) {
 				print('{');
 				ns.blockCount++;	
-				visit(node.alternate, {noFirstNewLine: true});
+				visit(node.alternate, {noFirstNewLine: true}, node);
 				ns.blockCount--;
 				print('}');
 			}
 			else
-				visit(node.alternate, {noFirstNewLine: true});
+				visit(node.alternate, {noFirstNewLine: true}, node);
 		}
 	}
 
@@ -261,43 +262,43 @@ jsindentator.styles.clean = {
 		print('function');
 		if(node.id) {
 			print(' ');
-			visit(node.id); 
+			visit(node.id, {}, node); 
 		} 
 		print('('); 
 		if(node.params) for ( var i = 0; i < node.params.length; i++) {
-			visit(node.params[i]); 
+			visit(node.params[i], {}, node); 
 			if(i< node.params.length-1)
 				print(','); 		 
 		}
 		print('){');
 		ns.blockCount++;
-		visit(node.body); 
+		visit(node.body, {}, node); 
 		ns.blockCount--;
 		print('}');
 	}
 ,	"UnaryExpression": function(node) {
 		print(node.operator);
-		visit(node.argument); 
+		visit(node.argument, {}, node); 
 	}
 ,	"LogicalExpression": function(node) {
-		visit(node.left); 
+		visit(node.left, {}, node); 
 		print(node.operator); 
-		visit(node.right); 
+		visit(node.right, {}, node); 
 	}
 ,	"TryStatement": function(node) {
 		print('try{');
 		ns.blockCount++;
-		visit(node.block); 
+		visit(node.block, {}, node); 
 		ns.blockCount--;
 		print('}');
 		for ( var i = 0; i < node.handlers.length; i++) {
-			visit(node.handlers[i]); 
+			visit(node.handlers[i], {}, node); 
 		}
 		if(node.finalizer) {
 			print('finally'); 
 			print('{');
 			ns.blockCount++;
-			visit(node.finalizer); 
+			visit(node.finalizer, {}, node); 
 			ns.blockCount--;
 			print('}');
 		}
@@ -305,31 +306,31 @@ jsindentator.styles.clean = {
 ,	"CatchClause": function(node) {
 		print('catch('); 
 		if(node.params) for ( var i = 0; i < node.params.length; i++) {
-			visit(node.params[i]); 
+			visit(node.params[i], {}, node); 
 			if(i< node.params.length-1)
 				print(','); 		 
 		}
 		print('){');
 		ns.blockCount++;
-		visit(node.body); 
+		visit(node.body, {}, node); 
 		ns.blockCount--;
 		print('}');
 	}
 ,	"ThrowStatement": function(node) {
 		print('throw '); 
-		visit(node.argument);
+		visit(node.argument, {}, node);
 		print(';')
 	}
 
 ,	"ForInStatement": function(node) {
 		print("for("); 
-		visit(node.left, {noFirstNewLine: true, noLastSemicolon: true}); 	
+		visit(node.left, {noFirstNewLine: true, noLastSemicolon: true}, node); 	
 		print(' in '); 
-		visit(node.right); 
+		visit(node.right, {}, node); 
 		print(')')		
 		print('{');
 		ns.blockCount++;
-		visit(node.body); 
+		visit(node.body, {}, node); 
 		ns.blockCount--;
 		print('}');
 	}

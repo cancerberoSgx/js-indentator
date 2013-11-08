@@ -104,6 +104,9 @@
 //			console.log("visiting", node, ns.originalCode(node)); 
 			if(visitor) {
 				ns._checkComments(node);
+				if(parentNode){
+					node.parentNode=parentNode;
+				}
 				visitor.apply(ns.visitors, [node, config]); 
 //				visitor(node, config); 
 			}
