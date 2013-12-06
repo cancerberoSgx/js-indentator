@@ -62,7 +62,7 @@ var htmlOpen = function(classes) {
 
 /** will print <span class="tab">&#9;</span>. Always make sure CSS : .tab{ white-space:pre;}*/ 
 ,	htmlTab = function(){
-	htmlPrint('&nbsp;', 'tab'); 
+	htmlPrint('&#09;', 'tab'); 
 }
 /** prints a new line. Always make sure CSS .newline{display: block;} */
 ,	htmlNewLine = function(){
@@ -83,7 +83,7 @@ jsindentator.styles.prettify1 = {
 			if(i< node.declarations.length-1) {
 				htmlPrint(',', 'comma operand'); 
 //				print(', '); 
-				printIndent();
+				// printIndent();
 //				print(ns.tab); 
 			}	 
 		}
@@ -284,7 +284,7 @@ jsindentator.styles.prettify1 = {
 //				ns._printIndent(ns.blockCount-1);
 //				print(', ');
 				htmlPrint(',', 'comma operand');
-				printIndent();
+				// printIndent();
 			}
 			htmlClose();
 		}

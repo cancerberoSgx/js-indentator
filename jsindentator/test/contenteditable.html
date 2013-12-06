@@ -45,6 +45,11 @@ h4 { */
 	padding: 0;
 }
 
+#output1{	
+	-moz-tab-size: 4;
+	-o-tab-size: 4;
+	-webkit-tab-size: 4;
+}
 
 /*general */
 b {
@@ -54,11 +59,11 @@ b {
 }
 
 /* mandatory spacing styles */
-.newline{
+.newline {
 	display: block;
-}; 
+}
 .tab{ 
-	white-space:pre;
+	white-space: pre;
 }
 
 /*statements and blocks */
@@ -169,8 +174,14 @@ var s1="seba"; var r = window?'inabrowser':'notabrowser', ol = (function(n){var 
 			});
 			return html;
 		}; 
+		var getText = function($el){
+			$el.children().each(function(){
+				// jQuery(this)
+			}); 
+		}; 
 		var doit = function(e) {
 			var config = {}; 
+			 jQuery('#output1')
 			var code = jQuery('#input').val() || jQuery('#input').html();
 			var indentedCode = "";
 			jsindentator.setStyle(jsindentator.styles.prettify1);
@@ -179,11 +190,11 @@ var s1="seba"; var r = window?'inabrowser':'notabrowser', ol = (function(n){var 
 		};
 		jQuery('#doitButton').click(doit);
 		doit();
-		$('#myTab a').click(function(e) {
-			e.preventDefault();
-			$(this).tab('show');
-		});
-		$('#myTab a:last').tab('show');
+		// $('#myTab a').click(function(e) {
+		// 	e.preventDefault();
+		// 	$(this).tab('show');
+		// });
+		// $('#myTab a:last').tab('show');
 
 		jQuery('#printSelect').click(function(){
 			var selection = window.getSelection(), allnodes = []; 
