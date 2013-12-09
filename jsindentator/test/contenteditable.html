@@ -36,10 +36,10 @@ textarea {
 	font-family: monospace;
 	font-size: 12px;
 }
-#output1{width: 100%; display: block; }
+#output1{width: 100%; /*display: block;*/ }
 
 h4 { */
-	display: block;
+	/*display: block;*/
 	font-size: 1.1em;
 	margin: 0;
 	padding: 0;
@@ -60,7 +60,8 @@ b {
 
 /* mandatory spacing styles */
 .newline {
-	display: block;
+	/*display: block;*/
+	white-space: pre;
 }
 .tab{ 
 	white-space: pre;
@@ -68,21 +69,20 @@ b {
 
 /*statements and blocks */
 .BlockStatement, 
-.SwitchCase, 
-.ObjectProperty {
-	display: block;
+.SwitchCase{
+	/*display: block;*/
 	/*margin-left: 2.1em;*/
 }
 .semicolon{padding-right: 1.5em;}
 .statement, 
 .declaration { 
-	display: block;
+	/*display: block;*/
 }
 
 .EmptyStatement{
 	display: inline;
 }
-.Block, .Line {display: block;}
+.Block, .Line {/*display: block;*/}
 
 /* operands */
 
@@ -114,7 +114,6 @@ b {
 .curly-left, .curly-right {
 	color: pink; 
 }
-.noNewLine{display: inline;}/*must be at last*/
 </style>
 </head>
 
@@ -124,16 +123,20 @@ b {
 			<div class="span2">
 				<button id="doitButton" class="btn-large">do it!</button>
 				<button id="printSelect">printSelect</button>
+				<button id="plainText">plain text</button>
 			</div>
 			<div class="span10">
-				<h3>JavaScript Code prettifier</h3>
+				<h3>JavaScript little source code editor</h3>
 			</div>
 		</div>
-		<!-- <p>Please paste your JavaScript code in the first text area and
-			press "do it". </p> -->
+
+		<div class="jumbotron">
+			<h1>Small js editor</h1>
+			<p>Just click the following prettified code and start editing it. Press button prettify</p>
+		</div>
 
 		<div class="row">
-			<div class="span3">
+			<div class="span2">
 
 				<div class="textbox">
 					<h4>Original Code</h4>
@@ -142,26 +145,12 @@ var obj1={a: [2,3,4],b:true,c:1.23,d: {e:1.23,f:"hello", f1: function(a, b, c){v
 var s1="seba"; var r = window?'inabrowser':'notabrowser', ol = (function(n){var c = 15; while(c!=0){ this.y=( --c )*n; }; do {alert('error')} while(true){}{}})(9);var a=0; /* hello world */var b = 0; if(true) false; </textarea>
 				</div>
 			</div>
-			<div class="span9">
+			<div class="span10">
 				
 				<div id="output1" contenteditable="true"></div>
 			</div>
 		</div>
 
-<!-- 
-		<div class="row">
-			<div class="span12">
-
-			</div>
-		</div>
-		<ul class="nav nav-tabs" id="myTab">
-			<li class="active"><a href="#home">Prettify 1</a></li>
-		</ul>
-		<div class="tab-content">
-			<div class="tab-pane active" id="home">
-				<h4>Prettify Style 1</h4>
-			</div>
-		</div> -->
 	</div>
 
 	<script>
@@ -174,18 +163,19 @@ var s1="seba"; var r = window?'inabrowser':'notabrowser', ol = (function(n){var 
 			});
 			return html;
 		}; 
-		var getText = function($el){
-			$el.children().each(function(){
-				// jQuery(this)
-			}); 
-		}; 
 		var doit = function(e) {
-			var config = {}; 
-			 jQuery('#output1')
-			var code = jQuery('#input').val() || jQuery('#input').html();
+			var code = '';
+			var config = {}; 			
 			var indentedCode = "";
-			jsindentator.setStyle(jsindentator.styles.prettify1);
-			indentedCode = jsindentator.main(code, config);
+			if(jQuery.trim(jQuery('#output1').text())) {
+				code = jQuery('#output1').text();
+			}
+			else { //first time
+				code = jQuery('#input').val() || jQuery('#input').html();
+			}
+			var indentator1 = new jsindentator.JsIndentator();			
+			indentator1.setStyle(jsindentator.styles.prefttify_spaces1);
+			indentedCode = indentator1.main(code, config);
 			jQuery('#output1').html(indentedCode);
 		};
 		jQuery('#doitButton').click(doit);
@@ -196,6 +186,10 @@ var s1="seba"; var r = window?'inabrowser':'notabrowser', ol = (function(n){var 
 		// });
 		// $('#myTab a:last').tab('show');
 
+
+		jQuery('#plainText').click(function(){
+			console.log(jQuery('#output1').text())
+		});
 		jQuery('#printSelect').click(function(){
 			var selection = window.getSelection(), allnodes = []; 
 			console.log('selection parent: '+selection.anchorNode.parentNode.outerHTML)

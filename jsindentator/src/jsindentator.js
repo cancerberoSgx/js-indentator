@@ -93,7 +93,7 @@
 			return ns.buffer.join('');  
 		}
 	/* this is the public visit() method which all the visitors will call for sub concept instances, like for example the FunctionExpression will call for render its parameter expression and its body statements. the visit method will delegate to registered visitor for the given type of by default, if no visitor is registered for that concept it will just dump the original code. */ 
-	 ,	visit: function(node, config, parentNode) {
+	,	visit: function(node, config, parentNode) {
 		 	if(!node) {
 //		 		console.log("WARNING - null node", node);
 		 		return; 
@@ -148,6 +148,19 @@
 //}
 	});
 	
+	//instantiable jsindentator - this will only work if the indentator impl's main is synchronous
+	ns.JsIndentator = function() {		
+	}; 
+	ns.JsIndentator.prototype.setStyle = function(style){
+		ns.setStyle(style); 
+	}; 
+	ns.JsIndentator.prototype.main = function(code, config){
+		this.inputCode=code;
+		this.code = ns.main(code, config); 
+		this.buffer=ns.buffer;
+		this.syntax=ns.syntax; 
+		return this.code;
+	};
 	//ns object is ready - register as nodejs module
 //	if(module && module.exports){
 //		module.exports.main=ns.main;

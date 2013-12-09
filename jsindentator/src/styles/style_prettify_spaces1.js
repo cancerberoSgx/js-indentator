@@ -22,13 +22,13 @@ var ns = jsindentator, visit=ns.visit, print=ns.print;//, indent=ns.printIndent;
 
 if(!jsindentator.styles)jsindentator.styles={};
 
-if(!ns.styles.prettify1)
-	ns.styles.prettify1={};
+if(!ns.styles.prefttify_spaces1)
+	ns.styles.prefttify_spaces1={};
 
 var config = {};
 
-if(!ns.styles.prettify1.config) {
-	ns.styles.prettify1.config = config = {
+if(!ns.styles.prefttify_spaces1.config) {
+	ns.styles.prefttify_spaces1.config = config = {
 		tag: 'b'
 	};
 }
@@ -44,7 +44,7 @@ var htmlOpen = function(classes) {
 	htmlClose(); 
 }
 ,	htmlSpace = function(){
-	htmlPrint('&nbsp;'); 
+	htmlPrint('&nbsp;', 'space'); 
 }
 
 ,	_printIndent= function(num) {
@@ -66,11 +66,11 @@ var htmlOpen = function(classes) {
 }
 /** prints a new line. Always make sure CSS .newline{display: block;} */
 ,	htmlNewLine = function(){
-	htmlPrint('', 'newline'); 
+	htmlPrint('&#10;', 'newline'); 
 }; 
 
 
-jsindentator.styles.prettify1 = {
+jsindentator.styles.prefttify_spaces1 = {
 	
 	"VariableDeclaration" : function(node, config) {		
 		htmlOpen('VariableDeclaration declaration'+((config&&config.noFirstNewLine)?' noNewLine':'')); 
@@ -82,6 +82,7 @@ jsindentator.styles.prettify1 = {
 			visit(node.declarations[i]); 
 			if(i< node.declarations.length-1) {
 				htmlPrint(',', 'comma operand'); 
+				htmlSpace();
 //				print(', '); 
 				// printIndent();
 //				print(ns.tab); 
@@ -100,7 +101,9 @@ jsindentator.styles.prettify1 = {
 //		htmlPrint(node.id.name, 'identifier');
 //		ns.print(node.id.name);
 		if(node.init) {
+			htmlSpace();	
 			htmlPrint("=", 'operand');
+			htmlSpace();	
 //			print(" = "); 
 			visit(node.init);
 		}
@@ -119,7 +122,6 @@ jsindentator.styles.prettify1 = {
 //		htmlClose();
 	}
 ,	"Identifier": function(node) {
-		htmlSpace();	
 		htmlPrint(node.name, 'Identifier');
 	}
 ,	"FunctionExpression": function(node) {
@@ -128,19 +130,22 @@ jsindentator.styles.prettify1 = {
 		htmlPrint('function', 'keyword-function keyword');
 		visit(node.id);
 //		print(' ( '); 
+		htmlSpace();
 		htmlPrint('(', 'paren-left');
 		for( var i = 0; i < node.params.length; i++) {
 			visit(node.params[i]); 
 			if(i < node.params.length-1)
 //				print(', ');
 				htmlPrint(',', 'comma operand'); 
+				htmlSpace();
 		}
 //		print(' ) ');
 		htmlPrint(')', 'paren-right'); 
+		htmlSpace();
 		if(node.body.body.length>0) {
-			printIndent();
 //			print('{')
 			htmlPrint('{', 'curly-left');	
+			printIndent(true);
 //			htmlOpen('block'); 
 			ns.blockCount++;	
 			visit(node.body); 
@@ -162,6 +167,7 @@ jsindentator.styles.prettify1 = {
 		for ( var i = 0; i < node.body.length; i++) {
 			visit(node.body[i]);
 		}
+		// ns.blockCount--;
 		htmlClose();
 	}
 ,	"UpdateExpression": function(node) {
@@ -244,6 +250,7 @@ jsindentator.styles.prettify1 = {
 			if(i < node.arguments.length-1) {
 //				print(', ');
 				htmlPrint(',', 'comma operand');
+				htmlSpace(); 
 			}
 		}
 //		print(' ) ');
@@ -252,8 +259,10 @@ jsindentator.styles.prettify1 = {
 	}
 ,	"BinaryExpression": function(node) {
 		htmlOpen('BinaryExpression expression');
-		visit(node.left); 
+		visit(node.left); 		
+		htmlSpace();	
 		htmlPrint(node.operator, 'operand');
+		htmlSpace();	
 //		print(' '+node.operator+' '); 
 		visit(node.right); 
 		htmlClose();
@@ -277,13 +286,16 @@ jsindentator.styles.prettify1 = {
 			htmlOpen('ObjectProperty');
 			visit(p.key); 
 //			print(': '); 
+			// htmlSpace();	
 			htmlPrint(':', 'operand colon');
+			htmlSpace();	
 			visit(p.value);
 			if(i < node.properties.length-1) {
 //				ns.print(ns.newline); 
 //				ns._printIndent(ns.blockCount-1);
 //				print(', ');
 				htmlPrint(',', 'comma operand');
+				htmlSpace();	
 				// printIndent();
 			}
 			htmlClose();
@@ -342,7 +354,8 @@ jsindentator.styles.prettify1 = {
 		htmlOpen('SwitchCase');
 		printIndent();		
 //		print(node.test==null ? 'default' : 'case ');
-		htmlPrint(node.test==null ? 'default' : 'case', 'keyword case');		
+		htmlPrint(node.test==null ? 'default' : 'case', 'keyword case');
+		htmlSpace();	
 		visit(node.test); 
 //		print(':');
 		htmlPrint(':', 'operand colon');
@@ -360,11 +373,13 @@ jsindentator.styles.prettify1 = {
 		htmlClose();
 	}
 ,	"BreakStatement": function(node) {
+
 		htmlOpen('BreakStatement statement');
+		printIndent();
 		htmlPrint('break', 'keyword keyword-break');
 		htmlPrint(';', 'semicolon');		
 		htmlClose();
-//		printIndent();
+		// printIndent();
 //		print('break;');
 	}
 
@@ -373,13 +388,15 @@ jsindentator.styles.prettify1 = {
 //		print('while ( ');
 		htmlOpen('WhileStatement statement');
 		htmlPrint('while', 'keyword keyword-while');
+		htmlSpace();
 		htmlPrint('(', 'paren-left');		
 		visit(node.test); 
 //		print(' ) ');
-		htmlPrint(')', 'paren-right');		
-		printIndent();
+		htmlPrint(')', 'paren-right');	
+		htmlSpace();	
+		
 //		print('{'); 
-		htmlPrint('{', 'curly-left');			
+		htmlPrint('{', 'curly-left');		
 		ns.blockCount++;
 		visit(node.body);
 		ns.blockCount--;		
@@ -393,7 +410,9 @@ jsindentator.styles.prettify1 = {
 		htmlOpen('AssignmentExpression expression');
 		visit(node.left);
 //		print(' '+node.operator+' '); 
+		htmlSpace();	
 		htmlPrint(node.operator, 'operand');
+		htmlSpace();	
 		visit(node.right); 	
 		htmlClose();
 	}
@@ -422,6 +441,7 @@ jsindentator.styles.prettify1 = {
 			if(i < node.expressions.length-1)
 //				print(', ');
 				htmlPrint(',', 'comma operand');
+				htmlSpace();
 		}
 //		print(' )');
 		htmlPrint(')', 'paren-right');	
@@ -463,6 +483,7 @@ jsindentator.styles.prettify1 = {
 			if(i < node.arguments.length-1)
 //				print(', ');
 				htmlPrint(',', 'comma operand');
+				htmlSpace();
 		}
 //		print(')');
 		htmlPrint(')', 'paren-right'); 
@@ -496,11 +517,13 @@ jsindentator.styles.prettify1 = {
 			printIndent(); 
 //		print('if ( '); 
 		htmlPrint('if', 'keyword keyword-if');
+		htmlSpace();
 		htmlPrint('(', 'paren-left');
 		visit(node.test); 
 //		print(' )'); 
-		printIndent();
+		// printIndent();
 		htmlPrint(')', 'paren-right');
+		htmlSpace();
 //		print(' { ');
 		htmlPrint('{', 'curly-left');
 		ns.blockCount++;
@@ -544,6 +567,7 @@ jsindentator.styles.prettify1 = {
 			if(i< node.params.length-1)
 //				print(', '); 	
 				htmlPrint(',', 'comma operand');	 
+				htmlSpace(); 
 		}
 //		print(' ) '); 
 		htmlPrint(')', 'paren-right');
@@ -561,7 +585,9 @@ jsindentator.styles.prettify1 = {
 ,	"UnaryExpression": function(node) {
 		htmlOpen('UnaryExpression expression');
 //		print(node.operator+" ");
+		htmlSpace();	
 		htmlPrint(node.operator, 'operand');
+		htmlSpace();	
 		visit(node.argument); 
 		htmlClose(); 
 	}
@@ -569,7 +595,9 @@ jsindentator.styles.prettify1 = {
 		htmlOpen('LogicalExpression expression');
 		visit(node.left); 
 //		print(' '+node.operator+' '); 
+		htmlSpace();	
 		htmlPrint(node.operator, 'operand');
+		htmlSpace();	
 		visit(node.right); 
 		htmlClose(); 
 	}

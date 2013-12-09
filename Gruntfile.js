@@ -1,5 +1,15 @@
 module.exports = function(grunt) {
 
+var jsSrcFiles = [ 
+    'jsindentator/src/jsindentator.js' 
+,	'jsindentator/src/styles/style1.js'
+,	'jsindentator/src/styles/style2.js'
+,	'jsindentator/src/styles/style_clean.js'
+,	'jsindentator/src/styles/style_variable1.js'
+,	'jsindentator/src/styles/style_prettify1.js'
+,	'jsindentator/src/styles/style_prettify_spaces1.js'
+,	'jsindentator/src/styles/jsdocgenerator1.js' 
+]; 
 // Project configuration.
 grunt.initConfig({
 	pkg : grunt.file.readJSON('package.json'),
@@ -17,18 +27,22 @@ grunt.initConfig({
 			,	'build/<%= pkg.name %>-style_clean.min.js' : [ 'jsindentator/src/styles/style_clean.js' ]
 			,	'build/<%= pkg.name %>-style_variable1.min.js' : [ 'jsindentator/src/styles/style_variable1.js' ]
 			,	'build/<%= pkg.name %>-style_prettify1.min.js' : [ 'jsindentator/src/styles/style_prettify1.js' ]
+			,	'build/<%= pkg.name %>-style_prettify_spaces1.min.js' : [ 'jsindentator/src/styles/style_prettify_spaces1.js' ]
 			,	'build/<%= pkg.name %>-jsdocgenerator1.min.js' : [ 'jsindentator/src/styles/jsdocgenerator1.js' ]
 		
-			,	'build/<%= pkg.name %>-all.min.js' : [ 
-			 	    'jsindentator/src/jsindentator.js' 
-                ,	'jsindentator/src/styles/style1.js'
-                ,	'jsindentator/src/styles/style2.js'
-                ,	'jsindentator/src/styles/style_clean.js'
-                ,	'jsindentator/src/styles/style_variable1.js'
-                ,	'jsindentator/src/styles/style_prettify1.js'
-                ,	'jsindentator/src/styles/jsdocgenerator1.js' 
-                ]
+			,	'build/<%= pkg.name %>-all.min.js' : jsSrcFiles
 			}
+		}
+	}
+
+	,
+	jshint : {
+		all : jsSrcFiles
+
+		,
+		options : {
+			"predef" : [ '_', 'console', 'define' ],
+			"laxcomma" : true
 		}
 	}
 });
@@ -36,6 +50,7 @@ grunt.initConfig({
 
 // Load the plugin that provides the "uglify" task.
 grunt.loadNpmTasks('grunt-contrib-uglify');
+grunt.loadNpmTasks('grunt-contrib-jshint');
 
 // Default task(s).
 grunt.registerTask('default', [ 'uglify' ]);

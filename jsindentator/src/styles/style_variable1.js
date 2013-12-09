@@ -139,17 +139,16 @@ var variable1DefaultConfig = ns.config = { /* this style's configuration is defi
 	WITH_PAREN_LEFT: 'return "("; ', 
 	WITH_PAREN_RIGHT: 'return ")"; ', 
 	WITH_CURLY_LEFT: 'return "{" ', 
-	WITH_CURLY_RIGHT: 'return  ns.Indent() +"}"; ', 
+	WITH_CURLY_RIGHT: 'return  ns.Indent() +"}"; '
 	
 //	LITERAL: 'return node.raw; ',
 			
 	/* function example: a simple type literal like strings, number, boolean, null, undefined, etc. Not object or functions.*/ 
-,	LITERAL: 				function(node, ns, _){
-	
-	debugger;
+,	LITERAL: function(node, ns, _){	
+	// debugger;
 	//force to single quotes in string literals
 		if(node.raw.indexOf('"')===0) {
-			ns.print('\''+node.raw.replace('\'', '')
+			ns.print('\''+node.raw.replace('\'', ''));
 			ns.print(' /* TODO: HEY, we use single quotes, fix this literal: */'+ node.raw);
 		}
 		else {
@@ -157,7 +156,6 @@ var variable1DefaultConfig = ns.config = { /* this style's configuration is defi
 		}
 	}
 	
-	"":""
 ,	IDENTIFIER: 			'return node.name'
 	
 	//Block comment (using /* */)
