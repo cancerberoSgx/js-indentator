@@ -1,6 +1,7 @@
 {
   "name": "js-indentator",
   "version": "0.1.0",
+  "description": "indent your js code with ease",
   "devDependencies": {
     "grunt": "~0.4.1",
     "grunt-contrib-jshint": "~0.6.0",
@@ -9,5 +10,8 @@
     "requirejs": "~2.1.8",
     "underscore": "~1.5.1",
     "esprima": "~1.0.3"
+  },
+  "bin": {
+    "indent": "./jsindentator/indent"
   }
 }

@@ -1,10 +1,14 @@
+#!/usr/bin/env node
 /* 
  * this is a js node application for running the indentator from the command 
  * line (efficient). Do not include this on the browser, instead use ./src/*.js.
  * @author: sgurin
  */
+//indent module dir console.log(__dirname);
+//current directory for searching a config file console.log(process.cwd());
+//console.log(path.join(__dirname, './src/jsindentator.js'));
 
-
+var path = require('path');
 var usage = function(){
 	console.log('ERROR, incorrect amount of arguments given, at least 2 parameters config and inputFile are required. ');
 	console.log('Usage: node indent.js "{}" aJsFile.js');	
@@ -22,11 +26,11 @@ var usage = function(){
 ,	filename = process.argv[3]
 ,	config=null
 ,	styleFiles={
-		style1: './src/styles/style1.js'
-	,	style2: './src/styles/style2.js'
-	,	clean: './src/styles/style_clean.js'
-	,	variable1: './src/styles/style_variable1.js'
-	,	backboneRequireOOInfoExtractor1: './src/styles/backboneRequireOOInfoExtractor1.js'		
+		style1: path.join(__dirname, './src/styles/style1.js')
+	,	style2: path.join(__dirname, './src/styles/style2.js')
+	,	clean: path.join(__dirname, './src/styles/style_clean.js')
+	,	variable1: path.join(__dirname, './src/styles/style_variable1.js')
+	,	backboneRequireOOInfoExtractor1: path.join(__dirname, './src/styles/backboneRequireOOInfoExtractor1.js')
 	}
 ,	main = function(){
 		if(process.argv.length<4) {
@@ -51,7 +55,7 @@ var usage = function(){
 			config.style='style1';
 	
 		var fs = require('fs'), 
-			jsindentatorSrc = fs.readFileSync('./src/jsindentator.js','utf8'), 
+			jsindentatorSrc = fs.readFileSync(path.join(__dirname, './src/jsindentator.js'),'utf8'), 
 			styleFilePath = styleFiles[config.style],
 			styleSrc = fs.readFileSync(styleFilePath,'utf8') ;
 	
