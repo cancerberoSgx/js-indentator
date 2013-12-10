@@ -12,11 +12,10 @@ Compiling it
 =============
 Install nodejs on your system and: 
 
-```
-cd jsindentator
-npm install 
-grunt
-```
+	cd jsindentator
+	npm install 
+	grunt
+
 If all goes fine, then files will be available under the build/ folder. 
 
 
@@ -26,28 +25,28 @@ If all goes fine, then files will be available under the build/ folder.
 
 File test/formattingtest1.html show how to use all the build-in styles. In general it is: 
 
-```
-<!-- load javascript dependencies -->
-<script src="../lib/esprima.js" type="text/javascript"></script>
-<script src="../lib/underscore.js" type="text/javascript"></script>
-<script src="../src/jsindentator.js" type="text/javascript"></script>
 
-<!-- load or define at least one syntax style, in this case we use styles.variable1 
-because we can configure almost everithing using a josn object.  -->
-<script src="../src/styles/style_variable1.js" type="text/javascript"></script>
+	<!-- load javascript dependencies -->
+	<script src="../lib/esprima.js" type="text/javascript"></script>
+	<script src="../lib/underscore.js" type="text/javascript"></script>
+	<script src="../src/jsindentator.js" type="text/javascript"></script>
+	
+	<!-- load or define at least one syntax style, in this case we use styles.variable1 
+	because we can configure almost everithing using a josn object.  -->
+	<script src="../src/styles/style_variable1.js" type="text/javascript"></script>
+	
+	<!-- ......... -->
+	
+	<script>
+	//Now the real usage code: 
+	
+	//first, the code we want to parse: 
+	var code = 'var a = {b: 1, c: false, d: function(e,f){return "hello";}}';
+	
+	//now use the configured style_variable1 implementation for processing and get the output code.
+	var pretty = jsindentator.main(code); 
+	</script>
 
-<!-- ......... -->
-
-<script>
-//Now the real usage code: 
-
-//first, the code we want to parse: 
-var code = 'var a = {b: 1, c: false, d: function(e,f){return "hello";}}';
-
-//now use the configured style_variable1 implementation for processing and get the output code.
-var pretty = jsindentator.main(code); 
-</script>
-```
 
 See test/*.html files for more examples. 
 
@@ -55,25 +54,19 @@ Also, notice that production ready files are available in the folder build/*.js 
 module or the file js-indentator-all.min.js that contains everything.  Those files are generated using *gruntjs*. 
 
 
-
 ## Using it in the desktop/server with Node Js
 
 Also you can run the JavaScript indentator tool from command line using nodejs using 
-the script indent.js. For example:
+the script *indent*. Just make sure you have installed the *required nodejs modules* (you need to do this only once):
 
+	cd jsindentator
+	npm install
+	npm link
 
-```
-cd jsindentator
-node indent.js " " /path/to/some.js > some_indented.js 
-```
+Then you are ready to:
 
-Just make sure you have installed the *required nodejs modules* (you need to do this only once):
+	indent " " /path/to/some.js > some_indented.js
 
-```
-cd jsindentator
-npm install underscore --save-dev
-npm install esprima --save-dev
-```
 
 ## Introduction to the project
 
