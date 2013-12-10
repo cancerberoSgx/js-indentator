@@ -9,6 +9,7 @@
 //console.log(path.join(__dirname, './src/jsindentator.js'));
 
 var path = require('path');
+
 var usage = function(){
 	console.log('ERROR, incorrect amount of arguments given, at least 2 parameters config and inputFile are required. ');
 	console.log('Usage: node indent.js "{}" aJsFile.js');	
@@ -18,7 +19,7 @@ var usage = function(){
 	
 	var s = ''; 
 	for(var i in styleFiles) s+=i+', ';	
-	console.log('style: one of '+s);
+	console.log('style: one of ', s);
 	process.exit(1);
 }
 
@@ -41,12 +42,11 @@ var usage = function(){
 			fs = require('fs');
 	
 		try {
-//			console.log(configStr); 
-			config=eval('('+configStr+')');
-//			console.log(config+" - "+config.style); 
+			//console.log(configStr);
+			config = JSON.parse(configStr);
 		} catch (e) {
-			console.log('mal formed configuration json string: '+e); 
-			config = {}; 
+			console.log('mal formed configuration json string: ', e); 
+			config = {};
 		}
 		
 		if(!config)
