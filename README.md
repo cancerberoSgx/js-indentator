@@ -3,7 +3,7 @@ js-indentator
 
 Online Demos
 =============
-http://cancerberosgx.github.io/js-indentator/jsindentator/test/index.html
+http://cancerberosgx.github.io/js-indentator/jsindentator/test/
 
 <<<<<<< HEAD
 This project born as a javascript indentation tool based on esprima JavaScript parser. Now it is a set of example tools in an unified simple format that perform some task over some javascript code input, for example not only indenting but also extracting information, code prettifying, etc. 
