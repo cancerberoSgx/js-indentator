@@ -33,8 +33,14 @@ textarea{width: 500px; height: 80px;}
 	<h2>Visuallize your JavaScript code in an AST graph!</h2>
 	<p>The following graph visually shows the AST nodes of the JavaScript expression below. 
 		<b>Just Double Click any node for looking at its referenced code!</b>. </p>
-	<textarea id="code">var a = function(a, b){while(true){alert('blocked'); }; return a+b;};
+
+	<textarea id="code">var a = function(a, b){
+	for (var i = 0; i < elements.length; i++){alert('blocked'); };
+	return window ? false : expression++;
+};
+
 	</textarea>
+
 	<!-- <button id="doit">do it!</button> -->
 	<canvas id="springydemo" width="800" height="700" />
 <script>

@@ -1,4 +1,5 @@
-
+// This implementation is the official one for extending user visirot implementation, see style_springly_extractor. It collect
+// all supported aditional meta information defined in jsindentator.js like parentNode, parentPropertyName
 // in this code node name means javascript language ast nodes like expression, declaration, statement, etc, not DOM or xml nodes!
 // style clean can be used for those concrete data generation tools only for make sure every ast node is iterated. 
 // It also support the config.saveParents config prop for saving the parent node
@@ -17,9 +18,9 @@ jsindentator.styles.clean = {
 	"VariableDeclaration" : function(node, config) {
 		print('var '); 
 		for ( var i = 0; i < node.declarations.length; i++) {
-			visit(node.declarations[i], {}, node); 
+			visit(node.declarations[i], {}, node, 'declarations'); 
 			if(i< node.declarations.length-1)
-				print(','); 		 
+				print(',');
 		}
 		if(!config || !config.noLastSemicolon) 
 			print(';'); 
@@ -27,10 +28,10 @@ jsindentator.styles.clean = {
 
 ,	"VariableDeclarator" : function(node, config) {
 //		ns.print(node.id.name);
-		visit(node.id, {}, node);
+		visit(node.id, {}, node, 'id');
 		if(node.init) {
 			print("="); 
-			visit(node.init, {}, node);
+			visit(node.init, {}, node, 'init');
 		}
 	}
 	
@@ -47,7 +48,7 @@ jsindentator.styles.clean = {
 		visit(node.id, {}, node, 'id');
 		print('('); 
 		for( var i = 0; i < node.params.length; i++) {
-			visit(node.params[i], {}, node); 
+			visit(node.params[i], {}, node, 'params_'+i); 
 			if(i < node.params.length-1)
 				print(',');					
 		}
@@ -72,17 +73,18 @@ jsindentator.styles.clean = {
 			print(node.operator);
 		}
 	}
+	
 ,	"ForStatement": function(node) {
 		print('for('); 
-		visit(node.init, {noFirstNewLine: true}, node);
+		visit(node.init, {noFirstNewLine: true}, node, 'init');
 //				print('; '); 
-		visit(node.test, {}, node);
+		visit(node.test, {}, node, 'test');
 		print(';');
-		visit(node.update, {}, node);
+		visit(node.update, {}, node, 'update');
 		print('){'); 
 //				ns.printIndent(); 
 		ns.blockCount++;
-		visit(node.body, {}, node);
+		visit(node.body, {}, node, 'body');
 		ns.blockCount--;
 //		ns.printIndent(); 
 		print('};'); 

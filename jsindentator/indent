@@ -2,6 +2,7 @@
 /* 
  * this is a js node application for running the indentator from the command 
  * line (efficient). Do not include this on the browser, instead use ./src/*.js.
+ * TODO: this utility should have a more friendly command line api
  * @author: sgurin
  */
 //indent module dir console.log(__dirname);
@@ -12,7 +13,8 @@ var path = require('path');
 
 var usage = function(){
 	console.log('ERROR, incorrect amount of arguments given, at least 2 parameters config and inputFile are required. ');
-	console.log('Usage: node indent.js "{}" aJsFile.js');	
+	console.log('Usage: node indent "{}" aJsFile.js');	
+	console.log('Example (minification): node indent "{style:\"clean\"}" aJsFile.js > aJsFile.min.js');	
 	console.log('Where the third parameter "{}" is a valid json object with the following configuration options:')		
 	console.log('initialIndentationLevel: is the initial indentation level, default is 0');
 	console.log('style: a string indicating the formatting style or data extraction tool. for example style1, style2, clean, etc. Example {style: \"clean\"}');

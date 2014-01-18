@@ -1,6 +1,7 @@
 js-indentator
 =============
 
+<<<<<<< HEAD
 This project born as a javascript indentation tool based on esprima JavaScript parser. Now it is a set of example tools in an unified simple format that perform some task over some javascript code input, for example not only indenting but also extracting information, code prettifying, etc. 
 
 This project can be usefull for those that need to easily define javascript-sourcecode-analizying tools like mentioned. 
@@ -29,6 +30,10 @@ Install nodejs on your system and:
 
 If all goes fine, then files will be available under the build/ folder. 
 
+=======
+A javascript indentation tool based on esprima JavaScript parser that can be run on the browser. 
+Online Demo : http://cancerberosgx.github.io/js-indentator/jsindentator/test/formattingjstest1.html
+>>>>>>> refs/remotes/origin/gh-pages
 
 *Warning*: this is a very new, fresh project, and it needs more testing before parsing production code. It is not ready, not yet.
  
