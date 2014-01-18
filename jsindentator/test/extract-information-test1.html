@@ -14,6 +14,8 @@
 
 <script src="../src/jsindentator.js" type="text/javascript"></script>
 <script src="../src/styles/style_clean.js" type="text/javascript"></script>
+<script src="../src/styles/backboneRequireOOInfoExtractor1.js" type="text/javascript"></script>
+
 
 <!-- load or define at least one syntax style, in this case we use styles.variable1 
 because we can configure almost everithing using a josn object.  -->
@@ -90,6 +92,10 @@ for defining the class hierarchy with a method called 'extend'. In particular I'
 			press "do it". The indenter will produce some different styles of
 			indentation versions of your code</p>
 
+			<h3>Sample Information extractor</h3>
+			<p>In this example we define a very simple jsindentator that in reality is an information extractor. 
+				For a very particular kind of javascript modules, defined in vendor technologies like requirejs-underscore-backbone libraries like in the example below, we extract the Object Orriented information from all the given sources like class inheritcance, attributes, methods, etc.</p>
+
 
 		<div class="row">
 			<div class="span7">
@@ -97,157 +103,19 @@ for defining the class hierarchy with a method called 'extend'. In particular I'
 				<div class="textbox">
 					<h4>Original Code</h4>
 <textarea id="input">
-
-
-// OrderWizard.Module.Address.js
-// -----------------------------
-define('OrderWizard.Module.Address', ['Wizard.Module', 'Address.Views', 'Address.Model'], function (WizardModule, AddressViews, AddressModel)
+// in this example we define a very simple information extractor
+define('Tree', ['Leaf', 'Branch', 'Root', 'Apple', 'Object'], function (Leaf, Branch, Root, Apple, Object)
 {
-	'use strict';
+	return Object.extend({ 
 
-	return WizardModule.extend({
- 
-		template: 'order_wizard_address_module'
+		//attributes
+		template: 'tree'
+	,	water: 1
+	,	leaves: []
 
-	,	changeLinkText: SC.ENVIRONMENT.PROFILE.isGuest !== 'T' ? _('Change address').translate() : _('Edit Address').translate()
-
-	,	selectMessage: _('Use this address').translate()
-	,	sameAsMessage: _('Same as address').translate()
-	,	selectAddressErrorMessage: _('Please select an address').translate()
-
-	,	invalidAddressErrorMessage: {
-			errorCode: 'ERR_CHK_INVALID_ADDRESS'
-		,	errorMessage: _('The selected address is invalid').translate()
-		}
-
-	,	events: {
-			'click [data-action="submit"]': 'submit'
-		,	'click [data-action="select"]': 'selectAddress'
-		,	'click [data-action="change-address"]': 'changeAddress'
-		,	'change [data-action="same-as"]': 'markSameAs'
-		,	'change form': 'changeForm'
-		}
-
-	,	errors: ['ERR_CHK_INCOMPLETE_ADDRESS', 'ERR_CHK_INVALID_ADDRESS']
-
-		// module.render
-		// -------------
-	,	render: function (not_trigger_ready)
-		{
-			
-		}
-
-	,	evaluateSameAs: function ()
-		{
-			
-		}
-
-	,	eventHandlersOn: function ()
-		{
-			
-		}
-
-	,	eventHandlersOff: function ()
-		{
-			// Removes prevously added events on the address collection
-			this.addresses && this.addresses.off(null, null, this);
-			this.model
-				.off('change:' + this.sameAsManage, null, this)
-				.off('change:temp' + this.sameAsManage, null, this);
-		}
-
-	,	past: function () 
-		{
-			this.eventHandlersOff();
-		}
-
-	,	future: function ()
-		{
-			this.eventHandlersOff();
-		}
-
-		// module.selectAddress
-		// --------------------
-		// Captures the click on the select button of the addresses list 
-	,	selectAddress: function (e)
-		{
-			
-		}
-
-	,	setAddress: function (address_id, options)
-		{
-			
-		}
-
-	,	unsetAddress: function (norender, options)
-		{
-			
-		}
-
-	,	changeAddress: function (e)
-		{
-			
-		}
-
-		// module.submit
-		// -------------
-		// The step will call this function when the user clicks next or all the modules are ready
-		// Will take care of saving the address if its a new one. Other way it will just 
-		// return a resolved promise to comply with the api
-	,	submit: function ()
-		{
-			
-		}
-
-	,	isValid: function () 
-		{
-			
-		}
-
-	,	changeForm: function (e)
-		{
-			
-		}
-
-	,	markSameAs: function (e)
-		{
-			
-		}
-	
-		// returns the selected address
-	,	getSelectedAddress: function ()
-		{
-			
-		}
-
-	,	getEmptyAddress: function ()
-		{
-			// If the same as checkbox is not checked
-			// we return a new model with any attributes that were already typed into the address form
-			// that's what the temp + this.manage is, the temporary address for this manage.
-			return new AddressModel(this.isSameAsEnabled && this.sameAs ? null : this.model.get('temp' + this.manage));
-		}
-
-	,	getTheOtherAddress: function ()
-		{
-			return this.addresses.get(this.model.get(this.sameAsManage));
-		}
-
-		// returns the list of addresses available for this module, if the module has enable_same_as then it removes the sameAsManage address
-	,	getAddressesToShow: function ()
-		{
-			
-		}
-
-		// return the fixed address for this module. This is used only when user=guest
-	,	getFixedAddress: function ()
-		{			
-			
-		}
-
-	,	manageError: function (error)
-		{
-			
+		//methods
+	,	addSomeWater: function(){
+			this.water++;
 		}
 	});
 });
@@ -258,40 +126,14 @@ define('OrderWizard.Module.Address', ['Wizard.Module', 'Address.Views', 'Address
 				</div>
 			</div>
 
-			<!--     <div class="span6">     -->
-
-			<!-- 		<div class="row"> -->
-
-			<div class="span5">
-
-				<h4>Configuration</h4>
-				
-				 <a class="btn" data-toggle="collapse" data-target="#config-notes">
-				     Read Some Notes
-				  </a>
-			
-<!-- 				<div id="config-notes" class="collapse in"> -->
-<!-- 					<p>You can edit this configuration JSON and "do it again".</p> -->
-<!-- 					<p>Note that properties like 'tab' and 'newline' are supported by all the indentators,  -->
-<!-- 					while properties like VAR, VAR_COMMA, FUNCTION, etc are only supported by the 'variable1' style </p> -->
-<!-- 					<p>You can see a list of al supported variable properties of this style and default values  -->
-<!-- 					<a href="https://github.com/cancerberoSgx/js-indentator/blob/master/jsindentator/src/styles/style_variable1.js#L52">in the sources</a>. </p> -->
-<!-- 				</div> -->
-				
-				<textarea id="config">
-						{}
-		</textarea>
-
-		</div>
-
-		<ul class="nav nav-tabs" id="myTab">
+		<!-- <ul class="nav nav-tabs" id="myTab"> -->
 <!-- 			<li class="active"><a href="#home">Style 2</a></li> -->
 <!-- 			<li><a href="#minify">Minification</a></li> -->
 <!-- 			<li><a href="#style1">Style 1</a></li> -->
 <!-- 			<li><a href="#variableStyle1">Variable Style 1</a></li> -->
 			
 <!-- 			<li><a href="#jsdocgenerator1">Variable Style 1</a></li> -->
-		</ul>
+		<!-- </ul> -->
 
 		<div class="tab-content">
 
@@ -381,15 +223,15 @@ define('OrderWizard.Module.Address', ['Wizard.Module', 'Address.Views', 'Address
 		}; 
 		var doit = function(e) {
 						
-			var config = null;
+			var config = {};
 			
 // 			if(jQuery("#applyConfigCheckbox").val()) {
-			try {
-				config = eval('(' + $('#config').val() + ')');
-			} catch (ex) {
-				alert('config.parse error, using default. error: ' + ex);
-				config = {};
-			}
+			// try {
+			// 	config = eval('(' + $('#config').val() + ')');
+			// } catch (ex) {
+			// 	alert('config.parse error, using default. error: ' + ex);
+			// 	config = {};
+			// }
 // 			}
 
 			if (!config) {
@@ -410,6 +252,10 @@ define('OrderWizard.Module.Address', ['Wizard.Module', 'Address.Views', 'Address
 
 			jsindentator.setStyle(jsindentator.styles.backboneRequireOOInfoExtraction);
 			indentedCode = escapeHTML(jsindentator.main(code, config));
+			if(indentedCode instanceof Error) {
+				alert('ERROR: The passed javascript coulnd\'t be parsed!, reason: '+result); 
+				return;
+			}
 			jQuery('#output3').html(indentedCode+" HELLLLLOOOOO");
 
 // 			jsindentator.setStyle(jsindentator.styles.variable1);

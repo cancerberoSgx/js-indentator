@@ -220,6 +220,10 @@ b {
 
 			jsindentator.setStyle(jsindentator.styles.prettify1);
 			indentedCode = jsindentator.main(code, config);
+			if(indentedCode instanceof Error) {
+				alert('ERROR: The passed javascript coulnd\'t be parsed!, reason: '+result); 
+				return;
+			}
 			jQuery('#output1').html(indentedCode);
 
 // 			jsindentator.setStyle(jsindentator.styles.clean);

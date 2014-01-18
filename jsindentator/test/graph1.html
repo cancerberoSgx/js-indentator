@@ -1,0 +1,92 @@
+
+<html>
+<head>
+
+<!-- load javascript dependencies -->
+<script src="../lib/esprima.js" type="text/javascript"></script>
+<script src="../lib/underscore.js" type="text/javascript"></script>
+
+<!-- <script src="../../build/js-indentator-all.min.js" type="text/javascript"></script> -->
+
+<script src="../src/jsindentator.js" type="text/javascript"></script>
+<script src="../src/styles/style_clean.js" type="text/javascript"></script>
+<script src="../src/styles/style_springy_graph_extractor.js" type="text/javascript"></script>
+
+
+<script src="jquery/jquery-2.0.3.min.js" type="text/javascript"></script>
+<script src="bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+<link href="bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+
+<!-- <script src="http://dhotson.github.io/springy/springy.js"></script>
+<script src="http://dhotson.github.io/springy/springyui.js"></script> -->
+<script src="springy/springy.js"></script>
+<script src="springy/springyui.js"></script>
+
+<style type="text/css">
+textarea{width: 500px; height: 80px;}
+</style>
+
+</head>
+
+<body>
+	<h2>Visuallize your JavaScript code in an AST graph!</h2>
+	<p>The following graph visually shows the AST nodes of the JavaScript expression below. 
+		<b>Just Double Click any node for looking at its referenced code!</b>. </p>
+	<textarea id="code">var a = function(a, b){while(true){alert('blocked'); }; return a+b;};
+	</textarea>
+	<!-- <button id="doit">do it!</button> -->
+	<canvas id="springydemo" width="800" height="700" />
+<script>
+
+//install springy_graph_extractor jsindentator's implementation
+jsindentator.setStyle(jsindentator.styles.springy_graph_extractor);
+
+// var a = function(a, b){return a+b;};
+// jQuery('#doit').click(doIt);
+
+var doIt = function doIt(){
+	var code = jQuery('#code').val(); 
+
+	// debugger;
+
+	var result = jsindentator.main(code, {});
+	if(result instanceof Error) {
+		alert('ERROR: The passed javascript coulnd\'t be parsed!, reason: '+result); 
+		return;
+	}
+
+	//extract nodes in the right format
+
+	var nodes = []; 
+	var edges = [];
+	var jsdata = ns.visitors.jsdata;
+
+	_(jsdata.nodes).each(function(node, index){
+		nodes.push([index+'', node]); 
+	}); 
+	_(jsdata.edges).each(function(edge){
+		edges.push(edge); 
+	}); 
+
+
+	//draw the graph
+	var graph = new Springy.Graph();
+	graph.loadJSON({
+		nodes: nodes
+	,	edges: edges
+	});
+	// debugger;
+	var graphCanvas = jQuery('#springydemo'); 
+	var springy = graphCanvas.springy({
+		graph: graph
+	});
+}; 
+doIt(); 
+
+</script>
+
+
+
+</body>
+</html>

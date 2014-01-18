@@ -1,8 +1,19 @@
 js-indentator
 =============
 
-A javascript indentation tool based on esprima JavaScript parser that can be run on the browser 
-and on the desktop using nodejs. 
+This project born as a javascript indentation tool based on esprima JavaScript parser. Now it is a set of example tools in an unified simple format that perform some task over some javascript code input, for example not only indenting but also extracting information, code prettifying, etc. 
+
+This project can be usefull for those that need to easily define javascript-sourcecode-analizying tools like mentioned. 
+
+It can be run on the browser and on the desktop using nodejs. 
+
+Since it is based on esprima javascript parser, the javascript source code is accessed throu an AST (abstract syntax tree) API. For xample, the javascript code 
+
+	function(a){return 1;}
+
+is decomposed on a root object "FunctionDeclaration" that contains other object attributes like "a list os parameters" and a "Block of code", which itself contains a "block", which itself contains  "return statement", which itself contains "the expression 1*1", and so on. 
+
+So this AST way mean that any JavaScript code is decomposed in a tree of conceptual objects, which branches are complex language objects like "a function" and which leaf are very atomic/simple concepts, like a number. 
 
 Online Demo
 =============

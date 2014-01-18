@@ -27,7 +27,7 @@ jsindentator.styles.clean = {
 
 ,	"VariableDeclarator" : function(node, config) {
 //		ns.print(node.id.name);
-		visit(node.id);
+		visit(node.id, {}, node);
 		if(node.init) {
 			print("="); 
 			visit(node.init, {}, node);
@@ -44,7 +44,7 @@ jsindentator.styles.clean = {
 	}
 ,	"FunctionExpression": function(node) {
 		print('function ');
-		visit(node.id, {}, node);
+		visit(node.id, {}, node, 'id');
 		print('('); 
 		for( var i = 0; i < node.params.length; i++) {
 			visit(node.params[i], {}, node); 
@@ -53,22 +53,22 @@ jsindentator.styles.clean = {
 		}
 		print('){');
 		ns.blockCount++;
-		visit(node.body, {}, node); 
+		visit(node.body, {}, node, 'body'); 
 		ns.blockCount--;
 		print('}'); 
 	}
 ,	"BlockStatement": function(node) {	
 		for ( var i = 0; i < node.body.length; i++) {
-			visit(node.body[i], {}, node);
+			visit(node.body[i], {}, node, 'body_'+i);
 		}
 	}
 ,	"UpdateExpression": function(node) {				  
 		if(node.prefix) {
 			print(node.operator);
-			visit(node.argument, {}, node); 
+			visit(node.argument, {}, node, 'prefix'); 
 		}
 		else {
-			visit(node.argument, {}, node); 
+			visit(node.argument, {}, node, 'argument'); 
 			print(node.operator);
 		}
 	}
@@ -98,7 +98,7 @@ jsindentator.styles.clean = {
 	}
 
 ,	"ExpressionStatement": function(node) {
-		visit(node.expression);
+		visit(node.expression, {}, node);
 		print(';'); 
 	}
 ,	"CallExpression": function(node) {	

@@ -287,22 +287,42 @@ VAR_COMMA_NEWLINE: 'return ns.Indent() + ",/*234*/" + ns.tab',
 
 			jsindentator.setStyle(jsindentator.styles.style1);
 			indentedCode = escapeHTML(jsindentator.main(code, config));
+			if(indentedCode instanceof Error) {
+				alert('ERROR: The passed javascript coulnd\'t be parsed!, reason: '+result); 
+				return;
+			}
 			jQuery('#output1').html(indentedCode);
 
 			jsindentator.setStyle(jsindentator.styles.clean);
 			indentedCode = escapeHTML(jsindentator.main(code, config));
+			if(indentedCode instanceof Error) {
+				alert('ERROR: The passed javascript coulnd\'t be parsed!, reason: '+result); 
+				return;
+			}
 			jQuery('#output2').html(indentedCode);
 
 			jsindentator.setStyle(jsindentator.styles.style2);
 			indentedCode = escapeHTML(jsindentator.main(code, config));
+			if(indentedCode instanceof Error) {
+				alert('ERROR: The passed javascript coulnd\'t be parsed!, reason: '+result); 
+				return;
+			}
 			jQuery('#output3').html(indentedCode);
 
 			jsindentator.setStyle(jsindentator.styles.variable1);
 			indentedCode = escapeHTML(jsindentator.main(code, config));
+			if(indentedCode instanceof Error) {
+				alert('ERROR: The passed javascript coulnd\'t be parsed!, reason: '+result); 
+				return;
+			}
 			jQuery('#variableStyle1Output1').html(indentedCode);
 			
 			jsindentator.setStyle(jsindentator.styles.jsdocgenerator1);
 			indentedCode = escapeHTML(jsindentator.main(code, config));
+			if(indentedCode instanceof Error) {
+				alert('ERROR: The passed javascript coulnd\'t be parsed!, reason: '+result); 
+				return;
+			}
 			jQuery('#jsdocgenerator1Output1').html(indentedCode);
 			
 			

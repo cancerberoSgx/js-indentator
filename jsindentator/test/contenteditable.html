@@ -176,6 +176,10 @@ var s1="seba"; var r = window?'inabrowser':'notabrowser', ol = (function(n){var 
 			var indentator1 = new jsindentator.JsIndentator();			
 			indentator1.setStyle(jsindentator.styles.prefttify_spaces1);
 			indentedCode = indentator1.main(code, config);
+			if(indentedCode instanceof Error) {
+				alert('ERROR: The passed javascript coulnd\'t be parsed!, reason: '+result); 
+				return;
+			}
 			jQuery('#output1').html(indentedCode);
 		};
 		jQuery('#doitButton').click(doit);
