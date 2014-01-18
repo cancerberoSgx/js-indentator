@@ -1,6 +1,10 @@
 js-indentator
 =============
 
+Online Demos
+=============
+http://cancerberosgx.github.io/js-indentator/jsindentator/test/index.html
+
 <<<<<<< HEAD
 This project born as a javascript indentation tool based on esprima JavaScript parser. Now it is a set of example tools in an unified simple format that perform some task over some javascript code input, for example not only indenting but also extracting information, code prettifying, etc. 
 
@@ -15,10 +19,6 @@ Since it is based on esprima javascript parser, the javascript source code is ac
 is decomposed on a root object "FunctionDeclaration" that contains other object attributes like "a list os parameters" and a "Block of code", which itself contains a "block", which itself contains  "return statement", which itself contains "the expression 1*1", and so on. 
 
 So this AST way mean that any JavaScript code is decomposed in a tree of conceptual objects, which branches are complex language objects like "a function" and which leaf are very atomic/simple concepts, like a number. 
-
-Online Demo
-=============
-http://cancerberosgx.github.io/js-indentator/jsindentator/test/formattingjstest1.html
 
 Compiling it
 =============
