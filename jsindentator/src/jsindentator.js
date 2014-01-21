@@ -174,10 +174,13 @@ ns.JsIndentator.prototype.main = function(code, config){
 };
 
 /**
-@class JsVisitor
-user must provide a JsVisitor implementation instance that can be or extend one of the ones in src/styles implementation examples. 
+User must provide a JsVisitor implementation instance that can be or extend one of the ones in src/styles implementation examples. 
 That instance must implement this class, JsVisitor.
+@class JsVisitor
 */
 /**
-@method
+@method setStyle
+*/
+/**
+@method visit
 */

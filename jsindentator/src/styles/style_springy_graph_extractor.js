@@ -10,9 +10,9 @@
 
 	var impl = ns.styles.springy_graph_extractor = {}, nodes, edges, map;
 	var fillColors = {
-		'Expression': '#ff0000'
-	,	'Statement': '#0000ff'
-	,	'Identifier': '#00ff00'
+		'Expression': '#ff9999'
+	,	'Statement': '#9999ff'
+	,	'Identifier': '#99ff99'
 	}; 
 	var getColor = function(colors, name) {
 		for(var key in colors) {
@@ -31,6 +31,14 @@
 			impl.jsGraphSyntaxMap={};
 			map = impl.jsGraphSyntaxMap; 
 		}
+	,	getNodeName: function(node, config, parentNode, parentPropertyName) {
+			var nodeName = node.name ? node.name+'-' : '';
+			if(parentPropertyName) {
+				nodeName += parentPropertyName
+			}
+			var label = nodeName+'('+node.type+')'; 
+			return label;
+		}
 	,	setNode: function(node, config, parentNode, parentPropertyName, force) {
 			if(force || node && !node.jsdataid) {
 				if(!node.jsdataid) {				
@@ -42,12 +50,9 @@
 						parentPropertyName: parentPropertyName
 					}; 
 				}
-				var nodeName = node.name ? node.name+'-' : '';
-				if(parentPropertyName) {
-					nodeName += parentPropertyName
-				}
-				node.jsNodeName = nodeName;
-				var label = node.jsNodeName+'('+node.type+')'; 
+				
+				// node.jsNodeName = nodeName;
+				var label = impl.getNodeName(node, config, parentNode, parentPropertyName);
 				var fillColor = getColor(fillColors, node.type);
 				var dblclick = function(e){
 					var graphNode = this;
@@ -62,7 +67,6 @@
 					label: label, fillColor: fillColor, 
 					ondoubleclick: dblclick, jsdataid: node.jsdataid
 				}; 
-				console.log(val)
 				nodes[node.jsdataid+'']=val; 
 			}
 		}

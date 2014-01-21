@@ -1,0 +1,168 @@
+{
+    "project": {
+        "name": "js-indentator",
+        "description": "indent your js code with ease",
+        "version": "0.1.0",
+        "url": ""
+    },
+    "files": {
+        "jsindentator/src/styles/style_prettify_spaces1.js": {
+            "name": "jsindentator/src/styles/style_prettify_spaces1.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
+        "jsindentator/src/styles/style_tree1.js": {
+            "name": "jsindentator/src/styles/style_tree1.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
+        "jsindentator/src/jsindentator.js": {
+            "name": "jsindentator/src/jsindentator.js",
+            "modules": {},
+            "classes": {
+                "jsindentator.JsIndentator": 1,
+                "jsindentator.JsVisitor": 1
+            },
+            "fors": {},
+            "namespaces": {
+                "jsindentator": 1
+            }
+        }
+    },
+    "modules": {},
+    "classes": {
+        "jsindentator.JsIndentator": {
+            "name": "jsindentator.JsIndentator",
+            "shortname": "JsIndentator",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "namespace": "jsindentator",
+            "file": "jsindentator/src/jsindentator.js",
+            "line": 153,
+            "description": "instantiable jsindentator - this will only work if the indentator impl's main is synchronous"
+        },
+        "jsindentator.JsVisitor": {
+            "name": "jsindentator.JsVisitor",
+            "shortname": "JsVisitor",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "namespace": "jsindentator",
+            "file": "jsindentator/src/jsindentator.js",
+            "line": 176,
+            "description": "User must provide a JsVisitor implementation instance that can be or extend one of the ones in src/styles implementation examples. \nThat instance must implement this class, JsVisitor."
+        }
+    },
+    "classitems": [
+        {
+            "file": "jsindentator/src/styles/style_prettify_spaces1.js",
+            "line": 63,
+            "class": "jsindentator.JsIndentator"
+        },
+        {
+            "file": "jsindentator/src/styles/style_prettify_spaces1.js",
+            "line": 67,
+            "class": "jsindentator.JsIndentator"
+        },
+        {
+            "file": "jsindentator/src/styles/style_tree1.js",
+            "line": 43,
+            "itemtype": "method",
+            "name": "addNode",
+            "params": [
+                {
+                    "name": "parentNode",
+                    "description": "must be already be added",
+                    "type": "ASTNode"
+                }
+            ],
+            "class": "jsindentator.JsIndentator"
+        },
+        {
+            "file": "jsindentator/src/jsindentator.js",
+            "line": 8,
+            "description": "main satic namespace. \nalias ns",
+            "class": "jsindentator.JsIndentator",
+            "namespace": "jsindentator"
+        },
+        {
+            "file": "jsindentator/src/jsindentator.js",
+            "line": 52,
+            "itemtype": "method",
+            "name": "main",
+            "params": [
+                {
+                    "name": "code",
+                    "description": "",
+                    "type": "String"
+                },
+                {
+                    "name": "config",
+                    "description": "optional",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "the result of performing the source code transformation accordin g to the urrent visitor.",
+                "type": "Any"
+            },
+            "class": "jsindentator.JsIndentator",
+            "namespace": "jsindentator"
+        },
+        {
+            "file": "jsindentator/src/jsindentator.js",
+            "line": 159,
+            "itemtype": "method",
+            "name": "setStyle",
+            "class": "jsindentator.JsIndentator",
+            "namespace": "jsindentator"
+        },
+        {
+            "file": "jsindentator/src/jsindentator.js",
+            "line": 165,
+            "itemtype": "method",
+            "name": "main",
+            "class": "jsindentator.JsIndentator",
+            "namespace": "jsindentator"
+        },
+        {
+            "file": "jsindentator/src/jsindentator.js",
+            "line": 181,
+            "itemtype": "method",
+            "name": "setStyle",
+            "class": "jsindentator.JsVisitor",
+            "namespace": "jsindentator"
+        },
+        {
+            "file": "jsindentator/src/jsindentator.js",
+            "line": 184,
+            "itemtype": "method",
+            "name": "visit",
+            "class": "jsindentator.JsVisitor",
+            "namespace": "jsindentator"
+        }
+    ],
+    "warnings": [
+        {
+            "message": "Missing item type",
+            "line": " jsindentator/src/styles/style_prettify_spaces1.js:63"
+        },
+        {
+            "message": "Missing item type",
+            "line": " jsindentator/src/styles/style_prettify_spaces1.js:67"
+        },
+        {
+            "message": "Missing item type\nmain satic namespace. \nalias ns",
+            "line": " jsindentator/src/jsindentator.js:8"
+        }
+    ]
+}

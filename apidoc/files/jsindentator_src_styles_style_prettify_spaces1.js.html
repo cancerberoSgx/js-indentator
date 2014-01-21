@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>jsindentator/src/styles/style_prettify_spaces1.js - js-indentator</title>
+    <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
+    <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
+    <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
+    <link rel="shortcut icon" type="image/png" href="../assets/favicon.png">
+    <script src="http://yui.yahooapis.com/combo?3.9.1/build/yui/yui-min.js"></script>
+</head>
+<body class="yui3-skin-sam">
+
+<div id="doc">
+    <div id="hd" class="yui3-g header">
+        <div class="yui3-u-3-4">
+            
+                <h1><img src="../assets/css/logo.png" title="js-indentator"></h1>
+            
+        </div>
+        <div class="yui3-u-1-4 version">
+            <em>API Docs for: 0.1.0</em>
+        </div>
+    </div>
+    <div id="bd" class="yui3-g">
+
+        <div class="yui3-u-1-4">
+            <div id="docs-sidebar" class="sidebar apidocs">
+                <div id="api-list">
+    <h2 class="off-left">APIs</h2>
+    <div id="api-tabview" class="tabview">
+        <ul class="tabs">
+            <li><a href="#api-classes">Classes</a></li>
+            <li><a href="#api-modules">Modules</a></li>
+        </ul>
+
+        <div id="api-tabview-filter">
+            <input type="search" id="api-filter" placeholder="Type to filter APIs">
+        </div>
+
+        <div id="api-tabview-panel">
+            <ul id="api-classes" class="apis classes">
+            
+                <li><a href="../classes/jsindentator.JsIndentator.html">jsindentator.JsIndentator</a></li>
+            
+                <li><a href="../classes/jsindentator.JsVisitor.html">jsindentator.JsVisitor</a></li>
+            
+            </ul>
+
+            <ul id="api-modules" class="apis modules">
+            
+            </ul>
+        </div>
+    </div>
+</div>
+
+            </div>
+        </div>
+        <div class="yui3-u-3-4">
+                <div id="api-options">
+        Show:
+        <label for="api-show-inherited">
+            <input type="checkbox" id="api-show-inherited" checked>
+            Inherited
+        </label>
+
+        <label for="api-show-protected">
+            <input type="checkbox" id="api-show-protected">
+            Protected
+        </label>
+
+        <label for="api-show-private">
+            <input type="checkbox" id="api-show-private">
+            Private
+        </label>
+        <label for="api-show-deprecated">
+            <input type="checkbox" id="api-show-deprecated">
+            Deprecated
+        </label>
+
+    </div>
+
+
+            <div class="apidocs">
+                <div id="docs-main">
+                    <div class="content">
+                        <h1 class="file-heading">File: jsindentator/src/styles/style_prettify_spaces1.js</h1>
+
+<div class="file">
+    <pre class="code prettyprint linenums">
+/*
+ * This is a pure HTML Javascript prettifier identifying AST node types with HTML class names and preserving the AST structure in HTML. 
+ * 
+ * This editor will add html space literals like nbspc, &amp;6#;(tab), etc - no css for spaces at all. 
+ * 
+ * Available CSS class names:
+ * &lt;pre&gt;
+	operators:
+	operand, colon, semicolon, paren, curly, coma
+	
+	keywords: 
+	keyword keyword-return keyword-function, keyword-var keyword-for, etc
+	 &lt;/pre&gt;
+ * 
+ * TODO: 
+ * * configuration option for &quot;always use curly braces in blocks&quot; (even if they are not mandatory). Currently this always uses curly braces.
+ * * the same for mandatory colons.  
+
+ */
+(function() {
+var ns = jsindentator, visit=ns.visit, print=ns.print;//, indent=ns.printIndent;
+
+if(!jsindentator.styles)jsindentator.styles={};
+
+if(!ns.styles.prefttify_spaces1)
+	ns.styles.prefttify_spaces1={};
+
+var config = {};
+
+if(!ns.styles.prefttify_spaces1.config) {
+	ns.styles.prefttify_spaces1.config = config = {
+		tag: &#x27;b&#x27;
+	};
+}
+var htmlOpen = function(classes) {
+	print(&#x27;&lt;&#x27;+config.tag + (classes ? &#x27; class=&quot;&#x27; + classes + &#x27;&quot;&#x27; : &#x27;&#x27;) + &#x27;&gt;&#x27; )
+}
+,	htmlClose = function() {
+	print(&#x27;&lt;/&#x27;+config.tag+&#x27;&gt;&#x27; )
+}
+,	htmlPrint = function(content, classes) {
+	htmlOpen(classes); 
+	print(content); 
+	htmlClose(); 
+}
+,	htmlSpace = function(){
+	htmlPrint(&#x27;&amp;nbsp;&#x27;, &#x27;space&#x27;); 
+}
+
+,	_printIndent= function(num) {
+	for(var i = 0; i&lt;num; i++) {
+		htmlTab(); 
+	}
+}
+,	printIndent= function(nonl) {
+	if(!nonl){
+		htmlNewLine();
+		// ns.buffer.push(ns.newline); 
+	}
+	_printIndent(ns.blockCount); 
+}
+
+/** will print &lt;span class=&quot;tab&quot;&gt;&amp;#9;&lt;/span&gt;. Always make sure CSS : .tab{ white-space:pre;}*/ 
+,	htmlTab = function(){
+	htmlPrint(&#x27;&amp;#09;&#x27;, &#x27;tab&#x27;); 
+}
+/** prints a new line. Always make sure CSS .newline{display: block;} */
+,	htmlNewLine = function(){
+	htmlPrint(&#x27;&amp;#10;&#x27;, &#x27;newline&#x27;); 
+}; 
+
+
+jsindentator.styles.prefttify_spaces1 = {
+	
+	&quot;VariableDeclaration&quot; : function(node, config) {		
+		htmlOpen(&#x27;VariableDeclaration declaration&#x27;+((config&amp;&amp;config.noFirstNewLine)?&#x27; noNewLine&#x27;:&#x27;&#x27;)); 
+		if(!config || !config.noFirstNewLine) //var decls in for stmts
+			printIndent(); 
+		htmlPrint(&#x27;var&#x27;, &#x27;keyword-var keyword&#x27;); 
+		//print(&#x27;var &#x27;); 
+		for ( var i = 0; i &lt; node.declarations.length; i++) {
+			visit(node.declarations[i]); 
+			if(i&lt; node.declarations.length-1) {
+				htmlPrint(&#x27;,&#x27;, &#x27;comma operand&#x27;); 
+				htmlSpace();
+//				print(&#x27;, &#x27;); 
+				// printIndent();
+//				print(ns.tab); 
+			}	 
+		}
+		if(!config || !config.noLastSemicolon) {
+//			print(&#x27;; &#x27;);
+			htmlPrint(&#x27;;&#x27;, &#x27;semicolon&#x27;); 
+		}
+		htmlClose();
+	}
+
+,	&quot;VariableDeclarator&quot; : function(node) {
+		htmlOpen(&#x27;VariableDeclarator&#x27;); 
+		visit(node.id);
+//		htmlPrint(node.id.name, &#x27;identifier&#x27;);
+//		ns.print(node.id.name);
+		if(node.init) {
+			htmlSpace();	
+			htmlPrint(&quot;=&quot;, &#x27;operand&#x27;);
+			htmlSpace();	
+//			print(&quot; = &quot;); 
+			visit(node.init);
+		}
+		htmlClose();
+	}
+
+,	&quot;Literal&quot; : function(node) {
+		htmlPrint(node.raw, &#x27;Literal&#x27;);
+//		htmlOpen(&#x27;Literal&#x27;); 
+//		var classStr = &#x27;&#x27;;
+//		if(!node.raw)
+//			classStr = &quot;literal-false&quot;;
+//		else if(_.isString(node.raw))
+//		TODO: make a html class like litera-string, literal-boolean, literal-number, etc.
+//		print(node.raw);
+//		htmlClose();
+	}
+,	&quot;Identifier&quot;: function(node) {
+		htmlPrint(node.name, &#x27;Identifier&#x27;);
+	}
+,	&quot;FunctionExpression&quot;: function(node) {
+		htmlOpen(&#x27;FunctionExpression expression&#x27;); 
+//		print(&#x27;function &#x27;);
+		htmlPrint(&#x27;function&#x27;, &#x27;keyword-function keyword&#x27;);
+		visit(node.id);
+//		print(&#x27; ( &#x27;); 
+		htmlSpace();
+		htmlPrint(&#x27;(&#x27;, &#x27;paren-left&#x27;);
+		for( var i = 0; i &lt; node.params.length; i++) {
+			visit(node.params[i]); 
+			if(i &lt; node.params.length-1)
+//				print(&#x27;, &#x27;);
+				htmlPrint(&#x27;,&#x27;, &#x27;comma operand&#x27;); 
+				htmlSpace();
+		}
+//		print(&#x27; ) &#x27;);
+		htmlPrint(&#x27;)&#x27;, &#x27;paren-right&#x27;); 
+		htmlSpace();
+		if(node.body.body.length&gt;0) {
+//			print(&#x27;{&#x27;)
+			htmlPrint(&#x27;{&#x27;, &#x27;curly-left&#x27;);	
+			printIndent(true);
+//			htmlOpen(&#x27;block&#x27;); 
+			ns.blockCount++;	
+			visit(node.body); 
+			ns.blockCount--;
+//			htmlClose();
+			printIndent();
+//			print(&#x27;}&#x27;)
+			htmlPrint(&#x27;}&#x27;, &#x27;curly-right&#x27;);	
+		}
+		else {
+//			print(&#x27;{}&#x27;);
+			htmlPrint(&#x27;{&#x27;, &#x27;curly-left&#x27;);	
+			htmlPrint(&#x27;}&#x27;, &#x27;curly-right&#x27;);	
+		}
+		htmlClose();	
+	}
+,	&quot;BlockStatement&quot;: function(node) {	
+		htmlOpen(&#x27;BlockStatement statement&#x27;); 
+		for ( var i = 0; i &lt; node.body.length; i++) {
+			visit(node.body[i]);
+		}
+		// ns.blockCount--;
+		htmlClose();
+	}
+,	&quot;UpdateExpression&quot;: function(node) {
+		htmlOpen(&#x27;UpdateExpression expression&#x27;); 
+		if(node.prefix) {
+//			print(node.operator);
+			htmlPrint(node.operator, &#x27;operator&#x27;);	
+			visit(node.argument); 
+		}
+		else {
+			visit(node.argument); 
+//			print(node.operator);
+			htmlPrint(node.operator, &#x27;operator&#x27;);	
+		}
+		htmlClose();
+	}
+,	&quot;ForStatement&quot;: function(node) {
+		htmlOpen(&#x27;BlockStatement statement&#x27;); 
+		printIndent();  
+//		print(&#x27;for ( &#x27;); 
+		htmlPrint(&#x27;for&#x27;, &#x27;keyword keyword-for&#x27;);	
+		htmlPrint(&#x27;(&#x27;, &#x27;paren-left&#x27;);
+		visit(node.init, {noFirstNewLine: true});
+		visit(node.test);
+//		print(&#x27;; &#x27;);
+		htmlPrint(&#x27;;&#x27;, &#x27;semicolon&#x27;); 
+		visit(node.update);
+//		print(&#x27; ) &#x27;);
+		htmlPrint(&#x27;)&#x27;, &#x27;paren-right&#x27;); 
+		printIndent();
+//		print(&#x27;{&#x27;); 
+		htmlPrint(&#x27;{&#x27;, &#x27;curly-right&#x27;);	
+		ns.blockCount++;
+		visit(node.body);
+		ns.blockCount--;
+		printIndent(); 
+//		print(&#x27;}&#x27;); 
+		htmlPrint(&#x27;}&#x27;, &#x27;curly-right&#x27;);	
+		htmlClose();
+	}
+,	&quot;ArrayExpression&quot;: function(node) {
+		htmlOpen(&#x27;ArrayExpression expression&#x27;); 
+//		print(&#x27;[&#x27;);
+		htmlPrint(&#x27;[&#x27;, &#x27;square-left&#x27;);	
+		for ( var i = 0; i &lt; node.elements.length; i++) {
+			visit(node.elements[i]);
+			if(i &lt; node.elements.length-1)
+//				print(&#x27;, &#x27;);
+				htmlPrint(&#x27;,&#x27;, &#x27;comma operand&#x27;); 
+		}
+//		print(&#x27;]&#x27;); 
+		htmlPrint(&#x27;]&#x27;, &#x27;square-right&#x27;);
+		htmlClose();
+	}
+
+,	&quot;ExpressionStatement&quot;: function(node) {
+		htmlOpen(&#x27;ExpressionStatement statement&#x27;); 
+		printIndent(); 
+		visit(node.expression);
+//		print(&#x27;;&#x27;); 
+		htmlPrint(&#x27;;&#x27;, &#x27;semicolon&#x27;); 
+		htmlClose();
+	}
+,	&quot;CallExpression&quot;: function(node) {
+		htmlOpen(&#x27;CallExpression expression&#x27;); 
+		if(node.callee.type===&quot;FunctionExpression&quot;){//hack - parenthesis around functions
+//			print(&#x27;(&#x27;);		
+			htmlPrint(&#x27;(&#x27;, &#x27;paren-left&#x27;); 
+		}
+		visit(node.callee); 
+		if(node.callee.type===&quot;FunctionExpression&quot;){//hack - parenthesis around functions
+//			print(&#x27;)&#x27;);
+			htmlPrint(&#x27;)&#x27;, &#x27;paren-right&#x27;); 
+		}
+	
+//		print(&#x27; ( &#x27;); 
+		htmlPrint(&#x27;(&#x27;, &#x27;paren-left&#x27;); 
+		for ( var i = 0; i &lt; node.arguments.length; i++) {
+			visit(node.arguments[i]);
+			if(i &lt; node.arguments.length-1) {
+//				print(&#x27;, &#x27;);
+				htmlPrint(&#x27;,&#x27;, &#x27;comma operand&#x27;);
+				htmlSpace(); 
+			}
+		}
+//		print(&#x27; ) &#x27;);
+		htmlPrint(&#x27;)&#x27;, &#x27;paren-right&#x27;);
+		htmlClose();
+	}
+,	&quot;BinaryExpression&quot;: function(node) {
+		htmlOpen(&#x27;BinaryExpression expression&#x27;);
+		visit(node.left); 		
+		htmlSpace();	
+		htmlPrint(node.operator, &#x27;operand&#x27;);
+		htmlSpace();	
+//		print(&#x27; &#x27;+node.operator+&#x27; &#x27;); 
+		visit(node.right); 
+		htmlClose();
+	}
+
+,	&quot;ObjectExpression&quot;: function(node) {
+		htmlOpen(&#x27;ObjectExpression expression&#x27;);
+		if(node.properties.length===0) {
+//			print(&#x27;{}&#x27;); 
+			htmlPrint(&#x27;{&#x27;, &#x27;curly-left&#x27;);	
+			htmlPrint(&#x27;}&#x27;, &#x27;curly-right&#x27;);	
+			return; 
+		}
+//		print(&#x27;{&#x27;); 
+		htmlPrint(&#x27;{&#x27;, &#x27;curly-left&#x27;);	
+		ns.blockCount++;
+		printIndent();
+		for ( var i = 0; i &lt; node.properties.length; i++) {
+			var p = node.properties[i];	
+			/* adding an artificial class : object-property*/
+			htmlOpen(&#x27;ObjectProperty&#x27;);
+			visit(p.key); 
+//			print(&#x27;: &#x27;); 
+			// htmlSpace();	
+			htmlPrint(&#x27;:&#x27;, &#x27;operand colon&#x27;);
+			htmlSpace();	
+			visit(p.value);
+			if(i &lt; node.properties.length-1) {
+//				ns.print(ns.newline); 
+//				ns._printIndent(ns.blockCount-1);
+//				print(&#x27;, &#x27;);
+				htmlPrint(&#x27;,&#x27;, &#x27;comma operand&#x27;);
+				htmlSpace();	
+				// printIndent();
+			}
+			htmlClose();
+		}
+		ns.blockCount--;
+		printIndent();
+//		print(&#x27;}&#x27;); 		
+		htmlPrint(&#x27;}&#x27;, &#x27;curly-right&#x27;);
+		htmlClose();
+	}
+,	&quot;ReturnStatement&quot;: function(node) {
+		htmlOpen(&#x27;ReturnStatement statement&#x27;);
+		printIndent();	
+//		print(&#x27;return &#x27;); 
+		htmlPrint(&#x27;return&#x27;, &#x27;keyword keyword-return&#x27;);
+		visit(node.argument); 
+//		print(&#x27;;&#x27;); 
+		htmlPrint(&#x27;;&#x27;, &#x27;semicolon&#x27;); 
+		htmlClose();
+	}
+,	&quot;ConditionalExpression&quot;: function(node) {
+		htmlOpen(&#x27;ConditionalExpression expression&#x27;);
+		visit(node.test); 
+//		print(&#x27; ? &#x27;); 
+		htmlPrint(&#x27;?&#x27;, &#x27;question operand&#x27;);
+		visit(node.consequent);
+//		print(&#x27; : &#x27;); 
+		htmlPrint(&#x27;:&#x27;, &#x27;colon operand&#x27;);
+		visit(node.alternate);
+		htmlClose();
+	}
+
+,	&quot;SwitchStatement&quot;: function(node) {
+		htmlOpen(&#x27;SwitchStatement statement&#x27;);
+		printIndent();
+		
+//		print(&#x27;switch&#x27;);
+		htmlPrint(&#x27;switch&#x27;, &#x27;keyword keyword-switch&#x27;);
+		htmlPrint(&#x27;(&#x27;, &#x27;paren-left&#x27;);
+		
+		visit(node.discriminant); 
+//		print(&#x27;)&#x27;);
+		htmlPrint(&#x27;)&#x27;, &#x27;paren-right&#x27;);	
+		printIndent();
+//		 print(&#x27; {&#x27;); 
+		htmlPrint(&#x27;{&#x27;, &#x27;curly-left&#x27;);				
+		for(var i = 0; i &lt; node.cases.length; i++) {
+			visit(node.cases[i]); 
+		}
+		printIndent();
+//		print(&#x27;}&#x27;);
+		htmlPrint(&#x27;}&#x27;, &#x27;curly-right&#x27;);
+		htmlClose();
+	}
+,	&quot;SwitchCase&quot;: function(node) {
+		htmlOpen(&#x27;SwitchCase&#x27;);
+		printIndent();		
+//		print(node.test==null ? &#x27;default&#x27; : &#x27;case &#x27;);
+		htmlPrint(node.test==null ? &#x27;default&#x27; : &#x27;case&#x27;, &#x27;keyword case&#x27;);
+		htmlSpace();	
+		visit(node.test); 
+//		print(&#x27;:&#x27;);
+		htmlPrint(&#x27;:&#x27;, &#x27;operand colon&#x27;);
+		ns.blockCount++;		
+		for(var i = 0; i &lt; node.consequent.length; i++) {	
+			visit(node.consequent[i]); 
+		}
+		ns.blockCount--;
+		htmlClose();
+	}
+,	&quot;EmptyStatement&quot;: function(node) {
+		htmlOpen(&#x27;EmptyStatement statement&#x27;);
+//		print(&#x27;;&#x27;); 
+		htmlPrint(&#x27;;&#x27;, &#x27;semicolon&#x27;);
+		htmlClose();
+	}
+,	&quot;BreakStatement&quot;: function(node) {
+
+		htmlOpen(&#x27;BreakStatement statement&#x27;);
+		printIndent();
+		htmlPrint(&#x27;break&#x27;, &#x27;keyword keyword-break&#x27;);
+		htmlPrint(&#x27;;&#x27;, &#x27;semicolon&#x27;);		
+		htmlClose();
+		// printIndent();
+//		print(&#x27;break;&#x27;);
+	}
+
+,	&quot;WhileStatement&quot;: function(node) {
+		printIndent();
+//		print(&#x27;while ( &#x27;);
+		htmlOpen(&#x27;WhileStatement statement&#x27;);
+		htmlPrint(&#x27;while&#x27;, &#x27;keyword keyword-while&#x27;);
+		htmlSpace();
+		htmlPrint(&#x27;(&#x27;, &#x27;paren-left&#x27;);		
+		visit(node.test); 
+//		print(&#x27; ) &#x27;);
+		htmlPrint(&#x27;)&#x27;, &#x27;paren-right&#x27;);	
+		htmlSpace();	
+		
+//		print(&#x27;{&#x27;); 
+		htmlPrint(&#x27;{&#x27;, &#x27;curly-left&#x27;);		
+		ns.blockCount++;
+		visit(node.body);
+		ns.blockCount--;		
+		printIndent();
+//		print(&#x27;}&#x27;); 		
+		htmlPrint(&#x27;}&#x27;, &#x27;curly-right&#x27;);
+		htmlPrint(&#x27;;&#x27;, &#x27;semicolon&#x27;);
+		htmlClose(); 
+	}
+,	&quot;AssignmentExpression&quot;: function(node) {
+		htmlOpen(&#x27;AssignmentExpression expression&#x27;);
+		visit(node.left);
+//		print(&#x27; &#x27;+node.operator+&#x27; &#x27;); 
+		htmlSpace();	
+		htmlPrint(node.operator, &#x27;operand&#x27;);
+		htmlSpace();	
+		visit(node.right); 	
+		htmlClose();
+	}
+,	&quot;MemberExpression&quot;: function(node) {
+		htmlOpen(&#x27;MemberExpression expression&#x27;);
+		visit(node.object);
+		htmlPrint(&#x27;.&#x27;, &#x27;operand dot&#x27;);
+//		print(&#x27;.&#x27;); 
+		visit(node.property); 	
+		htmlClose();
+	}
+
+,	&quot;ThisExpression&quot;: function(node) {
+		htmlOpen(&#x27;ThisExpression expression&#x27;);
+//		print(&#x27;this&#x27;);  
+		htmlPrint(&#x27;this&#x27;, &#x27;keyword keyword-this&#x27;);		
+		htmlClose();
+	}
+
+,	&quot;SequenceExpression&quot;: function(node) {
+		htmlOpen(&#x27;SequenceExpression expression&#x27;);
+//		print(&#x27;( &#x27;);   
+		htmlPrint(&#x27;(&#x27;, &#x27;paren-left&#x27;);	
+		for ( var i = 0; i &lt; node.expressions.length; i++) {
+			visit(node.expressions[i]);
+			if(i &lt; node.expressions.length-1)
+//				print(&#x27;, &#x27;);
+				htmlPrint(&#x27;,&#x27;, &#x27;comma operand&#x27;);
+				htmlSpace();
+		}
+//		print(&#x27; )&#x27;);
+		htmlPrint(&#x27;)&#x27;, &#x27;paren-right&#x27;);	
+		htmlClose();
+	}
+,	&quot;DoWhileStatement&quot;: function(node) {
+		printIndent();
+		htmlOpen(&#x27;DoWhileStatement statement&#x27;);
+//		print(&#x27;do&#x27;);
+		htmlPrint(&#x27;do&#x27;, &#x27;keyword keyword-do&#x27;);
+		printIndent();
+//		print(&#x27;{&#x27;)
+		htmlPrint(&#x27;{&#x27;, &#x27;curly-left&#x27;);
+		ns.blockCount++;
+		visit(node.body);
+		ns.blockCount--;
+		printIndent();
+//		print(&#x27;} &#x27;);
+		htmlPrint(&#x27;}&#x27;, &#x27;curly-right&#x27;);
+		printIndent();		
+//		print(&#x27;while ( &#x27;);
+		htmlPrint(&#x27;while&#x27;, &#x27;keyword keyword-while&#x27;);
+		htmlPrint(&#x27;(&#x27;, &#x27;paren-left&#x27;);
+		visit(node.test);
+//		print(&#x27; );&#x27;);
+		htmlPrint(&#x27;)&#x27;, &#x27;paren-right&#x27;);
+		htmlPrint(&#x27;;&#x27;, &#x27;semicolon&#x27;);
+		htmlClose(); 
+	}
+,	&quot;NewExpression&quot;: function(node) {
+		htmlOpen(&#x27;NewExpression expression&#x27;);
+//		print(&#x27;new &#x27;); 
+		htmlPrint(&#x27;new&#x27;, &#x27;keyword keyword-new&#x27;);
+		visit(node.callee); 
+//		print(&#x27;(&#x27;); 
+		htmlPrint(&#x27;(&#x27;, &#x27;paren-left&#x27;);
+		for ( var i = 0; i &lt; node.arguments.length; i++) {
+			visit(node.arguments[i]);
+			if(i &lt; node.arguments.length-1)
+//				print(&#x27;, &#x27;);
+				htmlPrint(&#x27;,&#x27;, &#x27;comma operand&#x27;);
+				htmlSpace();
+		}
+//		print(&#x27;)&#x27;);
+		htmlPrint(&#x27;)&#x27;, &#x27;paren-right&#x27;); 
+		htmlClose(); 
+	}
+,	&quot;WithStatement&quot;: function(node) {
+		htmlOpen(&#x27;WithStatement statement&#x27;);
+		printIndent();
+//		print(&#x27;with ( &#x27;); 
+		htmlPrint(&#x27;with&#x27;, &#x27;keyword keyword-with&#x27;);
+		htmlPrint(&#x27;(&#x27;, &#x27;paren-left&#x27;);
+		visit(node.object); 
+//		print(&#x27; )&#x27;); 
+		printIndent();
+		htmlPrint(&#x27;)&#x27;, &#x27;paren-right&#x27;);
+//		print(&#x27; {&#x27;)
+		htmlPrint(&#x27;{&#x27;, &#x27;curly-left&#x27;);
+		ns.blockCount++;
+		visit(node.body);
+		ns.blockCount--;
+		printIndent();
+//		print(&#x27;};&#x27;);
+		htmlPrint(&#x27;}&#x27;, &#x27;curly-right&#x27;);
+		htmlPrint(&#x27;;&#x27;, &#x27;semicolon&#x27;);		
+		printIndent();
+		htmlClose(); 
+	}
+,	&quot;IfStatement&quot;: function(node, config) {
+		htmlOpen(&#x27;IfStatement statement &#x27;+((config&amp;&amp;config.noFirstNewLine)?&#x27; noNewLine&#x27;:&#x27;&#x27;)); 
+		if(!config || !config.noFirstNewLine)
+			printIndent(); 
+//		print(&#x27;if ( &#x27;); 
+		htmlPrint(&#x27;if&#x27;, &#x27;keyword keyword-if&#x27;);
+		htmlSpace();
+		htmlPrint(&#x27;(&#x27;, &#x27;paren-left&#x27;);
+		visit(node.test); 
+//		print(&#x27; )&#x27;); 
+		// printIndent();
+		htmlPrint(&#x27;)&#x27;, &#x27;paren-right&#x27;);
+		htmlSpace();
+//		print(&#x27; { &#x27;);
+		htmlPrint(&#x27;{&#x27;, &#x27;curly-left&#x27;);
+		ns.blockCount++;
+		visit(node.consequent);
+		ns.blockCount--;
+		printIndent();
+//		print(&#x27;}&#x27;);
+		htmlPrint(&#x27;}&#x27;, &#x27;curly-right&#x27;);
+		
+		if(node.alternate) {
+			printIndent();
+//			print(&#x27;else &#x27;);
+			htmlPrint(&#x27;else&#x27;, &#x27;keyword keyword-else&#x27;);
+			if(node.alternate.test==null) {
+				printIndent();
+//				print(&#x27; {&#x27;);
+				htmlPrint(&#x27;{&#x27;, &#x27;curly-left&#x27;);
+				ns.blockCount++;
+			}
+			visit(node.alternate, {noFirstNewLine: true});
+			if(node.alternate.test==null) {
+				ns.blockCount--;
+				printIndent();
+//				print(&#x27;}&#x27;);
+				htmlPrint(&#x27;}&#x27;, &#x27;curly-right&#x27;);
+			}
+		}
+		htmlClose(); 
+	}
+
+,	&quot;FunctionDeclaration&quot;: function(node, config) {
+		htmlOpen(&#x27;FunctionDeclaration declaration&#x27;);
+		printIndent(); 
+//		print(&#x27;function &#x27;);
+		htmlPrint(&#x27;function&#x27;, &#x27;keyword keyword-function&#x27;);
+		visit(node.id); 
+//		print(&#x27; ( &#x27;);
+		htmlPrint(&#x27;(&#x27;, &#x27;paren-left&#x27;); 
+		if(node.params) for ( var i = 0; i &lt; node.params.length; i++) {
+			visit(node.params[i]); 
+			if(i&lt; node.params.length-1)
+//				print(&#x27;, &#x27;); 	
+				htmlPrint(&#x27;,&#x27;, &#x27;comma operand&#x27;);	 
+				htmlSpace(); 
+		}
+//		print(&#x27; ) &#x27;); 
+		htmlPrint(&#x27;)&#x27;, &#x27;paren-right&#x27;);
+		printIndent();
+//		print(&#x27;{&#x27;);
+		htmlPrint(&#x27;{&#x27;, &#x27;curly-left&#x27;);
+		ns.blockCount++;
+		visit(node.body); 
+		ns.blockCount--;
+		printIndent();
+//		print(&#x27;}&#x27;);
+		htmlPrint(&#x27;}&#x27;, &#x27;curly-right&#x27;);
+		htmlClose(); 
+	}
+,	&quot;UnaryExpression&quot;: function(node) {
+		htmlOpen(&#x27;UnaryExpression expression&#x27;);
+//		print(node.operator+&quot; &quot;);
+		htmlSpace();	
+		htmlPrint(node.operator, &#x27;operand&#x27;);
+		htmlSpace();	
+		visit(node.argument); 
+		htmlClose(); 
+	}
+,	&quot;LogicalExpression&quot;: function(node) {
+		htmlOpen(&#x27;LogicalExpression expression&#x27;);
+		visit(node.left); 
+//		print(&#x27; &#x27;+node.operator+&#x27; &#x27;); 
+		htmlSpace();	
+		htmlPrint(node.operator, &#x27;operand&#x27;);
+		htmlSpace();	
+		visit(node.right); 
+		htmlClose(); 
+	}
+
+,	&quot;TryStatement&quot;: function(node) {
+		htmlOpen(&#x27;TryStatement statement&#x27;);
+		printIndent();
+//		print(&#x27;try&#x27;);
+		htmlPrint(&#x27;try&#x27;, &#x27;keyword keyword-try&#x27;);
+		printIndent();
+//		print(&#x27; {&#x27;);
+		htmlPrint(&#x27;{&#x27;, &#x27;curly-left&#x27;);
+		ns.blockCount++;
+		visit(node.block); 
+		ns.blockCount--;
+		printIndent();
+//		print(&#x27;}&#x27;);
+		htmlPrint(&#x27;}&#x27;, &#x27;curly-right&#x27;);
+		for ( var i = 0; i &lt; node.handlers.length; i++) {
+			visit(node.handlers[i]); 
+		}
+		if(node.finalizer) {
+			printIndent();
+//			print(&#x27;finally&#x27;); 
+			htmlPrint(&#x27;finally&#x27;, &#x27;keyword keyword-finally&#x27;);
+			printIndent();
+//			print(&#x27; {&#x27;);
+			htmlPrint(&#x27;{&#x27;, &#x27;curly-left&#x27;);
+			ns.blockCount++;
+			visit(node.finalizer); 
+			ns.blockCount--;
+			printIndent();
+//			print(&#x27;}&#x27;);
+			htmlPrint(&#x27;}&#x27;, &#x27;curly-right&#x27;);
+		}
+		htmlPrint(&#x27;;&#x27;, &#x27;semicolon&#x27;);
+		htmlClose(); 
+	}
+,	&quot;CatchClause&quot;: function(node) {
+		htmlOpen(&#x27;CatchClause&#x27;);
+//		console.log(node); 
+		printIndent();
+//		print(&#x27;catch ( &#x27;); 
+		htmlPrint(&#x27;catch&#x27;, &#x27;keyword keyword-catch&#x27;);
+		htmlPrint(&#x27;(&#x27;, &#x27;paren-left&#x27;); 
+		node.param &amp;&amp; visit(node.param); 
+//		if(node.params) for ( var i = 0; i &lt; node.params.length; i++) {
+//			visit(node.params[i]); 
+//			if(i&lt; node.params.length-1)
+//				print(&#x27;, &#x27;); 		 
+//		}
+//		print(&#x27; )&#x27;);
+		htmlPrint(&#x27;)&#x27;, &#x27;paren-eight&#x27;); 
+		printIndent();
+//		print(&#x27; {&#x27;);
+		htmlPrint(&#x27;{&#x27;, &#x27;curly-left&#x27;);
+		ns.blockCount++;
+		visit(node.body); 
+		ns.blockCount--;
+		printIndent();
+//		print(&#x27;}&#x27;);
+		htmlPrint(&#x27;}&#x27;, &#x27;curly-right&#x27;);
+		htmlClose(); 
+	}
+,	&quot;ThrowStatement&quot;: function(node) {
+		htmlOpen(&#x27;ThrowStatement statement&#x27;);
+		printIndent();
+//		print(&#x27;throw &#x27;); 
+		htmlPrint(&#x27;throw&#x27;, &#x27;keyword keyword-throw&#x27;);
+		visit(node.argument);
+//		print(&#x27;;&#x27;)
+		htmlPrint(&#x27;;&#x27;, &#x27;semicolon&#x27;);
+		htmlClose(); 
+	}
+,	&quot;ForInStatement&quot;: function(node) {
+		htmlOpen(&#x27;ForInStatement statement&#x27;);
+		printIndent();
+//		print(&quot;for ( &quot;); 
+		htmlPrint(&#x27;for&#x27;, &#x27;keyword keyword-for&#x27;);
+		htmlPrint(&#x27;(&#x27;, &#x27;paren-left&#x27;); 
+		visit(node.left, {noFirstNewLine: true, noLastSemicolon: true}); 	
+//		print(&#x27; in &#x27;); 
+		htmlPrint(&#x27;in&#x27;, &#x27;keyword keyword-in&#x27;);
+		visit(node.right); 
+//		print(&#x27; )&#x27;)
+		htmlPrint(&#x27;)&#x27;, &#x27;paren-right&#x27;); 
+		
+		printIndent();
+//		print(&#x27; {&#x27;);
+		htmlPrint(&#x27;{&#x27;, &#x27;curly-left&#x27;);
+		ns.blockCount++;
+		visit(node.body); 
+		ns.blockCount--;
+		printIndent();
+//		print(&#x27;}&#x27;);
+		htmlPrint(&#x27;}&#x27;, &#x27;curly-right&#x27;);
+		htmlClose(); 
+	}
+,	&quot;ContinueStatement&quot;: function(node){
+		htmlOpen(&#x27;ContinueStatement statement&#x27;);
+		printIndent();
+//		print(&#x27;continue;&#x27;); 
+		htmlPrint(&#x27;continue&#x27;, &#x27;keyword keyword-continue&#x27;);
+		htmlClose(); 
+	}
+
+,	&quot;Block&quot;: function(node) {/* support for block comments like this one*/
+		htmlOpen(&#x27;Block comment&#x27;); 
+		printIndent();		
+//		print(&#x27;/* &#x27;);
+		htmlPrint(&#x27;/*&#x27;, &#x27;block-comment-start&#x27;); 
+		
+		htmlOpen(&#x27;comment-value&#x27;); 
+		print(node.value); 
+		htmlClose();
+		
+//		print(&#x27; */&#x27;); 
+		htmlPrint(&#x27;*/&#x27;, &#x27;block-comment-end&#x27;); 
+		printIndent(); 
+		htmlClose();
+	}
+,	&quot;Line&quot;: function(node) {//support for line comments like this one
+		printIndent(); 
+		htmlOpen(&#x27;Line comment&#x27;); 
+		htmlPrint(&#x27;//&#x27;, &#x27;line-comment-prefix&#x27;); 
+//		print(&#x27;// &#x27;); 
+		print(node.value); 
+		printIndent(); 
+		htmlClose();
+	}
+
+}	
+})();
+    </pre>
+</div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="../assets/vendor/prettify/prettify-min.js"></script>
+<script>prettyPrint();</script>
+<script src="../assets/js/yui-prettify.js"></script>
+<script src="../assets/../api.js"></script>
+<script src="../assets/js/api-filter.js"></script>
+<script src="../assets/js/api-list.js"></script>
+<script src="../assets/js/api-search.js"></script>
+<script src="../assets/js/apidocs.js"></script>
+</body>
+</html>
