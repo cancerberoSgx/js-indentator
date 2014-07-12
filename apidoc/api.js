@@ -1,8 +1,11 @@
 YUI.add("yuidoc-meta", function(Y) {
    Y.YUIDoc = { meta: {
     "classes": [
-        "jsindentator.JsIndentator",
-        "jsindentator.JsVisitor"
+        "JsIndentator",
+        "JsVisitor",
+        "VariableDeclaration",
+        "VariableDeclarator",
+        "jsindentator"
     ],
     "modules": [],
     "allModules": []

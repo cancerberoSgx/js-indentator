@@ -255,7 +255,6 @@ jsindentator.styles.variable1 = {
 					ns.variables.VAR_COMMA_NEWLINE(node, ns, _); 
 				}
 				else {
-					debugger; 
 					print(ns.variables.VAR_COMMA(node, ns, _)); 
 				}
 			}	 

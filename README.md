@@ -5,20 +5,19 @@ Online Demos
 =============
 http://cancerberosgx.github.io/js-indentator/jsindentator/test/
 
-<<<<<<< HEAD
-This project born as a javascript indentation tool based on esprima JavaScript parser. Now it is a set of example tools in an unified simple format that perform some task over some javascript code input, for example not only indenting but also extracting information, code prettifying, etc. 
+*Warning*: This is a new, investigation project that expose a number of utilities for indenting, formatting, prettify. minifying, JavaScript code. Don't use these tools for production code! They are not ready, not yet. It is known that at least comments are not well supported (it will destroy, at least, your JavaScript comments). 
 
-This project can be usefull for those that need to easily define javascript-sourcecode-analizying tools like mentioned. 
+This project born as a javascript indentation tool based on esprima JavaScript parser. Now it is a set of example tools in an unified simple parse format that perform some task over some javascript code input, for example not only indenting but also extracting information, code prettifying, etc. 
+
+This project can be usefull for those that need to easily define javascript-source code-analizying tools like mentioned. Main objective is let the user easily define its own javascript parsing tools for its personal purposes. 
 
 It can be run on the browser and on the desktop using nodejs. 
 
-Since it is based on esprima javascript parser, the javascript source code is accessed throu an AST (abstract syntax tree) API. For xample, the javascript code 
+User Guide
+===========
 
-	function(a){return 1;}
+TODO: link
 
-is decomposed on a root object "FunctionDeclaration" that contains other object attributes like "a list os parameters" and a "Block of code", which itself contains a "block", which itself contains  "return statement", which itself contains "the expression 1*1", and so on. 
-
-So this AST way mean that any JavaScript code is decomposed in a tree of conceptual objects, which branches are complex language objects like "a function" and which leaf are very atomic/simple concepts, like a number. 
 
 Compiling it
 =============
@@ -33,9 +32,8 @@ If all goes fine, then files will be available under the build/ folder.
 =======
 A javascript indentation tool based on esprima JavaScript parser that can be run on the browser. 
 Online Demo : http://cancerberosgx.github.io/js-indentator/jsindentator/test/formattingjstest1.html
->>>>>>> refs/remotes/origin/gh-pages
 
-*Warning*: this is a very new, fresh project, and it needs more testing before parsing production code. It is not ready, not yet.
+
  
 ## Using it
 
@@ -84,50 +82,19 @@ Then you are ready to:
 	indent " " /path/to/some.js > some_indented.js
 
 
-## Introduction to the project
-
-First of all we will say a "JavaScript indentator" is a program that process some input valid JavaScript 
-source code string and output a transformation of that code, most commonly programs for 
-indenting / formatting / prettify the code. 
-
-With that concept in mind then, this project can be defined as a framework for defining 
-"JavaScript indentators" in JavaScript. This project comes with a general JavaScript parser utility 
-(see src/jsindentator.js) and several JavaScript Indentator implementations, that can be used as examples 
-or basis for building new ones. For example, some static javascript code 
-indentators like style1, style2, other more configurable like variable1, and other utilities 
-like prettyfy1 that generates prettified html from sources. 
-
-The objective is you can perform some basic indenting / formatting stuff using configurable implementation but also have 
-clear example of doing complex stuff by hand.
-
 
 ## Available implementation examples. 
 
-
-
-## AST Visitor Types (Language Concepts)
-
-In AST parsers the target language (JavaScript) is decomposed in small pieces, 
-for example a function declaration like function f(a) {return a; } is decomposed in smaller parts, 
-like the function name, function parameters and function body. The body contain statements like if, 
-while, for, var and so on. For each of those, an AST Visitor type is defined for example 
-, VariableDeclaration, ForInStatement, ReturnStatement, etc. 
-
-this project, js-indentator, implement some utilities and examples that can be used to generate some 
-kind of output from a javascript input source.  
-
-The following is a list of supported JavaScript language concepts supported by the parser. 
-In summary are the AST types supported by esprima plus some other artificial ones 
-(like Block and Line for comments. )  
-
-TODO: list all visitor types
+TODO
 
 
 
 
-TODO / ideas
 
+## TODO / ideas
+* testing that at least the reference implementation Clean don't break the code and well preserve the comments. 
 * javascript function call linking (like the prettyprit but function calls are links to function definition. )
-* code ast types charts
+* code ast types charts, like a chart for each concept count, other chart for expression vs declaration vs statement
 * in the html example, support native file drag and drop (html5)
 * a general style based on underscore templates
+* compose an API doc for ast js tree nodes

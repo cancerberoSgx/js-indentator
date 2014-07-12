@@ -6,13 +6,20 @@ jsindentator={}; //global
 var ns = jsindentator;
 
 /**
-main satic namespace. 
-alias ns
-@namespace jsindentator
+This is not really a class but a static object that comply with this description.
+Alias in code: ns
+@class jsindentator
 */
 _.extend(ns, {
 	
-	blockCount: 0 //for block indentation
+	/**
+	current block indentation counter. Can be useful for indenting blocks
+	@property blockCount
+	*/
+	blockCount: 0  
+	/**
+	@method print
+	*/
 ,	print: function(str) {
 		ns.buffer.push(str); 
 	}
@@ -21,12 +28,18 @@ _.extend(ns, {
 			ns.print(ns.tab); 
 		}
 	}
+	/**
+	@method printIndent
+	*/
 ,	printIndent: function(nonl) {
 		if(!nonl)
 			ns.buffer.push(ns.newline); 
 		ns._printIndent(ns.blockCount); 
 	}
 
+	/**
+	@property {Object} styles
+	*/
 ,	styles: {}
 
 ,	originalCode: function(node) {
@@ -65,8 +78,7 @@ _.extend(ns, {
 		
 		ns.code = code;
 		
-		var syntax = null;//, parseex=null;
-		// debugger;
+		var syntax = null;
 		try {
 			syntax = esprima.parse(code, {
 				raw: true						
@@ -81,6 +93,9 @@ _.extend(ns, {
 			return ex;
 		}
 		ns.syntax = syntax; 
+
+		// ns.visitors.preproccess && ns.visitors.preproccess();
+
 		ns.buffer = [];
 		_(syntax.body).each(function(node){
 			ns.visit(node); 
@@ -101,40 +116,45 @@ like for example the FunctionExpression will call for render its parameter expre
  if no visitor is registered for that concept it will just dump the original code. */ 
 
 ,	visit: function(node, config, parentNode, parentPropertyName) {
-	 	if(!node) {
-//		 		console.log("WARNING - null node", node);
+	 	if(!node) 
+	 	{
 	 		return; 
 	 	}	 
 	 	//do the visiting
 		var visitor = ns.visitors[node.type]; 
-//			console.log("visiting", node, ns.originalCode(node)); 
-		if(visitor) {
+		if (visitor) 
+		{
 			ns._checkComments(node);
-			if(parentNode){
+			if (parentNode)
+			{
 				node.parentNode=parentNode;
 			}
 			visitor.apply(ns.visitors, [node, config]); 
-			if(ns.visitors.visit) {
+			if(ns.visitors.visit) 
+			{
 				ns.visitors.visit.apply(this, [node, config, parentNode, parentPropertyName]); 
 			}
-//				visitor(node, config); 
 		}
-		else {
+		else 
+		{
 			var origCode = ns.originalCode(node);
 			console.log("WARNING - Language concept not supported ", node, origCode); 
 			ns.buffer.push(origCode);
 		}
 	}
 
-//in esprima there are no comment nodes, just comment meta information so we need to build the comments by our self. TODO: make this work OK. 
+// in esprima there are no comment nodes, just comment meta information so we need to build 
+// the comments by our self. TODO: make this work OK. 
 ,	_checkComments: function(node) {
-		var previousNodeRange=ns._comments_currentNodeRange || [0,0]; 
+
+		var previousNodeRange = ns._comments_currentNodeRange || [0,0]; 
 		ns._comments_currentNodeRange=node.range || [0,0]; 
-		
-		for ( var i = 0; i < ns.syntax.comments.length; i++) { //TODO: do it efficient- save previsou comment node.
+		for ( var i = 0; i < ns.syntax.comments.length; i++) //TODO: do it efficient- save previsou comment node.
+		{ 
 			var c = ns.syntax.comments[i]; 
-//				console.log('COMPARING', c.range, previousNodeRange, ns._comments_currentNodeRange); 
-			if(c.range[0] >= previousNodeRange[1] && c.range[1] <= ns._comments_currentNodeRange[0]) {
+			// console.log('COMPARING', c.range, previousNodeRange, ns._comments_currentNodeRange); 
+			if(c.range[0] >= previousNodeRange[1] && c.range[1] <= ns._comments_currentNodeRange[0]) 
+			{
 				ns.visit(c); 
 				break; 
 			}
@@ -175,7 +195,7 @@ ns.JsIndentator.prototype.main = function(code, config){
 
 /**
 User must provide a JsVisitor implementation instance that can be or extend one of the ones in src/styles implementation examples. 
-That instance must implement this class, JsVisitor.
+That instance must implement this class, JsVisitor. Reference JsVisitor implementation is styles/style_clean.js and can be extended
 @class JsVisitor
 */
 /**

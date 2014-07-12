@@ -1,7 +1,12 @@
 
 module.exports = function  ( grunt ) 
 {
-	var jsSrcFiles = ['jsindentator/src/jsindentator.js', 'jsindentator/src/styles/style1.js', 'jsindentator/src/styles/style2.js', 'jsindentator/src/styles/style_clean.js', 'jsindentator/src/styles/style_variable1.js', 'jsindentator/src/styles/style_prettify1.js', 'jsindentator/src/styles/style_prettify_spaces1.js', 'jsindentator/src/styles/jsdocgenerator1.js']; 
+	var jsSrcFiles = ['jsindentator/src/jsindentator.js', 'jsindentator/src/styles/style1.js', 
+	'jsindentator/src/styles/style2.js', 'jsindentator/src/styles/style_clean.js', 
+	'jsindentator/src/styles/style_variable1.js', 'jsindentator/src/styles/style_prettify1.js', 
+	'jsindentator/src/styles/style_prettify_spaces1.js', 'jsindentator/src/styles/jsdocgenerator1.js',
+	'jsindentator/src/javascript-ast-nodes-apidoc.js'
+	]; 
 	require ( 'matchdep' ) .filterDev ( 'grunt-*' ) .forEach ( grunt.loadNpmTasks ) ;
 	//  Project configuration.
 	

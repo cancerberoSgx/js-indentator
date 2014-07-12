@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>jsindentator.JsIndentator - js-indentator</title>
+    <title>jsindentator - js-indentator</title>
     <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
@@ -41,9 +41,15 @@
         <div id="api-tabview-panel">
             <ul id="api-classes" class="apis classes">
             
-                <li><a href="../classes/jsindentator.JsIndentator.html">jsindentator.JsIndentator</a></li>
+                <li><a href="../classes/jsindentator.html">jsindentator</a></li>
             
-                <li><a href="../classes/jsindentator.JsVisitor.html">jsindentator.JsVisitor</a></li>
+                <li><a href="../classes/JsIndentator.html">JsIndentator</a></li>
+            
+                <li><a href="../classes/JsVisitor.html">JsVisitor</a></li>
+            
+                <li><a href="../classes/VariableDeclaration.html">VariableDeclaration</a></li>
+            
+                <li><a href="../classes/VariableDeclarator.html">VariableDeclarator</a></li>
             
             </ul>
 
@@ -84,7 +90,7 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-                        <h1>jsindentator.JsIndentator Class</h1>
+                        <h1>jsindentator Class</h1>
 <div class="box meta">
     
 
@@ -92,7 +98,7 @@
 
     
         <div class="foundat">
-            Defined in: <a href="../files/jsindentator_src_jsindentator.js.html#l153"><code>jsindentator&#x2F;src&#x2F;jsindentator.js:153</code></a>
+            Defined in: <a href="../files/jsindentator_src_jsindentator.js.html#l8"><code>jsindentator&#x2F;src&#x2F;jsindentator.js:8</code></a>
         </div>
     
 
@@ -104,7 +110,8 @@
 
 
 <div class="box intro">
-    <p>instantiable jsindentator - this will only work if the indentator impl&#39;s main is synchronous</p>
+    <p>This is not really a class but a static object that comply with this description.
+Alias in code: ns</p>
 
 </div>
 
@@ -117,6 +124,8 @@
         
             <li class="api-class-tab methods"><a href="#methods">Methods</a></li>
         
+        
+            <li class="api-class-tab properties"><a href="#properties">Properties</a></li>
         
         
         
@@ -133,13 +142,6 @@
                     <ul class="index-list methods">
                         
                             <li class="index-item method">
-                                <a href="#method_addNode">addNode</a>
-
-                                
-                                
-                            </li>
-                        
-                            <li class="index-item method">
                                 <a href="#method_main">main</a>
 
                                 
@@ -147,14 +149,38 @@
                             </li>
                         
                             <li class="index-item method">
-                                <a href="#method_main">main</a>
+                                <a href="#method_print">print</a>
 
                                 
                                 
                             </li>
                         
                             <li class="index-item method">
-                                <a href="#method_setStyle">setStyle</a>
+                                <a href="#method_printIndent">printIndent</a>
+
+                                
+                                
+                            </li>
+                        
+                    </ul>
+                </div>
+            
+
+            
+                <div class="index-section properties">
+                    <h3>Properties</h3>
+
+                    <ul class="index-list properties">
+                        
+                            <li class="index-item property">
+                                <a href="#property_blockCount">blockCount</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item property">
+                                <a href="#property_styles">styles</a>
 
                                 
                                 
@@ -167,101 +193,11 @@
             
 
             
-
-            
         </div>
 
         
             <div id="methods" class="api-class-tabpanel">
                 <h2 class="off-left">Methods</h2>
-
-                
-                    <div id="method_addNode" class="method item">
-    <h3 class="name"><code>addNode</code></h3>
-
-    
-        <div class="args">
-            <span class="paren">(</span><ul class="args-list inline commas">
-            
-                <li class="arg">
-                    
-                        <code>parentNode</code>
-                    
-                </li>
-            
-            </ul><span class="paren">)</span>
-        </div>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                
-                <p>
-                
-                Defined in
-                
-            
-        
-        
-        <a href="../files/jsindentator_src_styles_style_tree1.js.html#l43"><code>jsindentator&#x2F;src&#x2F;styles&#x2F;style_tree1.js:43</code></a>
-        
-        </p>
-
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        
-    </div>
-
-    
-        <div class="params">
-            <h4>Parameters:</h4>
-
-            <ul class="params-list">
-            
-                <li class="param">
-                    
-                        <code class="param-name">parentNode</code>
-                        <span class="type">ASTNode</span>
-                    
-
-                    
-
-                    <div class="param-description">
-                        <p>must be already be added</p>
-
-                    </div>
-
-                    
-                </li>
-            
-            </ul>
-        </div>
-    
-
-    
-
-    
-</div>
 
                 
                     <div id="method_main" class="method item">
@@ -316,7 +252,7 @@
             
         
         
-        <a href="../files/jsindentator_src_jsindentator.js.html#l52"><code>jsindentator&#x2F;src&#x2F;jsindentator.js:52</code></a>
+        <a href="../files/jsindentator_src_jsindentator.js.html#l65"><code>jsindentator&#x2F;src&#x2F;jsindentator.js:65</code></a>
         
         </p>
 
@@ -391,8 +327,8 @@
 </div>
 
                 
-                    <div id="method_main" class="method item">
-    <h3 class="name"><code>main</code></h3>
+                    <div id="method_print" class="method item">
+    <h3 class="name"><code>print</code></h3>
 
     
         <span class="paren">()</span>
@@ -423,7 +359,7 @@
             
         
         
-        <a href="../files/jsindentator_src_jsindentator.js.html#l165"><code>jsindentator&#x2F;src&#x2F;jsindentator.js:165</code></a>
+        <a href="../files/jsindentator_src_jsindentator.js.html#l20"><code>jsindentator&#x2F;src&#x2F;jsindentator.js:20</code></a>
         
         </p>
 
@@ -445,8 +381,8 @@
 </div>
 
                 
-                    <div id="method_setStyle" class="method item">
-    <h3 class="name"><code>setStyle</code></h3>
+                    <div id="method_printIndent" class="method item">
+    <h3 class="name"><code>printIndent</code></h3>
 
     
         <span class="paren">()</span>
@@ -477,7 +413,7 @@
             
         
         
-        <a href="../files/jsindentator_src_jsindentator.js.html#l159"><code>jsindentator&#x2F;src&#x2F;jsindentator.js:159</code></a>
+        <a href="../files/jsindentator_src_jsindentator.js.html#l31"><code>jsindentator&#x2F;src&#x2F;jsindentator.js:31</code></a>
         
         </p>
 
@@ -502,6 +438,101 @@
             </div>
         
 
+        
+            <div id="properties" class="api-class-tabpanel">
+                <h2 class="off-left">Properties</h2>
+
+                
+                    <div id="property_blockCount" class="property item">
+    <h3 class="name"><code>blockCount</code></h3>
+    <span class="type">Unknown</span>
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/jsindentator_src_jsindentator.js.html#l15"><code>jsindentator&#x2F;src&#x2F;jsindentator.js:15</code></a>
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>current block indentation counter. Can be useful for indenting blocks</p>
+
+    </div>
+
+    
+
+    
+
+    
+</div>
+
+                
+                    <div id="property_styles" class="property item">
+    <h3 class="name"><code>styles</code></h3>
+    <span class="type">Object</span>
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/jsindentator_src_jsindentator.js.html#l40"><code>jsindentator&#x2F;src&#x2F;jsindentator.js:40</code></a>
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        
+    </div>
+
+    
+
+    
+
+    
+</div>
+
+                
+            </div>
         
 
         

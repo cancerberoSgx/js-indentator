@@ -1,0 +1,77 @@
+
+<html>
+<head>
+
+<!-- load javascript dependencies -->
+<script src="../lib/esprima.js" type="text/javascript"></script>
+<script src="../lib/underscore.js" type="text/javascript"></script>
+
+<!-- <script src="../../build/js-indentator-all.min.js" type="text/javascript"></script> -->
+
+<script src="../src/jsindentator.js" type="text/javascript"></script>
+<script src="../src/styles/style_clean.js" type="text/javascript"></script>
+<script src="../src/styles/jsdocgenerator1.js" type="text/javascript"></script>
+
+
+<script src="jquery/jquery-2.0.3.min.js" type="text/javascript"></script>
+<script src="bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+<link href="bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+
+<style type="text/css">
+textarea{width: 500px; height: 80px;}
+</style>
+
+</head>
+
+<body>
+	<h2>jsdoc generator</h2>
+
+	<textarea id="code">//
+//@class Tree @extends Living A tree is a living thing that contains some leafs and grow. 
+function Tree(){}
+/*@class Apple*/ 
+Tree.prototype.growLeaf = function(leaf){}
+//@class Apple
+//@extend Fruit
+	</textarea>
+
+	<textarea id="output"></textarea>
+
+	<button id="doit">do it!</button>
+<script>
+
+var impl = jsindentator.styles.jsdocgenerator1; 
+jsindentator.setStyle(impl);
+
+// var a = function(a, b){return a+b;};
+jQuery('#doit').click(doIt);
+
+var doIt = function doIt()
+{
+	var code = jQuery('#code').val(); 
+
+	// var code = [];
+	// code.push('//@class Major');
+	// code.push('/*@class Major*/');
+	// code.push('function Tree(){}');
+	// code = code.join('\n'); 
+
+	var result = jsindentator.main(code, {});
+	if(result instanceof Error) {
+		alert('ERROR: Given javascript couldn\'t be parsed!, reason: '+result); 
+		return;
+	}
+
+	var jsdoc = impl.jsdocClasses; 
+	jQuery('#output').text(JSON.stringify(jsdoc)); 
+
+}; 
+doIt(); 
+
+</script>
+
+
+
+</body>
+</html>

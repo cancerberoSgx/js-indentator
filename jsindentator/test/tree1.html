@@ -38,6 +38,8 @@ textarea{width: 500px; height: 80px;}
 };
 	</textarea>
 
+    <p>Internally this uses style_tree1.js implementation to generate a tree model compatible with the UI Widget BootstrapTreeView</p>
+
 	<button id="doit">do it!</button>
 
     <div id="mytree"></div>
@@ -54,9 +56,6 @@ textarea{width: 500px; height: 80px;}
 
 <script type="text/javascript">
 
-// //install style_tree1 jsindentator's implementation
-
-
 var doIt = function doIt(){
     var code = jQuery('#code').val();    
     jsindentator.setStyle(jsindentator.styles.style_tree1);
@@ -72,6 +71,9 @@ var doIt = function doIt(){
     treeEl.empty();
     var widget = new TreeWidget(model);
     widget.render(treeEl);
+    widget.onNodeEvent('click', function(node, nodeId){
+        alert('clicked')
+    }); 
 }; 
 jQuery('#doit').click(doIt);
 doIt(); 

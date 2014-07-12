@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>jsindentator/src/styles/style_tree1.js - js-indentator</title>
+    <title>JsIndentator - js-indentator</title>
     <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
@@ -90,102 +90,201 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-                        <h1 class="file-heading">File: jsindentator/src/styles/style_tree1.js</h1>
+                        <h1>JsIndentator Class</h1>
+<div class="box meta">
+    
 
-<div class="file">
-    <pre class="code prettyprint linenums">
-// this extractor will extract a tree data - each node is poblated with a children property that is an object mapping id-&gt;node
-// usage : 
-// jsindentator.setStyle(jsindentator.styles.style_tree1);
-// jsindentator.styles.style_tree1.syntax.body
+    
 
-(function() {
+    
+        <div class="foundat">
+            Defined in: <a href="../files/jsindentator_src_jsindentator.js.html#l173"><code>jsindentator&#x2F;src&#x2F;jsindentator.js:173</code></a>
+        </div>
+    
 
-	var ns = jsindentator; 
-	if(!ns.styles) ns.styles={}; 
+    
 
-	var self = ns.styles.style_tree1 = {}; 
-
-	_.extend(self, ns.styles.clean);//we extends from a base that support all the language so we do a full ast iteration. 
-	_.extend(self, {		
-		installStyle: function() {
-			self.counter=1;
-			self.nodes = {}; //Objct id-&gt;node
-			// self.jsGraphSyntaxMap={};
-			// map = self.jsGraphSyntaxMap; 
-		}
-
-	,	getNodeName: function(node, config, parentNode, parentPropertyName) {
-			var nodeName = node.name ? node.name+&#x27;-&#x27; : &#x27;&#x27;;
-			if(parentPropertyName) {
-				nodeName += parentPropertyName; 
-			}
-			var label = nodeName+&#x27;(&#x27;+node.type+&#x27;)&#x27;; 
-			return label;
-		}
-	,	visit: function(node, config, parentNode, parentPropertyName) {
-			self.addNode(node, config, parentNode, parentPropertyName); 
-			// if(parentPropertyName)	{
-			// 	self.setNode(node, config, parentNode, parentPropertyName, true);
-			// }
-			// self.setNode(node, config, parentNode, parentPropertyName);
-			// self.setNode(parentNode);
-			// if(parentNode &amp;&amp; node) {
-			// 	if((parentNode.jsdataid+&#x27;&#x27;).indexOf(&#x27;[&#x27;)===0) {
-
-			// 	}
-			// }			
-		}
-		/**
-		@method addNode
-		@param parentNode {ASTNode} must be already be added
-		*/
-	,	addNode: function(node, config, parentNode, parentPropertyName) {
-			if(!node.tree_node_id) {
-				node.tree_node_id=(self.counter++)+&#x27;&#x27;;				
-				self.nodes[node.tree_node_id] = node;
-				node.children = {};
-			}			
-			node.label = self.getNodeName(node, config, parentNode, parentPropertyName);
-			if(parentNode &amp;&amp; !parentNode.tree_node_id) {
-				parentNode.tree_node_id=self.counter++;
-				self.nodes[parentNode.tree_node_id] = parentNode;
-				parentNode.children = {}; 
-				node.parentNode = parentNode;
-			}
-			if(parentNode) {
-				// if(!parentNode.tree_node_id || !self.nodes[parentNode.tree_node_id]) {
-				// 	debugger;
-				// 	throw new Error(&#x27;parentNode &#x27;+parentNode+&#x27; must be addNode() first than its children!&#x27;); 
-				// }
-				self.parentPropertyName=parentPropertyName;
-				if(!parentNode.children) {
-					parentNode.children = {};//children nodes id-&gt;Node mapping
-				}
-				parentNode.children[node.tree_node_id] = node;
-			}
-		}
-	,	getRootNodes: function() {
-			var roots = [];
-			for(var id in self.nodes) {
-				var node = self.nodes[id];
-				if(!node.parentNode) {
-					roots.push(node);
-				}
-			}
-			return roots;
-		}
-
-
-	}); 
-
-
-})();
+    
+</div>
 
 
 
+<div class="box intro">
+    <p>instantiable jsindentator - this will only work if the indentator impl&#39;s main is synchronous</p>
 
-    </pre>
+</div>
+
+
+
+<div id="classdocs" class="tabview">
+    <ul class="api-class-tabs">
+        <li class="api-class-tab index"><a href="#index">Index</a></li>
+
+        
+            <li class="api-class-tab methods"><a href="#methods">Methods</a></li>
+        
+        
+        
+        
+    </ul>
+
+    <div>
+        <div id="index" class="api-class-tabpanel index">
+            <h2 class="off-left">Item Index</h2>
+
+            
+                <div class="index-section methods">
+                    <h3>Methods</h3>
+
+                    <ul class="index-list methods">
+                        
+                            <li class="index-item method">
+                                <a href="#method_main">main</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item method">
+                                <a href="#method_setStyle">setStyle</a>
+
+                                
+                                
+                            </li>
+                        
+                    </ul>
+                </div>
+            
+
+            
+
+            
+
+            
+        </div>
+
+        
+            <div id="methods" class="api-class-tabpanel">
+                <h2 class="off-left">Methods</h2>
+
+                
+                    <div id="method_main" class="method item">
+    <h3 class="name"><code>main</code></h3>
+
+    
+        <span class="paren">()</span>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/jsindentator_src_jsindentator.js.html#l185"><code>jsindentator&#x2F;src&#x2F;jsindentator.js:185</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        
+    </div>
+
+    
+
+    
+
+    
+</div>
+
+                
+                    <div id="method_setStyle" class="method item">
+    <h3 class="name"><code>setStyle</code></h3>
+
+    
+        <span class="paren">()</span>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/jsindentator_src_jsindentator.js.html#l179"><code>jsindentator&#x2F;src&#x2F;jsindentator.js:179</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        
+    </div>
+
+    
+
+    
+
+    
+</div>
+
+                
+            </div>
+        
+
+        
+
+        
+
+        
+    </div>
 </div>
 
                     </div>

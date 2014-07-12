@@ -45,20 +45,20 @@
 		@param parentNode {ASTNode} must be already be added
 		*/
 	,	addNode: function(node, config, parentNode, parentPropertyName) {
-			if(!node.treeId) {
-				node.treeId=self.counter++;				
-				self.nodes[node.treeId] = node;
+			if(!node.tree_node_id) {
+				node.tree_node_id=(self.counter++)+'';				
+				self.nodes[node.tree_node_id] = node;
 				node.children = {};
 			}			
 			node.label = self.getNodeName(node, config, parentNode, parentPropertyName);
-			if(parentNode && !parentNode.treeId) {
-				parentNode.treeId=self.counter++;
-				self.nodes[parentNode.treeId] = parentNode;
+			if(parentNode && !parentNode.tree_node_id) {
+				parentNode.tree_node_id=self.counter++;
+				self.nodes[parentNode.tree_node_id] = parentNode;
 				parentNode.children = {}; 
 				node.parentNode = parentNode;
 			}
 			if(parentNode) {
-				// if(!parentNode.treeId || !self.nodes[parentNode.treeId]) {
+				// if(!parentNode.tree_node_id || !self.nodes[parentNode.tree_node_id]) {
 				// 	debugger;
 				// 	throw new Error('parentNode '+parentNode+' must be addNode() first than its children!'); 
 				// }
@@ -66,7 +66,7 @@
 				if(!parentNode.children) {
 					parentNode.children = {};//children nodes id->Node mapping
 				}
-				parentNode.children[node.treeId] = node;
+				parentNode.children[node.tree_node_id] = node;
 			}
 		}
 	,	getRootNodes: function() {

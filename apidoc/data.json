@@ -20,58 +20,99 @@
             "fors": {},
             "namespaces": {}
         },
+        "jsindentator/src/javascript-ast-nodes-apidoc.js": {
+            "name": "jsindentator/src/javascript-ast-nodes-apidoc.js",
+            "modules": {},
+            "classes": {
+                "VariableDeclaration": 1,
+                "VariableDeclarator": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
         "jsindentator/src/jsindentator.js": {
             "name": "jsindentator/src/jsindentator.js",
             "modules": {},
             "classes": {
-                "jsindentator.JsIndentator": 1,
-                "jsindentator.JsVisitor": 1
+                "jsindentator": 1,
+                "JsIndentator": 1,
+                "JsVisitor": 1
             },
             "fors": {},
-            "namespaces": {
-                "jsindentator": 1
-            }
+            "namespaces": {}
         }
     },
     "modules": {},
     "classes": {
-        "jsindentator.JsIndentator": {
-            "name": "jsindentator.JsIndentator",
+        "VariableDeclaration": {
+            "name": "VariableDeclaration",
+            "shortname": "VariableDeclaration",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "jsindentator/src/javascript-ast-nodes-apidoc.js",
+            "line": 9
+        },
+        "VariableDeclarator": {
+            "name": "VariableDeclarator",
+            "shortname": "VariableDeclarator",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "jsindentator/src/javascript-ast-nodes-apidoc.js",
+            "line": 19
+        },
+        "jsindentator": {
+            "name": "jsindentator",
+            "shortname": "jsindentator",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "jsindentator/src/jsindentator.js",
+            "line": 8,
+            "description": "This is not really a class but a static object that comply with this description.\nAlias in code: ns"
+        },
+        "JsIndentator": {
+            "name": "JsIndentator",
             "shortname": "JsIndentator",
             "classitems": [],
             "plugins": [],
             "extensions": [],
             "plugin_for": [],
             "extension_for": [],
-            "namespace": "jsindentator",
             "file": "jsindentator/src/jsindentator.js",
-            "line": 153,
+            "line": 173,
             "description": "instantiable jsindentator - this will only work if the indentator impl's main is synchronous"
         },
-        "jsindentator.JsVisitor": {
-            "name": "jsindentator.JsVisitor",
+        "JsVisitor": {
+            "name": "JsVisitor",
             "shortname": "JsVisitor",
             "classitems": [],
             "plugins": [],
             "extensions": [],
             "plugin_for": [],
             "extension_for": [],
-            "namespace": "jsindentator",
             "file": "jsindentator/src/jsindentator.js",
-            "line": 176,
-            "description": "User must provide a JsVisitor implementation instance that can be or extend one of the ones in src/styles implementation examples. \nThat instance must implement this class, JsVisitor."
+            "line": 196,
+            "description": "User must provide a JsVisitor implementation instance that can be or extend one of the ones in src/styles implementation examples. \nThat instance must implement this class, JsVisitor. Reference JsVisitor implementation is styles/style_clean.js and can be extended"
         }
     },
     "classitems": [
         {
             "file": "jsindentator/src/styles/style_prettify_spaces1.js",
             "line": 63,
-            "class": "jsindentator.JsIndentator"
+            "class": "VariableDeclaration"
         },
         {
             "file": "jsindentator/src/styles/style_prettify_spaces1.js",
             "line": 67,
-            "class": "jsindentator.JsIndentator"
+            "class": "VariableDeclaration"
         },
         {
             "file": "jsindentator/src/styles/style_tree1.js",
@@ -85,18 +126,86 @@
                     "type": "ASTNode"
                 }
             ],
-            "class": "jsindentator.JsIndentator"
+            "class": "VariableDeclaration"
+        },
+        {
+            "file": "jsindentator/src/javascript-ast-nodes-apidoc.js",
+            "line": 13,
+            "itemtype": "attribute",
+            "name": "declarations",
+            "type": "{VariableDeclarator}",
+            "summary": "Array of",
+            "class": "VariableDeclaration"
+        },
+        {
+            "file": "jsindentator/src/javascript-ast-nodes-apidoc.js",
+            "line": 23,
+            "description": "My example method",
+            "itemtype": "method",
+            "name": "doThing",
+            "params": [
+                {
+                    "name": "arg",
+                    "description": "of type {{#crossLink \"TestClass\"}}{{/crossLink}}.",
+                    "type": "Array"
+                }
+            ],
+            "return": {
+                "description": "true if success if achieved",
+                "type": "Boolean"
+            },
+            "class": "VariableDeclarator"
+        },
+        {
+            "file": "jsindentator/src/javascript-ast-nodes-apidoc.js",
+            "line": 30,
+            "description": "This description links to the {@link Macaroni} class.",
+            "class": "VariableDeclarator"
+        },
+        {
+            "file": "jsindentator/src/javascript-ast-nodes-apidoc.js",
+            "line": 36,
+            "description": "This description includes {@link Cheese|link text with {curly braces\\}}.",
+            "class": "VariableDeclarator"
+        },
+        {
+            "file": "jsindentator/src/javascript-ast-nodes-apidoc.js",
+            "line": 42,
+            "class": "VariableDeclarator"
         },
         {
             "file": "jsindentator/src/jsindentator.js",
-            "line": 8,
-            "description": "main satic namespace. \nalias ns",
-            "class": "jsindentator.JsIndentator",
-            "namespace": "jsindentator"
+            "line": 15,
+            "description": "current block indentation counter. Can be useful for indenting blocks",
+            "itemtype": "property",
+            "name": "blockCount",
+            "class": "jsindentator"
         },
         {
             "file": "jsindentator/src/jsindentator.js",
-            "line": 52,
+            "line": 20,
+            "itemtype": "method",
+            "name": "print",
+            "class": "jsindentator"
+        },
+        {
+            "file": "jsindentator/src/jsindentator.js",
+            "line": 31,
+            "itemtype": "method",
+            "name": "printIndent",
+            "class": "jsindentator"
+        },
+        {
+            "file": "jsindentator/src/jsindentator.js",
+            "line": 40,
+            "itemtype": "property",
+            "name": "styles",
+            "type": "Object",
+            "class": "jsindentator"
+        },
+        {
+            "file": "jsindentator/src/jsindentator.js",
+            "line": 65,
             "itemtype": "method",
             "name": "main",
             "params": [
@@ -115,43 +224,42 @@
                 "description": "the result of performing the source code transformation accordin g to the urrent visitor.",
                 "type": "Any"
             },
-            "class": "jsindentator.JsIndentator",
-            "namespace": "jsindentator"
+            "class": "jsindentator"
         },
         {
             "file": "jsindentator/src/jsindentator.js",
-            "line": 159,
+            "line": 179,
             "itemtype": "method",
             "name": "setStyle",
-            "class": "jsindentator.JsIndentator",
-            "namespace": "jsindentator"
+            "class": "JsIndentator"
         },
         {
             "file": "jsindentator/src/jsindentator.js",
-            "line": 165,
+            "line": 185,
             "itemtype": "method",
             "name": "main",
-            "class": "jsindentator.JsIndentator",
-            "namespace": "jsindentator"
+            "class": "JsIndentator"
         },
         {
             "file": "jsindentator/src/jsindentator.js",
-            "line": 181,
+            "line": 201,
             "itemtype": "method",
             "name": "setStyle",
-            "class": "jsindentator.JsVisitor",
-            "namespace": "jsindentator"
+            "class": "JsVisitor"
         },
         {
             "file": "jsindentator/src/jsindentator.js",
-            "line": 184,
+            "line": 204,
             "itemtype": "method",
             "name": "visit",
-            "class": "jsindentator.JsVisitor",
-            "namespace": "jsindentator"
+            "class": "JsVisitor"
         }
     ],
     "warnings": [
+        {
+            "message": "unknown tag: summary",
+            "line": " jsindentator/src/javascript-ast-nodes-apidoc.js:13"
+        },
         {
             "message": "Missing item type",
             "line": " jsindentator/src/styles/style_prettify_spaces1.js:63"
@@ -161,8 +269,16 @@
             "line": " jsindentator/src/styles/style_prettify_spaces1.js:67"
         },
         {
-            "message": "Missing item type\nmain satic namespace. \nalias ns",
-            "line": " jsindentator/src/jsindentator.js:8"
+            "message": "Missing item type\nThis description links to the {@link Macaroni} class.",
+            "line": " jsindentator/src/javascript-ast-nodes-apidoc.js:30"
+        },
+        {
+            "message": "Missing item type\nThis description includes {@link Cheese|link text with {curly braces\\}}.",
+            "line": " jsindentator/src/javascript-ast-nodes-apidoc.js:36"
+        },
+        {
+            "message": "Missing item type",
+            "line": " jsindentator/src/javascript-ast-nodes-apidoc.js:42"
         }
     ]
 }

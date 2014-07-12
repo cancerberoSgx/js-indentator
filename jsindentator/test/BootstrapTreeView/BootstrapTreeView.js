@@ -2,30 +2,64 @@
 //TreeWidget - reusable GUI component
 (function(){
 
+
+
 /** 
 TreeWidget - bootstrap based TreeView. Usage: 
 <pre>var model = {children: [
-    {label: '1',  children: [
-        {label: '1.1', id: '2234412', children: []}
-    ]}
+	{label: '1',  children: [
+		{label: '1.1', tree_node_id: '2234412', children: []}
+	]}
 ,   {label: '2', children: [
-        {label: '2.1', children: []}
-    ]}
+		{label: '2.1', children: []}
+	]}
 ]};
 var widget = new TreeWidget(model);
 widget.render('#mytree');
 widget.onNodeEvent('click', function(nodeModel){
-    alert(nodeModel.label+' was clicked')
+	alert(nodeModel.label+' was clicked')
 })
 </pre> 
 @class TreeWidget
 @author Sebastián Gurin
 */
+
 if(window.TreeWidget) {
-    return;
+	return;
 }
+/**
+@constructor
+@param {Object} rootNode
+*/
 var TreeWidget = function(rootNode) {
-    this.rootNode = rootNode;
+	/**
+	@property rootNode
+	@type TreeNode
+	*/
+	this.rootNode = rootNode;
+
+	// this.verifyIds(); 
+
+}; 
+//TODO
+//recursive
+TreeWidget.prototype.getNodeById = function(id, root) {
+
+}; 
+
+//TODO
+//make sure all nodes have ids.
+TreeWidget.prototype.verifyIds = function(id, node) 
+{
+	node = node || 
+
+	//instance counter
+	!this.verifyIdsCount && (this.verifyIdsCount = 1); 
+
+	if(node)
+	this.verifyIdsCount++;
+
+
 }; 
 
 /** configurable css options
@@ -34,9 +68,11 @@ var TreeWidget = function(rootNode) {
 @type {Object}
 */
 TreeWidget.cssOptions = {
-    hoverChildren: false
+	hoverChildren: false
 ,   hoverColor: 'red'
 }; 
+
+
 
 /**
 @method render
@@ -44,29 +80,50 @@ TreeWidget.cssOptions = {
 @return {String} the html markup of the tree ready to be append() or html()
 */
 TreeWidget.prototype.render = function(parent) {
-    this.parentEl = parent;
-    return this._renderTree(this.rootNode, parent); 
+	this.parentEl = parent;
+	return this._renderTree(this.rootNode, parent); 
 }; 
 TreeWidget.prototype._renderTree = function(tree, parent) {
-    var html = this.renderNode({node: tree, renderNode: this.renderNode, isRoot: true})
-    if(parent) {    
-        jQuery(parent).empty().append(html);    
-    }
-    $('.tree li:has(ul)').addClass('parent_li').find(' > span').attr('title', 'Collapse this branch');
-    $('.tree li.parent_li > span').on('click', function (e) {
-        var children = $(this).parent('li.parent_li').find(' > ul > li');
-        if (children.is(":visible")) {
-            children.hide('fast');
-            $(this).attr('title', 'Expand this branch').find(' > i').addClass('icon-plus-sign').removeClass('icon-minus-sign');
-        } else {
-            children.show('fast');
-            $(this).attr('title', 'Collapse this branch').find(' > i').addClass('icon-minus-sign').removeClass('icon-plus-sign');
-        }
-        e.stopPropagation();
-    });
-    return html; 
+	var html = this.renderNode({node: tree, renderNode: this.renderNode, isRoot: true})
+	if(parent) {    
+		jQuery(parent).empty().append(html);    
+	}
+	//TODO: use less global selectors
+	$('.tree li:has(ul)').addClass('parent_li').find(' > span').attr('title', 'Collapse this branch');
+	$('.tree li.parent_li > span').on('click', function (e) {
+		var children = $(this).parent('li.parent_li').find(' > ul > li');
+		if (children.is(":visible")) {
+			children.hide('fast');
+			$(this).attr('title', 'Expand this branch').find(' > i').addClass('icon-plus-sign').removeClass('icon-minus-sign');
+		} else {
+			children.show('fast');
+			$(this).attr('title', 'Collapse this branch').find(' > i').addClass('icon-minus-sign').removeClass('icon-plus-sign');
+		}
+		e.stopPropagation();
+	});
+	return html; 
 }; 
+/**
+Usage example: 
+<pre>
+treeWidget.onNodeEvent =('click', function(node, event){...}); 
+</pre>
+@method onNodeEvent
+@param {String} eventType
+@param {Function} fn
+*/
+TreeWidget.prototype.onNodeEvent = function(eventType, fn) {	
+	jQuery(this.parentEl).on(eventType, 'li > span', function(){ //event delegation		
+		var nodeId = parseInt($(this).data('tree-node-id')); 
+		fn && fn(this, nodeId); 
+	}); 
+}; 
+ 
+
 window.TreeWidget = TreeWidget;
+
+
+
 
 TreeWidget.treeNodeTemplate = 
 '<% var isRoot = isRoot || false; %>'+
@@ -74,18 +131,18 @@ TreeWidget.treeNodeTemplate =
 '<div class="tree">'+
 '<% } else { %>'+
 '<li>'+
-    '<span class="badge badge-warning" data-tree-node-id="<%= node.id %>">'+
-        '<i class="icon-minus-sign"></i>'+
-        '<%= node.label%>'+
-    '</span>'+
+	'<span class="badge badge-warning" data-tree-node-id="<%= node.tree_node_id %>">'+
+		'<i class="icon-minus-sign"></i>'+
+		'<%= node.label%>'+
+	'</span>'+
 '<% } %>'+
-    '<% if(node.children) { %>'+
-    '<ul>'+
-    '<% _(node.children).each(function(child){ %>'+
-        '<%= renderNode({node:child, isRoot: false, renderNode: renderNode}) %>'+
-    '<% }) %>'+
-    '</ul>'+
-    '<% } %>'+
+	'<% if(node.children) { %>'+
+	'<ul>'+
+	'<% _(node.children).each(function(child){ %>'+
+		'<%= renderNode({node:child, isRoot: false, renderNode: renderNode}) %>'+
+	'<% }) %>'+
+	'</ul>'+
+	'<% } %>'+
 '<%= isRoot ? \'</div>\' : \'</li>\' %>';
 
 TreeWidget.prototype.renderNode = _(TreeWidget.treeNodeTemplate).template();
@@ -175,3 +232,26 @@ jQuery(document.body).append(TreeWidget.CSS);
 // ]};
 // var widget = new TreeWidget(model);
 // widget.render('#mytree');
+
+
+
+
+/** 
+@class TreeNode
+*/
+/**
+@property label
+@type String
+*/
+/**
+@property tree_node_id
+@type String
+*/
+/**
+@property label
+@type String
+*/
+/**
+@property parentNode
+@type TreeNode
+*/
