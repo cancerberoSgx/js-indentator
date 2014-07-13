@@ -19,76 +19,56 @@
 		this.propertyAnnotationRegexp = /(\s+@property)/gi;
 	}; 
 
-	// @method unifyLineComments unify adjacents Line comment nodes into one in the ns.syntax.coments generated after visiting. 
-	JsDocMaker.prototype.unifyLineComments = function()
-	{
-		var i = 0;
-		while(i < this.comments.length - 1)
-		{
-			var c = this.comments[i]
-			,	next = this.comments[i+1]; 
-			if(c.type==='Line' && next.type==='Line')
-			{
-				c.value += ' ' + next.value; 
-				this.comments.splice(i+1, 1); 
-			}
-			i++;
-		}
-	}; 
-
-	JsDocMaker.prototype.dumpString = function(s)
-	{
-		var r = []; 
-		for (var i = 0; i < s.length; i++) 
-		{
-			r.push(s.charCodeAt(i)); 
-		}
-		return r.join(',');
-	}; 
-
 	//@method parse	@return {Array} array of class description - with methods, and methods containing params. 
-	JsDocMaker.prototype.parse = function(comments)
+	JsDocMaker.prototype.parse = function(comments, fileName)
 	{
 		this.comments = comments;
+		this.data = this.data || {}; 
+		this.data.classes = this.data.classes || {}; 
+		this.data.modules = this.data.modules || {}; 
 
-		//we do the parsing block b block. We unify adjacents line comments in 1	
+		//we do the parsing block by block, firstunify adjacents line comments in 1	
 		this.unifyLineComments();
 
 		var self = this;
-		var classes = {}; 
-		var currentClass = null, currentMethod = null;
+		var classes = this.data.classes; 
+		var currentClass = null, currentMethod = null, currentModule = null;
 		_(this.comments).each(function(node)
 		{
 			//TODO: let the user mark some comment block somehow to let the parser to ignore it.
-			var parsed = self.parseUnit(node.value); 
-			delete parsed.theRestString; 
-
-			if(parsed.annotation==='class')
+			var parsed_array = self.parseUnit(node.value); 
+			_(parsed_array).each(function(parsed)
 			{
-				if(!classes[parsed.name])
+				parsed.fileName = fileName;
+				delete parsed.theRestString; 
+
+				if(parsed.annotation==='class')
 				{
-					classes[parsed.name] = parsed; 
+					if(!classes[parsed.name])
+					{
+						classes[parsed.name] = parsed; 
+					}
+					if(currentModule)
+					{
+						parsed.module = currentModule.name; 
+					}
+					currentClass = classes[parsed.name]; 
 				}
-				currentClass = classes[parsed.name]; 
-			}
-			if(parsed.annotation==='method' && currentClass)
-			{
-				currentClass.methods = currentClass.methods || {};
-				currentClass.methods[parsed.name] = parsed;
-				currentMethod = parsed;
-			}
-			if(parsed.annotation==='param' && currentClass)
-			{
-				currentMethod.params = currentMethod.params || {};
-				currentMethod.params[parsed.name] = parsed; 
-			}
-			if(parsed.annotation==='extends' && currentClass)
-			{
-				currentClass.children['extends'] = parsed;
-			}			
+				else if(parsed.annotation==='method' && currentClass)
+				{
+					currentClass.methods = currentClass.methods || {};
+					currentClass.methods[parsed.name] = parsed;
+					currentMethod = parsed;
+				}
+				else if(parsed.annotation==='param' && currentClass)
+				{
+					currentMethod.params = currentMethod.params || {};
+					currentMethod.params[parsed.name] = parsed; 
+				}	
+			}); 
+			
 		}); 
-
-		return classes;
+		this.postProccess();
 	};
 
 	// @method {Unit} parseUnit parse a simple substring like '@annotation {Type} a text' into an object {annotation, type, text} object.
@@ -98,26 +78,41 @@
 	JsDocMaker.prototype.parseUnit = function(str)
 	{
 		var parsed = this.parseUnitSimple(str); 
+		var ret = [parsed];
 		if(parsed.theRestString)
 		{
 			var s = parsed.theRestString; 
 			var child;
 			while((child = this.parseUnitSimple(s)))
 			{
-				parsed.children = parsed.children || {}; 
-				parsed.children[child.name] = child; 
+				if(child.annotation === 'class') {
+					ret.push(child); 
+					parsed = child;
+				}
+				else
+				{					
+					parsed.children = parsed.children || []; 
+					parsed.children.push(child); 
+				}
+				// if(child.annotation === 'module' || child.annotation === 'extends'|| child.annotation === 'extend')
+				// {
+				// 	delete child.text; 
+				// 	delete child.theRestString; 
+				// }
 				s = child.theRestString; 
 			}
 		}
-		return parsed; 
+		return ret; 
 	}; 
 
 	JsDocMaker.prototype.parseUnitSimple = function(str) 
 	{	
-		if(!str)return null;		
+		if(!str)
+		{
+			return null;
+		}
 		str = stringFullTrim(str); 
 		var result = this.parseUnitRegexp.exec(str);
-		// console.log(result)
 		if(!result || result.length<4)
 		{
 			return null;  //TODO: notify error?
@@ -148,6 +143,62 @@
 		return splitted; 
 	}; 
 	
+	// @method unifyLineComments unify adjacents Line comment nodes into one in the ns.syntax.coments generated after visiting. 
+	JsDocMaker.prototype.unifyLineComments = function()
+	{
+		var i = 0;
+		while(i < this.comments.length - 1)
+		{
+			var c = this.comments[i]
+			,	next = this.comments[i+1]; 
+			if(c.type==='Line' && next.type==='Line')
+			{
+				c.value += ' ' + next.value; 
+				this.comments.splice(i+1, 1); 
+			}
+			i++;
+		}
+	}; 
+
+	//@method postProccess so the data is already parsed but we want to normalize some children like @extend and @module to be properties of the unit instead children.
+	JsDocMaker.prototype.postProccess = function()
+	{
+		var self = this;
+		_(self.data.classes).each(function(c, name)
+		{
+			var module = _(c.children||[]).find(function(child)
+			{
+				return child.annotation === 'module'; 
+			}); 
+
+			if (module)
+			{
+				c.module = module.name; 
+				c.children = _(c.children).without(module);
+				if(!self.data.modules[module.name])
+				{
+					self.data.modules[module.name] = module; 
+				}
+				else
+				{
+					//set the module's text to first with text found.
+					self.data.modules[module.name].text = self.data.modules[module.name].text || module.text; 
+				}
+			}
+
+			//similar for @extend
+			var extend = _(c.children||[]).find(function(child)
+			{
+				return child.annotation === 'extend' || child.annotation === 'extends'; 
+			}); 
+			if(extend)
+			{
+				c.extends = extend.name; 
+				c.children = _(c.children).without(extend);
+			}
+		}); 
+	}; 
+
 	JsDocMaker.prototype.error = function(msg)
 	{
 		console.error('Error detected: ' + msg); 
@@ -164,8 +215,22 @@
 	_.extend(impl, {
 		postRender: function()
 		{
-			impl.jsdocClasses = maker.parse(ns.syntax.comments);
+			maker.parse(ns.syntax.comments, 'singleFile');
+			impl.jsdocClasses = maker.data; 
 		}
 	}); 
 
 })();
+
+
+
+
+	// JsDocMaker.prototype.dumpString = function(s)
+	// {
+	// 	var r = []; 
+	// 	for (var i = 0; i < s.length; i++) 
+	// 	{
+	// 		r.push(s.charCodeAt(i)); 
+	// 	}
+	// 	return r.join(',');
+	// }; 
