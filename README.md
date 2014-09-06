@@ -5,11 +5,13 @@ Online Demos
 =============
 http://cancerberosgx.github.io/js-indentator/jsindentator/test/
 
-*Warning*: This is a new, investigation project that expose a number of utilities for indenting, formatting, prettify. minifying, JavaScript code. Don't use these tools for production code! They are not ready, not yet. It is known that at least comments are not well supported (it will destroy, at least, your JavaScript comments). 
+*Warning*: This is a new, investigation project that expose a number of utilities for processing JavaScript code. For example, indenting, formatting, prettify. minifying, extracting meta information like jsdocs, etc. 
 
-This project born as a javascript indentation tool based on esprima JavaScript parser. Now it is a set of example tools in an unified simple parse format that perform some task over some javascript code input, for example not only indenting but also extracting information, code prettifying, etc. 
+This project born as a javascript indentation tool based on esprima JavaScript parser. Now it is more like a framework for easily processing javascript code somehow. This is, programs that need to parse javascript code and output some result. 
 
 This project can be usefull for those that need to easily define javascript-source code-analizying tools like mentioned. Main objective is let the user easily define its own javascript parsing tools for its personal purposes. 
+
+In general using it means registering listeners for certain language parts, like function definitions, comments, and those listeners will be called when those units are visited b the AST parser. This means you will get that unit parsed, inspect it some how for extracting information and sotre that information somewhere so it is accessible when the parsing is done. 
 
 It can be run on the browser and on the desktop using nodejs. 
 
@@ -27,12 +29,7 @@ Install nodejs on your system and:
 	npm install 
 	grunt
 
-If all goes fine, then files will be available under the build/ folder. 
-
-=======
-A javascript indentation tool based on esprima JavaScript parser that can be run on the browser. 
-Online Demo : http://cancerberosgx.github.io/js-indentator/jsindentator/test/formattingjstest1.html
-
+If all goes fine, then files will be available under the build/ folder. just open jsindentator/test/index.html. Also you can start the developement server with 'grunt run'. 
 
  
 ## Using it
@@ -82,11 +79,21 @@ Then you are ready to:
 	indent " " /path/to/some.js > some_indented.js
 
 
+## About the files
 
-## Available implementation examples. 
+jsindentator/src/jsindentator.js is the main framework file. As you can see is small heavily dependent on esprima AST parser. 
 
-TODO
+Then the jsindentator/src/styles/* contains several implementations that use the framework somehow. For each of them there is a jsindentator/test/*.html file showing an example of it in an html page. 
 
+The most important of these 'styles implementation' is style_clean.js - by default dumps the javascript minified, but in general, new implementations should extend it because it is guaranteed that all the AST tree nodes will be visited. In other words is the official JavaScript language 'walker'. 
+
+Other implementations like style1, style2, ```style_variable1```, clean are only javascript code indenters - this is dump valid javascript strings - it can be used as javascript text editors plugins for indenting plain old javascript text files. style_variable1 is a configurable approach.
+
+Other liks ```style_prettify1```, ```style_prettify_spaces1``` will output the give javascript code in HTML - with alignation and colors. 
+
+Others like style_tree1 and style_springy_graph will help show the code as a tree or graph visually. 
+
+There is a last example implementaiton worth mention, jsdocgenerator1. Proably this one will have its own project. It will extract any jsdoc information from comments and generate a javascript object with all the jsdoc information like classes, methods, params, extens, modules, etc. 
 
 
 

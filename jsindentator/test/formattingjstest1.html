@@ -18,11 +18,11 @@
 <script src="../src/styles/style_variable1.js" type="text/javascript"></script>
 <script src="../src/styles/style1.js" type="text/javascript"></script>
 <script src="../src/styles/style2.js" type="text/javascript"></script>
-<script src="../src/styles/jsdocgenerator1.js" type="text/javascript"></script>
+<!--<script src="../src/styles/jsdocgenerator1.js" type="text/javascript"></script>-->
 
 <!-- <script src="../src/jsindentator.js" type="text/javascript"></script> -->
 
-<!-- load or define at least one syntax style, in this case we use styles.variable1 
+<!-- load or define at least one syntax style, in this case we use styles.variable1
 because we can configure almost everithing using a josn object.  -->
 <!-- <script src="../src/styles/style_variable1.js" type="text/javascript"></script> -->
 
@@ -99,19 +99,19 @@ h4 { */
 					<textarea id="input">
 var obj1={a: [2,3,4],b:true,c:1.23,d: {e:1.23,f:"hello", f1: function(a, b, c){var v2=1; /* before this switch */switch(v2){case 0: (function(a){})(2); break; case 1: alert('good'); break; default: alert('def'); }; return a*b+c; }}};
 var s1="seba"; var r = window?'inabrowser':'notabrowser', ol = (function(n){var c = 15; while(c!=0){ this.y=( --c )*n; }; do {alert('error')} while(true){}{}})(9);
-var a=0; 
+var a=0;
 /* hello world */
-var b = 0; 
-if(true) false; 
+var b = 0;
+if(true) false;
 if("".length===1 && a != "Apple"){alert('pp'); }
 /*hello*/
 else if("".length==2){alert('ee'); }
 //world
 else if("".length==3){alert('33e'); }
-else if("".length==4)alert('44'); 
+else if("".length==4)alert('44');
 else {alert('kk'); }
-for(var i in o){alert(i+'='+o[i])};  
-for(var j=7; ; ) {if(false){continue; }else{break; }}; 
+for(var i in o){alert(i+'='+o[i])};
+for(var j=7; ; ) {if(false){continue; }else{break; }};
 try{"hello"; throw "error"; }
 catch(ex){"world"; alert(ex); }
 finally{alert('nightmare end')}
@@ -119,12 +119,12 @@ var a = typeof Object; //xman
 function f1(a, b){alert('seb'); return a+b; };
 var o = {a: 1, b: 2};
 with (o) {  alert(a+b);}
-var Class1=function(name){this.name=name}; 
+var Class1=function(name){this.name=name};
 Class1.prototype.sayHello=function(){return "hello "+this.name; };
-var c1 = new Class1('albert');   
-eval("alert('helloworld');"); 
-var f=function(a){for(var i=0;i!=10;i++){alert(i);}}; 
-var s=2,f=function namedf(a){}; 
+var c1 = new Class1('albert');
+eval("alert('helloworld');");
+var f=function(a){for(var i=0;i!=10;i++){alert(i);}};
+var s=2,f=function namedf(a){};
 
 var obj1={a: [2,3,4],b:true,c:1.23,d: {e:1.23,f:"hello", f1: function(a, b, c){var v2=1; /* before this switch */switch(v2){case 0: (function(a){})(2); break; case 1: alert('good'); break; default: alert('def'); }; return a*b+c; }}};
 var s1="seba"; var r = window?'inabrowser':'notabrowser', ol = (function(n){var c = 15; while(c!=0){ this.y=( --c )*n; }; do {alert('error')} while(true){}{}})(9);
@@ -140,29 +140,29 @@ var s1="seba"; var r = window?'inabrowser':'notabrowser', ol = (function(n){var 
 			<div class="span5">
 
 				<h4>Configuration</h4>
-				
+
 				 <a class="btn" data-toggle="collapse" data-target="#config-notes">
 				     Read Some Notes
 				  </a>
-			
+
 				<div id="config-notes" class="collapse in">
 					<p>You can edit this configuration JSON and "do it again".</p>
-					<p>Note that properties like 'tab' and 'newline' are supported by all the indentators, 
+					<p>Note that properties like 'tab' and 'newline' are supported by all the indentators,
 					while properties like VAR, VAR_COMMA, FUNCTION, etc are only supported by the 'variable1' style </p>
-					<p>You can see a list of al supported variable properties of this style and default values 
+					<p>You can see a list of al supported variable properties of this style and default values
 					<a href="https://github.com/cancerberoSgx/js-indentator/blob/master/jsindentator/src/styles/style_variable1.js#L52">in the sources</a>. </p>
 				</div>
-				
+
 				<textarea id="config">
-				
-{ 	
+
+{
 
 /* general configuration properties - valid for all indentators bug 'clean' */
 
 tab : '\t',
 newline : '\n',
 
-/* configuration properties only valid for 'variable1'. 
+/* configuration properties only valid for 'variable1'.
 */
 
 VAR: 'return "var /*VARR*/"',
@@ -170,43 +170,43 @@ VAR_COMMA: 'return ", /*123 */"',
 VAR_COMMA_NEWLINE: 'return ns.Indent() + ",/*234*/" + ns.tab',
 
 }
-		
+
 		</textarea>
-		<!-- 
-		{ 
-	
+		<!--
+		{
+
 	/* general style properties - work in all except 'clean' */
-		
+
 	tab : '\t',
 	newline : '\n',
-	
-	
+
+
 	/* variable1 only styles - only work in variable1 */
-	
+
 	VAR: 					'return "var "',
 	VAR_COMMA: 				'return ", "',
 	VAR_DECL_NEWLINE: 		'return ns.Indent() + "," + ns.tab',
 	VAR_DECL_INIT: 			'return " = "',
 	STMT_SEMICOLON: 		'return "; "',
-	
+
 	FUNCTION: 				'return "function "',
 	FUNCTION_LP:			'return " ( "',
 	FUNCTION_RP: 			'return" ) "',
 	FUNCTION_PARAM_COMMA: 	'return", "',
 	FUNCTION_BODY_LP:		'return "{" + ns.Indent()',
-	
+
 	IDENTIFIER: 			'return node.name',
-	
+
 	/* Block comment */
 	"Block": 				'ns.Indent() + "/* " + node.value + " */"',
-	
-	/*line comment*/ 
+
+	/*line comment*/
 	"Line": 				'ns.Indent() + "// " + node.value '
-	
+
 }
 -->
 <!-- 		<label><input type="checkbox" id="applyConfigCheckbox"></input>Apply this configuration</label> -->
-		
+
 
 			</div>
 
@@ -223,8 +223,8 @@ VAR_COMMA_NEWLINE: 'return ns.Indent() + ",/*234*/" + ns.tab',
 			<li><a href="#minify">Minification</a></li>
 			<li><a href="#style1">Style 1</a></li>
 			<li><a href="#variableStyle1">Variable Style 1</a></li>
-			
-			<li><a href="#jsdocgenerator1">Variable Style 1</a></li>
+
+		<!--	<li><a href="#jsdocgenerator1">Variable Style 1</a></li>-->
 		</ul>
 
 		<div class="tab-content">
@@ -247,13 +247,13 @@ VAR_COMMA_NEWLINE: 'return ns.Indent() + ",/*234*/" + ns.tab',
 				<h4>Nice Style 1</h4>
 				<textarea id="variableStyle1Output1" class="outputcode"></textarea>
 			</div>
-			
-			<div class="tab-pane" id="jsdocgenerator1">
+
+<!--			<div class="tab-pane" id="jsdocgenerator1">
 				<h4>jsdocgenerator1</h4>
 				<textarea id="jsdocgenerator1Output1" class="outputcode"></textarea>
-			</div>
-			
-			
+			</div>-->
+
+
 		</div>
 
 	</div>
@@ -267,11 +267,11 @@ VAR_COMMA_NEWLINE: 'return ns.Indent() + ",/*234*/" + ns.tab',
 					return '&gt;';
 			});
 			return html;
-		}; 
+		};
 		var doit = function(e) {
-						
+
 			var config = null;
-			
+
 // 			if(jQuery("#applyConfigCheckbox").val()) {
 			try {
 				config = eval('(' + $('#config').val() + ')');
@@ -291,7 +291,7 @@ VAR_COMMA_NEWLINE: 'return ns.Indent() + ",/*234*/" + ns.tab',
 			jsindentator.setStyle(jsindentator.styles.style1);
 			var result = jsindentator.main(code, config);
 			if(result instanceof Error) {
-				alert('ERROR: The passed javascript coulnd\'t be parsed!, reason: '+result); 
+				alert('ERROR: The passed javascript coulnd\'t be parsed!, reason: '+result);
 				return;
 			}
 			var indentedCode = escapeHTML(result);
@@ -300,7 +300,7 @@ VAR_COMMA_NEWLINE: 'return ns.Indent() + ",/*234*/" + ns.tab',
 			jsindentator.setStyle(jsindentator.styles.clean);
 			indentedCode = escapeHTML(jsindentator.main(code, config));
 			if(indentedCode instanceof Error) {
-				alert('ERROR: The passed javascript coulnd\'t be parsed!, reason: '+result); 
+				alert('ERROR: The passed javascript coulnd\'t be parsed!, reason: '+result);
 				return;
 			}
 			jQuery('#output2').html(indentedCode);
@@ -308,7 +308,7 @@ VAR_COMMA_NEWLINE: 'return ns.Indent() + ",/*234*/" + ns.tab',
 			jsindentator.setStyle(jsindentator.styles.style2);
 			indentedCode = escapeHTML(jsindentator.main(code, config));
 			if(indentedCode instanceof Error) {
-				alert('ERROR: The passed javascript coulnd\'t be parsed!, reason: '+result); 
+				alert('ERROR: The passed javascript coulnd\'t be parsed!, reason: '+result);
 				return;
 			}
 			jQuery('#output3').html(indentedCode);
@@ -316,21 +316,22 @@ VAR_COMMA_NEWLINE: 'return ns.Indent() + ",/*234*/" + ns.tab',
 			jsindentator.setStyle(jsindentator.styles.variable1);
 			indentedCode = escapeHTML(jsindentator.main(code, config));
 			if(indentedCode instanceof Error) {
-				alert('ERROR: The passed javascript coulnd\'t be parsed!, reason: '+result); 
+				alert('ERROR: The passed javascript coulnd\'t be parsed!, reason: '+result);
 				return;
 			}
 			jQuery('#variableStyle1Output1').html(indentedCode);
-			
+
+/*
 			jsindentator.setStyle(jsindentator.styles.jsdocgenerator1);
 			indentedCode = escapeHTML(jsindentator.main(code, config));
 			if(indentedCode instanceof Error) {
-				alert('ERROR: The passed javascript coulnd\'t be parsed!, reason: '+result); 
+				alert('ERROR: The passed javascript coulnd\'t be parsed!, reason: '+result);
 				return;
 			}
-			jQuery('#jsdocgenerator1Output1').html(indentedCode);
-			
-			
-			
+			jQuery('#generator1Output1').html(indentedCode);
+*/
+
+
 
 		};
 		jQuery('#doitButton').click(doit);
@@ -340,11 +341,11 @@ VAR_COMMA_NEWLINE: 'return ns.Indent() + ",/*234*/" + ns.tab',
 			$(this).tab('show');
 		});
 		$('#myTab a:last').tab('show');
-		
+
 		$(document).ready(function(){
 	        $(".collapse").collapse()
 		});
-		
+
 		// //textarea auto focus - http://stackoverflow.com/questions/5797539/jquery-select-all-text-from-a-textarea
 		// var selectAll= function() {
 		//     var $this = $(this);
@@ -356,11 +357,11 @@ VAR_COMMA_NEWLINE: 'return ns.Indent() + ",/*234*/" + ns.tab',
 		//         $this.unbind("mouseup");
 		//         return false;
 		//     });
-		// }; 
+		// };
 		// $("textarea").focus(selectAll);
 		// $("textarea").click(selectAll);
 
-		// 
+		//
 	</script>
 
 </body>

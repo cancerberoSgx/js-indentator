@@ -20,8 +20,8 @@
             "fors": {},
             "namespaces": {}
         },
-        "jsindentator/src/javascript-ast-nodes-apidoc.js": {
-            "name": "jsindentator/src/javascript-ast-nodes-apidoc.js",
+        "jsindentator/src/testing/javascript-ast-nodes-apidoc.js": {
+            "name": "jsindentator/src/testing/javascript-ast-nodes-apidoc.js",
             "modules": {},
             "classes": {
                 "VariableDeclaration": 1,
@@ -52,7 +52,7 @@
             "extensions": [],
             "plugin_for": [],
             "extension_for": [],
-            "file": "jsindentator/src/javascript-ast-nodes-apidoc.js",
+            "file": "jsindentator/src/testing/javascript-ast-nodes-apidoc.js",
             "line": 9
         },
         "VariableDeclarator": {
@@ -63,7 +63,7 @@
             "extensions": [],
             "plugin_for": [],
             "extension_for": [],
-            "file": "jsindentator/src/javascript-ast-nodes-apidoc.js",
+            "file": "jsindentator/src/testing/javascript-ast-nodes-apidoc.js",
             "line": 19
         },
         "jsindentator": {
@@ -129,7 +129,7 @@
             "class": "VariableDeclaration"
         },
         {
-            "file": "jsindentator/src/javascript-ast-nodes-apidoc.js",
+            "file": "jsindentator/src/testing/javascript-ast-nodes-apidoc.js",
             "line": 13,
             "itemtype": "attribute",
             "name": "declarations",
@@ -138,7 +138,7 @@
             "class": "VariableDeclaration"
         },
         {
-            "file": "jsindentator/src/javascript-ast-nodes-apidoc.js",
+            "file": "jsindentator/src/testing/javascript-ast-nodes-apidoc.js",
             "line": 23,
             "description": "My example method",
             "itemtype": "method",
@@ -157,19 +157,19 @@
             "class": "VariableDeclarator"
         },
         {
-            "file": "jsindentator/src/javascript-ast-nodes-apidoc.js",
+            "file": "jsindentator/src/testing/javascript-ast-nodes-apidoc.js",
             "line": 30,
             "description": "This description links to the {@link Macaroni} class.",
             "class": "VariableDeclarator"
         },
         {
-            "file": "jsindentator/src/javascript-ast-nodes-apidoc.js",
+            "file": "jsindentator/src/testing/javascript-ast-nodes-apidoc.js",
             "line": 36,
             "description": "This description includes {@link Cheese|link text with {curly braces\\}}.",
             "class": "VariableDeclarator"
         },
         {
-            "file": "jsindentator/src/javascript-ast-nodes-apidoc.js",
+            "file": "jsindentator/src/testing/javascript-ast-nodes-apidoc.js",
             "line": 42,
             "class": "VariableDeclarator"
         },
@@ -258,7 +258,7 @@
     "warnings": [
         {
             "message": "unknown tag: summary",
-            "line": " jsindentator/src/javascript-ast-nodes-apidoc.js:13"
+            "line": " jsindentator/src/testing/javascript-ast-nodes-apidoc.js:13"
         },
         {
             "message": "Missing item type",
@@ -270,15 +270,15 @@
         },
         {
             "message": "Missing item type\nThis description links to the {@link Macaroni} class.",
-            "line": " jsindentator/src/javascript-ast-nodes-apidoc.js:30"
+            "line": " jsindentator/src/testing/javascript-ast-nodes-apidoc.js:30"
         },
         {
             "message": "Missing item type\nThis description includes {@link Cheese|link text with {curly braces\\}}.",
-            "line": " jsindentator/src/javascript-ast-nodes-apidoc.js:36"
+            "line": " jsindentator/src/testing/javascript-ast-nodes-apidoc.js:36"
         },
         {
             "message": "Missing item type",
-            "line": " jsindentator/src/javascript-ast-nodes-apidoc.js:42"
+            "line": " jsindentator/src/testing/javascript-ast-nodes-apidoc.js:42"
         }
     ]
 }
